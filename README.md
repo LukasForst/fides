@@ -4,18 +4,7 @@ Global Trust Model for P2P Intrusion Prevention System (IDS/IPS).
 
 ## How to
 
-This project won't have many dependencies (all of them are in `requirements.txt`)
-for that reason it uses `virtualenv`. In order to activate environment run
-
-```bash
-source venv/bin/activate
-```
-
-To deactivate
-
-```bash
-deactivate
-```
+Project needs to use same python as Slips does, thus we use Python 3.7.
 
 ## Related work
 
