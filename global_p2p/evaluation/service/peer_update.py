@@ -1,50 +1,57 @@
 import dataclasses
 from math import sqrt
-from statistics import mean
 from typing import List
 
+from global_p2p.evaluation.discount_factor import compute_discount_factor
+from global_p2p.model.peer_trust_data import PeerTrustData
 from global_p2p.model.service_history import ServiceHistory
-from global_p2p.model.trust_data import TrustData
+from global_p2p.model.trust_model_configuration import TrustModelConfiguration
 
 
-def update_service_trust(trust: TrustData) -> TrustData:
+# noinspection DuplicatedCode
+# TODO: try to abstract this
+def update_service_data_for_peer(
+        configuration: TrustModelConfiguration,
+        peer: PeerTrustData,
+        new_history: ServiceHistory
+) -> PeerTrustData:
     """
-    Computes and updates TrustData.service_trust - st_ij - based on the given data.
-
-    This function should be called whenever there's new service interaction record added
-    to the interaction history.
+    Computes and updates PeerTrustData.service_trust - st_ij - for peer j - based on the given data.
 
     Does not modify given trust values directly, returns new object - however, this
     method does not create new collections as they're not being modified, they're simply copied.
 
-    :param trust: trust data to be reevaluated
-    :return: new trust object with fresh service_trust, competence_belief and integrity_belief
+    :param configuration: configuration of the current trust model
+    :param peer: trust data for peer j with old history, to be updated
+    :param new_history: history with updated records
+    :return: new peer trust data object with fresh service_trust, competence_belief, integrity_belief and service_history
     """
 
-    fading_factor = compute_fading_factor(trust.service_history)
-    competence_belief = compute_competence_belief(trust.service_history, fading_factor)
-    integrity_belief = compute_integrity_belief(trust.service_history, fading_factor, competence_belief)
-    discount_factor = compute_discount_factor(trust.service_history)
+    fading_factor = __compute_fading_factor(new_history)
+    competence_belief = __compute_competence_belief(new_history, fading_factor)
+    integrity_belief = __compute_integrity_belief(new_history, fading_factor, competence_belief)
+    integrity_discount = compute_discount_factor()
 
-    history_factor = trust.service_history_size / trust.configuration.service_history_max_size
+    history_factor = len(new_history) / configuration.service_history_max_size
 
     # (sh_ij / sh_max) * (cb_ij -0.5 * ib_ij) -> where -0.5 is discount factor
-    service_trust_own_experience = history_factor * (competence_belief + discount_factor * integrity_belief)
+    service_trust_own_experience = history_factor * (competence_belief + integrity_discount * integrity_belief)
     # (1 - (sh_ij / sh_max)) * r_ij
-    service_trust_reputation = (1 - history_factor) * trust.reputation
+    service_trust_reputation = (1 - history_factor) * peer.reputation
     # and now add both parts together
     service_trust = service_trust_own_experience + service_trust_reputation
 
-    updated_trust = dataclasses.replace(trust,
+    updated_trust = dataclasses.replace(peer,
                                         service_trust=service_trust,
                                         competence_belief=competence_belief,
-                                        integrity_belief=integrity_belief
+                                        integrity_belief=integrity_belief,
+                                        service_history=new_history
                                         )
 
     return updated_trust
 
 
-def compute_fading_factor(service_history: ServiceHistory) -> List[float]:
+def __compute_fading_factor(service_history: ServiceHistory) -> List[float]:
     """
     Computes fading factor for each record in service history.
 
@@ -60,7 +67,7 @@ def compute_fading_factor(service_history: ServiceHistory) -> List[float]:
     return [i / history_size for i, _ in enumerate(service_history, start=1)]
 
 
-def compute_competence_belief(service_history: ServiceHistory, fading_factor: List[float]) -> float:
+def __compute_competence_belief(service_history: ServiceHistory, fading_factor: List[float]) -> float:
     """
     Computes competence belief - cb_ij.
 
@@ -78,9 +85,9 @@ def compute_competence_belief(service_history: ServiceHistory, fading_factor: Li
     return belief / normalisation
 
 
-def compute_integrity_belief(service_history: ServiceHistory,
-                             fading_factor: List[float],
-                             competence_belief: float) -> float:
+def __compute_integrity_belief(service_history: ServiceHistory,
+                               fading_factor: List[float],
+                               competence_belief: float) -> float:
     """
     Computes integrity belief - ib_ij.
 
@@ -92,25 +99,11 @@ def compute_integrity_belief(service_history: ServiceHistory,
     assert len(service_history) == len(fading_factor), "Service history must have same length as fading factors."
 
     history_size = len(service_history)
-    weight_mean = mean([service.weight for service in service_history])
-    fading_mean = mean(fading_factor)
+    weight_mean = sum([service.weight for service in service_history]) / history_size
+    fading_mean = sum(fading_factor) / history_size
 
     sat = sum([(service.satisfaction * weight_mean * fading_mean - competence_belief) ** 2
                for service
                in service_history])
 
     return sqrt(sat / history_size)
-
-
-# noinspection PyUnusedLocal
-# might be used in the future
-def compute_discount_factor(service_history: ServiceHistory) -> float:
-    """
-    Computes discount factor used for `competence + (discount) * integrity` to lower
-    the expectations of current peer for future interaction.
-
-    :param service_history: history for peer j
-    :return: discount factor for integrity
-    """
-    # arbitrary value -1/2 explained in the paper
-    return -0.5

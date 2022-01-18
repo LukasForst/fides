@@ -1,13 +1,13 @@
 from dataclasses import dataclass
+from typing import Dict
 
 from global_p2p.model.aliases import PeerId
 from global_p2p.model.recommendation_history import RecommendationHistory
 from global_p2p.model.service_history import ServiceHistory
-from global_p2p.model.trust_model_configuration import TrustModelConfiguration
 
 
 @dataclass
-class TrustData:
+class PeerTrustData:
     """Trust data related to given peer j - in model's notation "peer_id" is actually "j"."""
 
     peer_id: PeerId
@@ -34,7 +34,7 @@ class TrustData:
     recommendation_trust: float
     """Recommendation Trust Metric.
     
-    How much does the peer trust that reputation is correct.
+    How much does the peer trust that any recommendation received from this peer is correct.
     In model's notation rt_ij.
     
     0 <= recommendation_trust <= 1
@@ -80,5 +80,6 @@ class TrustData:
         """Size of the recommendation history, in model's notation rh_ij."""
         return len(self.recommendation_history)
 
-    configuration: TrustModelConfiguration
-    """Configuration for the current trust model."""
+
+TrustMatrix = Dict[PeerId, PeerTrustData]
+"""Matrix that have PeerId as a key and then value is data about trust we have."""

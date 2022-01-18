@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from global_p2p.model.aliases import Time
+from global_p2p.utils.time import Time
 
 
 @dataclass

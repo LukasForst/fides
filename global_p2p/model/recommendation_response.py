@@ -29,6 +29,14 @@ class RecommendationResponse:
     In model's notation sh_kj.
     """
 
+    recommendation: float
+    """Recommendation about reputation.
+    
+    In model's notation r_kj.
+    
+    0 <= recommendation <= 1
+    """
+
     initial_reputation_provided_by_count: int
     """How many peers which provided recommendation during the initial calculation of r_kj.
     

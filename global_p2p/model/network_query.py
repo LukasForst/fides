@@ -2,9 +2,10 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import List, Union
 
-from global_p2p.model.aliases import Time, IP, Domain, PeerId
+from global_p2p.model.aliases import IP, Domain, PeerId
 from global_p2p.model.recommendation_response import RecommendationResponse
 from global_p2p.model.threat_intelligence import ThreatIntelligence
+from global_p2p.utils.time import Time
 
 
 class QueryType(Enum):
