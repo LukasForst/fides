@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List, Union
 
 from global_p2p.model.aliases import IP, Domain, PeerId
-from global_p2p.model.recommendation_response import RecommendationResponse
+from global_p2p.model.recommendation_response import Recommendation
 from global_p2p.model.threat_intelligence import ThreatIntelligence
 from global_p2p.utils.time import Time
 
@@ -38,7 +38,7 @@ class ThreatIntelligenceQueryResponse(NetworkQueryResponse):
 @dataclass
 class RecommendationQueryResponse(NetworkQueryResponse):
     """Network response on QueryType.RECOMMENDATION_REQUEST."""
-    recommendation: RecommendationResponse
+    recommendation: Recommendation
 
 
 @dataclass

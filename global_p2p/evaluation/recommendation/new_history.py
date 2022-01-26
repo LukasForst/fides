@@ -1,6 +1,6 @@
 from global_p2p.model.peer_trust_data import PeerTrustData
 from global_p2p.model.recommendation_history import RecommendationHistoryRecord, RecommendationHistory
-from global_p2p.model.recommendation_response import RecommendationResponse
+from global_p2p.model.recommendation_response import Recommendation
 from global_p2p.model.trust_model_configuration import TrustModelConfiguration
 from global_p2p.utils.time import now
 
@@ -8,7 +8,7 @@ from global_p2p.utils.time import now
 def create_recommendation_history_for_peer(
         configuration: TrustModelConfiguration,
         peer: PeerTrustData,
-        recommendation: RecommendationResponse,
+        recommendation: Recommendation,
         history_factor: float,
         er_ij: float,
         ecb_ij: float,
@@ -41,7 +41,7 @@ def create_recommendation_history_for_peer(
 
 
 def __compute_recommendation_satisfaction_parameter(
-        recommendation: RecommendationResponse,
+        recommendation: Recommendation,
         er_ij: float,
         ecb_ij: float,
         eib_ij: float
@@ -63,7 +63,7 @@ def __compute_recommendation_satisfaction_parameter(
 
 def __compute_weight_of_recommendation(
         configuration: TrustModelConfiguration,
-        recommendation: RecommendationResponse,
+        recommendation: Recommendation,
         history_factor: float
 ) -> float:
     """

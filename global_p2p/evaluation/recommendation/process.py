@@ -6,7 +6,7 @@ from global_p2p.evaluation.recommendation.new_history import create_recommendati
 from global_p2p.evaluation.recommendation.peer_update import update_recommendation_data_for_peer
 from global_p2p.model.aliases import PeerId
 from global_p2p.model.peer_trust_data import TrustMatrix, PeerTrustData
-from global_p2p.model.recommendation_response import RecommendationResponse
+from global_p2p.model.recommendation_response import Recommendation
 from global_p2p.model.trust_model_configuration import TrustModelConfiguration
 
 
@@ -14,7 +14,7 @@ def process_new_recommendations(
         configuration: TrustModelConfiguration,
         subject: PeerTrustData,
         matrix: TrustMatrix,
-        recommendations: Dict[PeerId, RecommendationResponse]
+        recommendations: Dict[PeerId, Recommendation]
 ) -> TrustMatrix:
     """
     Evaluates received recommendation, computing recommendations and recommendation
@@ -79,7 +79,7 @@ def process_new_recommendations(
 
 def __estimate_recommendation(
         matrix: TrustMatrix,
-        recommendations: Dict[PeerId, RecommendationResponse]) -> float:
+        recommendations: Dict[PeerId, Recommendation]) -> float:
     """
     Computes estimation about recommendation.
 
@@ -105,7 +105,7 @@ def __estimate_recommendation(
 
 def __estimate_competence_integrity_belief(
         matrix: TrustMatrix,
-        recommendations: Dict[PeerId, RecommendationResponse]) -> [float, float]:
+        recommendations: Dict[PeerId, Recommendation]) -> [float, float]:
     """
     Estimates about competence and integrity beliefs.
 

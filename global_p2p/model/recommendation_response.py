@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class RecommendationResponse:
+class Recommendation:
     """Represents k peer's response to recommendation query about peer j."""
 
     competence_belief: float
