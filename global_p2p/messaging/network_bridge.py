@@ -2,6 +2,8 @@ import json
 from dataclasses import asdict
 from typing import Dict, List
 
+from dacite import from_dict
+
 from global_p2p.messaging.message_handler import MessageHandler
 from global_p2p.messaging.model import NetworkMessage, Alert
 from global_p2p.messaging.queue import Queue
@@ -25,7 +27,15 @@ class NetworkBridge:
 
     def listen(self):
         """Starts messages processing, this method is not blocking."""
-        self._queue.listen(lambda message: self._handler.on_message(NetworkMessage(**json.loads(message))))
+        callback = self._handler.on_message
+
+        def message_received(message: str):
+            # TODO: error handling
+            parsed = json.loads(message)
+            network_message = from_dict(data_class=NetworkMessage, data=parsed)
+            callback(network_message)
+
+        self._queue.listen(message_received)
 
     def send_intelligence_response(self, request_id: str, target: Target, intelligence: ThreatIntelligence):
         """Shares Intelligence with peer that requested it. request_id comes from the first request."""
