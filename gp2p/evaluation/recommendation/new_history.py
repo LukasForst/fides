@@ -1,8 +1,8 @@
-from global_p2p.model.peer_trust_data import PeerTrustData
-from global_p2p.model.recommendation_history import RecommendationHistoryRecord, RecommendationHistory
-from global_p2p.model.recommendation_response import Recommendation
-from global_p2p.model.trust_model_configuration import TrustModelConfiguration
-from global_p2p.utils.time import now
+from gp2p.model.peer_trust_data import PeerTrustData
+from gp2p.model.recommendation import Recommendation
+from gp2p.model.recommendation_history import RecommendationHistoryRecord, RecommendationHistory
+from gp2p.model.trust_model_configuration import TrustModelConfiguration
+from gp2p.utils.time import now
 
 
 def create_recommendation_history_for_peer(

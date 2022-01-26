@@ -1,13 +1,13 @@
 import dataclasses
 from typing import Dict
 
-from global_p2p.evaluation.discount_factor import compute_discount_factor
-from global_p2p.evaluation.recommendation.new_history import create_recommendation_history_for_peer
-from global_p2p.evaluation.recommendation.peer_update import update_recommendation_data_for_peer
-from global_p2p.model.aliases import PeerId
-from global_p2p.model.peer_trust_data import TrustMatrix, PeerTrustData
-from global_p2p.model.recommendation_response import Recommendation
-from global_p2p.model.trust_model_configuration import TrustModelConfiguration
+from gp2p.evaluation.discount_factor import compute_discount_factor
+from gp2p.evaluation.recommendation.new_history import create_recommendation_history_for_peer
+from gp2p.evaluation.recommendation.peer_update import update_recommendation_data_for_peer
+from gp2p.model.aliases import PeerId
+from gp2p.model.peer_trust_data import TrustMatrix, PeerTrustData
+from gp2p.model.recommendation import Recommendation
+from gp2p.model.trust_model_configuration import TrustModelConfiguration
 
 
 def process_new_recommendations(

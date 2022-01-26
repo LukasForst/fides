@@ -1,21 +1,17 @@
 from dataclasses import dataclass
-from typing import List, Dict, Any
+from typing import List
 
-from global_p2p.model.aliases import PeerId
+from gp2p.model.aliases import PeerId, OrganisationId
 
 
 @dataclass
-class Peer:
+class PeerInfo:
     """Identification data of a single peer in the network."""
 
-    peer_id: PeerId
+    id: PeerId
     """Unique identification of a peer in the network."""
 
-    organizations: List[str]
+    organisations: List[OrganisationId]
     """List of organization that signed public key of this peer.
-    
     According to the protocol, these are organizations that trust the peer.
     """
-
-    metadata: Dict[str, Any]
-    """Metadata that this peer provided during connection."""

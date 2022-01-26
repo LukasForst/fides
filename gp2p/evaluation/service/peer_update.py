@@ -2,10 +2,10 @@ import dataclasses
 from math import sqrt
 from typing import List
 
-from global_p2p.evaluation.discount_factor import compute_discount_factor
-from global_p2p.model.peer_trust_data import PeerTrustData
-from global_p2p.model.service_history import ServiceHistory
-from global_p2p.model.trust_model_configuration import TrustModelConfiguration
+from gp2p.evaluation.discount_factor import compute_discount_factor
+from gp2p.model.peer_trust_data import PeerTrustData
+from gp2p.model.service_history import ServiceHistory
+from gp2p.model.trust_model_configuration import TrustModelConfiguration
 
 
 # noinspection DuplicatedCode

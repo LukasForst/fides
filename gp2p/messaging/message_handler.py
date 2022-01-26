@@ -2,11 +2,12 @@ from typing import Dict, List, Callable, Optional
 
 from dacite import from_dict
 
-from global_p2p.messaging.model import NetworkMessage, PeerInfo, \
-    Alert, PeerIntelligenceResponse, PeerRecommendationResponse
-from global_p2p.model.aliases import PeerId, Target
-from global_p2p.model.recommendation_response import Recommendation
-from global_p2p.model.threat_intelligence import ThreatIntelligence
+from gp2p.messaging.model import NetworkMessage, PeerInfo, \
+    PeerIntelligenceResponse, PeerRecommendationResponse
+from gp2p.model.alert import Alert
+from gp2p.model.aliases import PeerId, Target
+from gp2p.model.recommendation import Recommendation
+from gp2p.model.threat_intelligence import ThreatIntelligence
 
 
 class MessageHandler:

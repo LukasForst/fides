@@ -1,17 +1,18 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
 
-from global_p2p.model.aliases import PeerId
-from global_p2p.model.recommendation_history import RecommendationHistory
-from global_p2p.model.service_history import ServiceHistory
+from gp2p.model.aliases import PeerId, OrganisationId
+from gp2p.model.peer import PeerInfo
+from gp2p.model.recommendation_history import RecommendationHistory
+from gp2p.model.service_history import ServiceHistory
 
 
 @dataclass
 class PeerTrustData:
     """Trust data related to given peer j - in model's notation "peer_id" is actually "j"."""
 
-    peer_id: PeerId
-    """ID of the peer these data are for."""
+    info: PeerInfo
+    """Information about the peer."""
 
     service_trust: float
     """Service Trust Metric.
@@ -67,13 +68,23 @@ class PeerTrustData:
     service_history: ServiceHistory
     """History of interactions, in model's notation SH_ij."""
 
+    recommendation_history: RecommendationHistory
+    """History of recommendation, in model's notation RH_ij."""
+
+    @property
+    def peer_id(self) -> PeerId:
+        """ID of the peer these data are for."""
+        return self.info.id
+
+    @property
+    def organisations(self) -> List[OrganisationId]:
+        """Organisations that signed this peer."""
+        return self.info.organisations
+
     @property
     def service_history_size(self):
         """Size of the history, in model's notation sh_ij."""
         return len(self.service_history)
-
-    recommendation_history: RecommendationHistory
-    """History of recommendation, in model's notation RH_ij."""
 
     @property
     def recommendation_history_size(self):

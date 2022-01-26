@@ -1,27 +1,15 @@
 from dataclasses import dataclass
-from typing import List, Any
+from typing import Any
 
-from global_p2p.model.aliases import PeerId, Target
-from global_p2p.model.recommendation_response import Recommendation
-from global_p2p.model.threat_intelligence import ThreatIntelligence
+from gp2p.model.aliases import PeerId, Target
+from gp2p.model.peer import PeerInfo
+from gp2p.model.recommendation import Recommendation
+from gp2p.model.threat_intelligence import ThreatIntelligence
 
 """
 Model data coming from the Redis queue - 
 communication layer between network and trust layer.
 """
-
-
-@dataclass
-class PeerInfo:
-    id: PeerId
-    organisations: List[str]
-
-
-@dataclass
-class Alert:
-    target: Target
-    score: float
-    confidence: float
 
 
 @dataclass
