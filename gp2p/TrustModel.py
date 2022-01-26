@@ -1,2 +1,0 @@
-class TrustModel:
-    pass

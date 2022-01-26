@@ -79,7 +79,8 @@ def process_new_recommendations(
 
 def __estimate_recommendation(
         matrix: TrustMatrix,
-        recommendations: Dict[PeerId, Recommendation]) -> float:
+        recommendations: Dict[PeerId, Recommendation]
+) -> float:
     """
     Computes estimation about recommendation.
 
@@ -105,7 +106,8 @@ def __estimate_recommendation(
 
 def __estimate_competence_integrity_belief(
         matrix: TrustMatrix,
-        recommendations: Dict[PeerId, Recommendation]) -> [float, float]:
+        recommendations: Dict[PeerId, Recommendation]
+) -> [float, float]:
     """
     Estimates about competence and integrity beliefs.
 

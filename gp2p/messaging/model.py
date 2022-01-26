@@ -22,7 +22,7 @@ class NetworkMessage:
 @dataclass
 class PeerRecommendationResponse:
     sender: PeerInfo
-    peer: PeerId
+    subject: PeerId
     recommendation: Recommendation
 
 

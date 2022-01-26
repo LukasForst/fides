@@ -94,3 +94,18 @@ class PeerTrustData:
 
 TrustMatrix = Dict[PeerId, PeerTrustData]
 """Matrix that have PeerId as a key and then value is data about trust we have."""
+
+
+def trust_data_prototype(peer: PeerInfo) -> PeerTrustData:
+    """Creates clear trust object with 0 values and given peer info."""
+    return PeerTrustData(
+        info=peer,
+        service_trust=0,
+        reputation=0,
+        recommendation_trust=0,
+        competence_belief=0,
+        integrity_belief=0,
+        initial_reputation_provided_by_count=0,
+        service_history=[],
+        recommendation_history=[]
+    )

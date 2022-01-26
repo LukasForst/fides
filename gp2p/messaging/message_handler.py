@@ -72,16 +72,16 @@ class MessageHandler:
     def __on_nl2tl_recommendation_request(self, data: Dict):
         request_id = data['request_id']
         sender = from_dict(data_class=PeerInfo, data=data['sender'])
-        peer = data['payload']
-        return self.__on_recommendation_request(request_id, sender, peer)
+        subject = data['payload']
+        return self.__on_recommendation_request(request_id, sender, subject)
 
-    def __on_recommendation_request(self, request_id: str, sender: PeerInfo, peer: PeerId):
-        return self.__on_recommendation_request_callback(request_id, sender, peer)
+    def __on_recommendation_request(self, request_id: str, sender: PeerInfo, subject: PeerId):
+        return self.__on_recommendation_request_callback(request_id, sender, subject)
 
     def __on_nl2tl_recommendation_response(self, data: List[Dict]):
         responses = [PeerRecommendationResponse(
             sender=from_dict(data_class=PeerInfo, data=single['sender']),
-            peer=single['payload']['peer'],
+            subject=single['payload']['subject'],
             recommendation=from_dict(data_class=Recommendation, data=single['payload']['recommendation'])
         ) for single in data]
         return self.__on_recommendation_response(responses)

@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from gp2p.messaging.model import PeerInfo
 from gp2p.model.aliases import PeerId, Target
-from gp2p.model.peer_trust_data import PeerTrustData
+from gp2p.model.peer_trust_data import PeerTrustData, TrustMatrix
 from gp2p.model.threat_intelligence import ThreatIntelligence
 from gp2p.model.trust_model_configuration import TrustModelConfiguration
 
@@ -14,7 +14,7 @@ class TrustDatabase:
         """Stores trust model configuration."""
         raise NotImplemented()
 
-    def get_model_configuration(self) -> Optional[TrustModelConfiguration]:
+    def get_model_configuration(self) -> TrustModelConfiguration:
         """Returns current trust model configuration if set."""
         raise NotImplemented()
 
@@ -30,9 +30,18 @@ class TrustDatabase:
         """Stores trust data for given peer - overwrites any data if existed."""
         raise NotImplemented()
 
+    def store_peer_trust_matrix(self, trust_matrix: TrustMatrix):
+        """Stores trust matrix."""
+        for peer in trust_matrix.values():
+            self.store_peer_trust_data(peer)
+
     def get_peer_trust_data(self, peer_id: PeerId) -> Optional[PeerTrustData]:
         """Returns trust data for given peer ID, if no data are found, returns None."""
         raise NotImplemented()
+
+    def get_peers_trust_data(self, peer_ids: List[PeerId]) -> List[PeerTrustData]:
+        """Return trust data for each peer from peer_ids."""
+        return [self.get_peer_trust_data(peer_id) for peer_id in peer_ids]
 
     def cache_network_opinion(self, target: Target, intelligence: ThreatIntelligence):
         """Caches aggregated opinion on given target."""

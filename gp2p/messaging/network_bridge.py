@@ -22,19 +22,17 @@ class NetworkBridge:
     """
     version = 1
 
-    def __init__(self, queue: Queue, handler: MessageHandler):
+    def __init__(self, queue: Queue):
         self._queue = queue
-        self._handler = handler
 
-    def listen(self):
+    def listen(self, handler: MessageHandler):
         """Starts messages processing, this method is not blocking."""
-        callback = self._handler.on_message
 
         def message_received(message: str):
             # TODO: error handling
             parsed = json.loads(message)
             network_message = from_dict(data_class=NetworkMessage, data=parsed)
-            callback(network_message)
+            handler.on_message(network_message)
 
         self._queue.listen(message_received)
 
@@ -76,7 +74,7 @@ class NetworkBridge:
 
     def send_recommendation_response(self, request_id: str,
                                      recipient: PeerId,
-                                     peer: PeerId,
+                                     subject: PeerId,
                                      recommendation: Recommendation):
         """Responds to given request_id to recipient with recommendation on target."""
         envelope = NetworkMessage(
@@ -85,7 +83,7 @@ class NetworkBridge:
             data={
                 'request_id': request_id,
                 'recipient_id': recipient,
-                'payload': {'peer': peer, 'recommendation': recommendation}
+                'payload': {'subject': subject, 'recommendation': recommendation}
             }
         )
         self.__send(envelope)
