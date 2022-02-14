@@ -36,26 +36,22 @@ class TrustProtocol:
             service_history=[],
             recommendation_history=[]
         )
-
-        # let's check the organisations
-        for organisation in self.__configuration.trusted_organisations:
-            if organisation.identifier not in trust.organisations:
-                continue
-
+        # add values that are inherited from the organisation
+        peers_orgs = [org for org in self.__configuration.trusted_organisations if org.identifier in peer.organisations]
+        if peers_orgs:
+            trust.initial_reputation_provided_by_count = len(peers_orgs)
+            # select organisation that has the highest trust
+            leading_organisation = max(peers_orgs, key=lambda org: org.trust)
             # TODO check which believes / trust metrics can we set as well
-            trust.reputation = max(trust.reputation, organisation.trust)
+            trust.reputation = max(trust.reputation, leading_organisation.trust)
             trust.recommendation_trust = trust.reputation
             # if we need to enforce that the peer has the same trust during the runtime,
             # we need to set service trust as well
-            # TODO: what if the node is in more organisations AND one of them has enforce enabled?
-            if organisation.enforce_trust:
+            if leading_organisation.enforce_trust:
                 trust.service_trust = trust.reputation
                 # and we will be satisfied with all interactions equally
                 trust.integrity_belief = 1
                 trust.competence_belief = 1
-
-            # because this is essentially recommendation from the organisation
-            trust.initial_reputation_provided_by_count += 1
 
         if trust.reputation == 0 and get_recommendations:
             self.__recommendation_protocol.get_recommendation_for(trust.info)
