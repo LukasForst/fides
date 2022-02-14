@@ -7,13 +7,14 @@ from gp2p.persistance.trust import TrustDatabase
 from gp2p.protocols.alert_protocol import AlertProtocol
 from gp2p.protocols.peer_list_updated_protocol import PeerListUpdateProtocol
 from gp2p.protocols.recommendation_protocol import RecommendationProtocol
+from gp2p.protocols.trust_protocol import TrustProtocol
 
 
 def initiate():
     trust_db = TrustDatabase()
     ti_db = ThreatIntelligenceDatabase()
 
-    config = TrustModelConfiguration(1, 1, 1)
+    config = TrustModelConfiguration(1, 1, 1, [])
     trust_db.store_model_configuration(config)
 
     queue = Queue()
@@ -21,8 +22,8 @@ def initiate():
     bridge = NetworkBridge(queue)
 
     recommendations = RecommendationProtocol(trust_db, bridge)
-    # TODO:
-    peer_list = PeerListUpdateProtocol(trust_db, bridge)
+    trust = TrustProtocol(trust_db, config, recommendations)
+    peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
     alert = AlertProtocol(trust_db, bridge)
     # TODO: now connect alert to the queue receiving data from blocking module
     message_handler = MessageHandler(

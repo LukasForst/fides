@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from gp2p.evaluation.recommendation.process import process_new_recommendations
 from gp2p.messaging.model import PeerRecommendationResponse
@@ -16,13 +16,15 @@ class RecommendationProtocol:
         self.__trust_db = trust_db
         self.__bridge = bridge
 
-    def get_recommendation_for(self, peer: PeerInfo):
+    def get_recommendation_for(self, peer: PeerInfo, recipients: Optional[List[PeerId]] = None):
         """Dispatches recommendation request from the network."""
         # TODO: implement peers selection according to the SORT protocol
         # TODO: involve peer reliability and trust
         # for now we just ask all of the connected peers for opinion
-        connected_peers = [p.id for p in self.__trust_db.get_connected_peers()]
-        self.__bridge.send_recommendation_request(recipients=connected_peers, peer=peer.id)
+        recipients = recipients \
+            if recipients is not None \
+            else [p.id for p in self.__trust_db.get_connected_peers()]
+        self.__bridge.send_recommendation_request(recipients=recipients, peer=peer.id)
 
     def handle_recommendation_request(self, request_id: str, sender: PeerInfo, subject: PeerId):
         """Handle request for recommendation on given subject."""
@@ -37,7 +39,6 @@ class RecommendationProtocol:
                 initial_reputation_provided_by_count=trust.initial_reputation_provided_by_count
             )
         else:
-            # TODO: check if we want to send empty or not send it at all
             recommendation = Recommendation(
                 competence_belief=0,
                 integrity_belief=0,
@@ -51,6 +52,7 @@ class RecommendationProtocol:
         """Handles response from peers with recommendations. Updates all necessary values in db."""
         if len(responses) == 0:
             return
+        # TODO: [+] handle cases with multiple subjects
         assert all(responses[0].subject == r.subject for r in responses), \
             "Responses are not for the same subject!"
 
