@@ -42,3 +42,9 @@ class TrustModelConfiguration:
 
     trusted_organisations: List[TrustedOrganisation]
     """List of preconfigured organisations."""
+
+    alert_trust_from_unknown: float
+    """How much should we trust to an alert that was sent by peer we don't know anything about.
+    
+    0 <= alert_trust_from_unknown <= 1
+    """

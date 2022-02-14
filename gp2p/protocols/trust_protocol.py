@@ -15,7 +15,7 @@ class TrustProtocol:
         self.__configuration = configuration
         self.__recommendation_protocol = recommendation_protocol
 
-    def determine_initial_trust(self, peer: PeerInfo, get_recommendations: bool = False) -> PeerTrustData:
+    def determine_and_store_initial_trust(self, peer: PeerInfo, get_recommendations: bool = False) -> PeerTrustData:
         """Determines initial trust and stores that value in database.
 
         Returns trust data before the recommendation protocol is executed.
@@ -47,6 +47,7 @@ class TrustProtocol:
             trust.recommendation_trust = trust.reputation
             # if we need to enforce that the peer has the same trust during the runtime,
             # we need to set service trust as well
+            # TODO: what if the node is in more organisations AND one of them has enforce enabled?
             if organisation.enforce_trust:
                 trust.service_trust = trust.reputation
                 # and we will be satisfied with all interactions equally

@@ -60,11 +60,11 @@ class RecommendationProtocol:
         subject = self.__trust_db.get_peer_trust_data(responses[0].subject)
 
         recommendations = {r.sender.id: r.recommendation for r in responses}
-        peers = self.__trust_db.get_peers_trust_data(list(recommendations.keys()))
-        trust_matrix = {p.peer_id: p for p in peers}
+        trust_matrix = self.__trust_db.get_peers_trust_data(list(recommendations.keys()))
 
         # check that the data are consistent
-        assert len(trust_matrix) == len(responses) == len(recommendations)
+        assert len(trust_matrix) == len(responses) == len(recommendations), \
+            f'Data are not consistent: TM: {len(trust_matrix)}, RES: {len(responses)}, REC: {len(recommendations)}!'
 
         # update all recommendations
         updated_matrix = process_new_recommendations(

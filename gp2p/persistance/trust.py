@@ -39,9 +39,9 @@ class TrustDatabase:
         """Returns trust data for given peer ID, if no data are found, returns None."""
         raise NotImplemented()
 
-    def get_peers_trust_data(self, peer_ids: List[PeerId]) -> List[PeerTrustData]:
+    def get_peers_trust_data(self, peer_ids: List[PeerId]) -> TrustMatrix:
         """Return trust data for each peer from peer_ids."""
-        return [self.get_peer_trust_data(peer_id) for peer_id in peer_ids]
+        return {peer_id: self.get_peer_trust_data(peer_id) for peer_id in peer_ids}
 
     def cache_network_opinion(self, target: Target, intelligence: ThreatIntelligence):
         """Caches aggregated opinion on given target."""

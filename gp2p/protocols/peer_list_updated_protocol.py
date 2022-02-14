@@ -21,7 +21,7 @@ class PeerListUpdateProtocol:
         self.__recommendation_protocol = recommendation_protocol
         self.__trust_protocol = trust_protocol
 
-    def peer_list_updated(self, peers: List[PeerInfo]):
+    def handle_peer_list_updated(self, peers: List[PeerInfo]):
         """Processes updated peer list."""
         # first store them in the database
         self.__trust_db.store_connected_peers_list(peers)
@@ -30,11 +30,11 @@ class PeerListUpdateProtocol:
         # if we don't have data for all peers that means that there are some new peers
         # we need to establish initial trust for them
         if len(trust_data) != len(peers):
-            known_peers = {p.peer_id for p in trust_data}
+            known_peers = trust_data.keys()
             for peer in [p for p in peers if p.id not in known_peers]:
                 # this stores trust in database as well, do not get recommendations because at this point
                 # we don't have correct peer list in database
-                self.__trust_protocol.determine_initial_trust(peer, get_recommendations=False)
+                self.__trust_protocol.determine_and_store_initial_trust(peer, get_recommendations=False)
                 # TODO: add logic when to get recommendations
                 # get recommendations for this peer
                 self.__recommendation_protocol.get_recommendation_for(peer, list(known_peers))
@@ -42,7 +42,7 @@ class PeerListUpdateProtocol:
             # now when all trust data are in database, let's re-fetch it
             trust_data = self.__trust_db.get_peers_trust_data([p.id for p in peers])
         # dispatch reply
-        reliability = {p.peer_id: p.service_trust for p in trust_data}
+        reliability = {peer_id: trust_data.service_trust for peer_id, trust_data in trust_data.items()}
         self.__bridge.send_peers_reliability(reliability)
         # now set update peer list in database
         self.__trust_db.store_connected_peers_list(peers)
