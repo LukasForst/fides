@@ -27,7 +27,7 @@ def initiate():
     def network_opinion_callback(target: Target, ti: ThreatIntelligence):
         print(f'Target: {target}, Score: {ti.score}, Confidence: {ti.confidence}')
 
-    recommendations = RecommendationProtocol(trust_db, bridge)
+    recommendations = RecommendationProtocol(config, trust_db, bridge)
     trust = TrustProtocol(trust_db, config, recommendations)
     peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
     intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, network_opinion_callback)
