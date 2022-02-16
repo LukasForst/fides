@@ -56,7 +56,7 @@ def process_new_recommendations(
     # we also set service_trust if it is not set, because for the first interaction it is equal to reputation
     updated_subject_trust = dataclasses \
         .replace(subject,
-                 service_trust=subject.service_trust if subject.service_trust else reputation,
+                 service_trust=max(subject.service_trust, reputation),
                  reputation=reputation,
                  recommendation_trust=reputation,
                  initial_reputation_provided_by_count=len(recommendations)
