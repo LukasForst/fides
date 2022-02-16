@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from gp2p.messaging.model import PeerInfo
 from gp2p.model.aliases import PeerId, Target
@@ -35,11 +35,11 @@ class TrustDatabase:
         for peer in trust_matrix.values():
             self.store_peer_trust_data(peer)
 
-    def get_peer_trust_data(self, peer_id: PeerId) -> Optional[PeerTrustData]:
+    def get_peer_trust_data(self, peer: Union[PeerId, PeerInfo]) -> Optional[PeerTrustData]:
         """Returns trust data for given peer ID, if no data are found, returns None."""
         raise NotImplemented()
 
-    def get_peers_trust_data(self, peer_ids: List[PeerId]) -> TrustMatrix:
+    def get_peers_trust_data(self, peer_ids: List[Union[PeerId, PeerInfo]]) -> TrustMatrix:
         """Return trust data for each peer from peer_ids."""
         return {peer_id: self.get_peer_trust_data(peer_id) for peer_id in peer_ids}
 

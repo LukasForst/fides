@@ -51,13 +51,16 @@ def process_new_recommendations(
 
     # r_ij
     reputation = own_experience + reputation_experience
-    # now update final trust for the subject with reputation
+    # now update final trust for the subject with new reputation
     # we also trust the subject same with service as well as with recommendations
-    updated_subject_trust = dataclasses.replace(subject,
-                                                reputation=reputation,
-                                                recommendation_trust=reputation,
-                                                initial_reputation_provided_by_count=len(recommendations)
-                                                )
+    # we also set service_trust if it is not set, because for the first interaction it is equal to reputation
+    updated_subject_trust = dataclasses \
+        .replace(subject,
+                 service_trust=subject.service_trust if subject.service_trust else reputation,
+                 reputation=reputation,
+                 recommendation_trust=reputation,
+                 initial_reputation_provided_by_count=len(recommendations)
+                 )
     peers_updated_matrix = {updated_subject_trust.peer_id: updated_subject_trust}
 
     # now we need to reflect performed reputation query and update how much we trust other peers

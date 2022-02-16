@@ -1,18 +1,22 @@
 from typing import List, Optional
 
 from gp2p.evaluation.recommendation.process import process_new_recommendations
+from gp2p.evaluation.service.interaction import Satisfaction, Weight
 from gp2p.messaging.model import PeerRecommendationResponse
 from gp2p.messaging.network_bridge import NetworkBridge
 from gp2p.model.aliases import PeerId
 from gp2p.model.peer import PeerInfo
 from gp2p.model.recommendation import Recommendation
+from gp2p.model.trust_model_configuration import TrustModelConfiguration
 from gp2p.persistance.trust import TrustDatabase
+from gp2p.protocols.protocol import Protocol
 
 
-class RecommendationProtocol:
+class RecommendationProtocol(Protocol):
     """Protocol that is responsible for getting and updating recommendation data."""
 
-    def __init__(self, trust_db: TrustDatabase, bridge: NetworkBridge):
+    def __init__(self, configuration: TrustModelConfiguration, trust_db: TrustDatabase, bridge: NetworkBridge):
+        super().__init__(configuration, trust_db, bridge)
         self.__trust_db = trust_db
         self.__bridge = bridge
 
@@ -28,6 +32,7 @@ class RecommendationProtocol:
 
     def handle_recommendation_request(self, request_id: str, sender: PeerInfo, subject: PeerId):
         """Handle request for recommendation on given subject."""
+        sender_trust = self.__trust_db.get_peer_trust_data(sender)
         # TODO: implement data filtering based on the sender
         trust = self.__trust_db.get_peer_trust_data(subject)
         if trust is not None:
@@ -47,6 +52,8 @@ class RecommendationProtocol:
                 initial_reputation_provided_by_count=0
             )
         self.__bridge.send_recommendation_response(request_id, sender.id, subject, recommendation)
+
+        self.__evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
 
     def handle_recommendation_response(self, responses: List[PeerRecommendationResponse]):
         """Handles response from peers with recommendations. Updates all necessary values in db."""
@@ -75,3 +82,9 @@ class RecommendationProtocol:
         )
         # now store updated matrix
         self.__trust_db.store_peer_trust_matrix(updated_matrix)
+        # and dispatch event
+        self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in updated_matrix.values()})
+
+        # TODO: correct evaluation of the sent data
+        interaction_matrix = {p: (Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE) for p in trust_matrix.values()}
+        self.__evaluate_interactions(interaction_matrix)
