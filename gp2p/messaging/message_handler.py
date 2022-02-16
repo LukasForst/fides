@@ -8,6 +8,9 @@ from gp2p.model.alert import Alert
 from gp2p.model.aliases import PeerId, Target
 from gp2p.model.recommendation import Recommendation
 from gp2p.model.threat_intelligence import ThreatIntelligence
+from gp2p.utils.logger import Logger
+
+logger = Logger(__name__)
 
 
 class MessageHandler:
@@ -44,6 +47,7 @@ class MessageHandler:
         :return: value from the underlining function from the constructor
         """
         if message.version != self.version:
+            logger.warn(f'Unknown message version! This handler supports {self.version}.', message)
             return self.__on_unknown_message(message)
 
         execution_map = {
@@ -58,11 +62,24 @@ class MessageHandler:
         # noinspection PyArgumentList
         return execution_map.get(message.type, lambda data: self.__on_unknown_message(message))(message.data)
 
+    def on_error(self, original_data: str):
+        """
+        Should be executed when it was not possible to parse the message.
+        :param original_data: string received from the queue
+        :return:
+        """
+        logger.error(f'Unknown data received: {original_data}.')
+
     def __on_unknown_message(self, message: NetworkMessage):
+        logger.warn(f'Unknown message handler executed!')
+        logger.debug(f'Message:', message)
+
         if self.__on_unknown_callback is not None:
             self.__on_unknown_callback(message)
 
     def __on_nl2tl_peer_list(self, data: Dict):
+        logger.debug('nl2tl_peer_list message')
+
         peers = [from_dict(data_class=PeerInfo, data=peer) for peer in data['peers']]
         return self.__on_peer_list_update(peers)
 
@@ -70,6 +87,8 @@ class MessageHandler:
         return self.__on_peer_list_update_callback(peers)
 
     def __on_nl2tl_recommendation_request(self, data: Dict):
+        logger.debug('nl2tl_recommendation_request message')
+
         request_id = data['request_id']
         sender = from_dict(data_class=PeerInfo, data=data['sender'])
         subject = data['payload']
@@ -79,6 +98,8 @@ class MessageHandler:
         return self.__on_recommendation_request_callback(request_id, sender, subject)
 
     def __on_nl2tl_recommendation_response(self, data: List[Dict]):
+        logger.debug('nl2tl_recommendation_response message')
+
         responses = [PeerRecommendationResponse(
             sender=from_dict(data_class=PeerInfo, data=single['sender']),
             subject=single['payload']['subject'],
@@ -90,6 +111,8 @@ class MessageHandler:
         return self.__on_recommendation_response_callback(recommendations)
 
     def __on_nl2tl_alert(self, data: Dict):
+        logger.debug('nl2tl_alert message')
+
         sender = from_dict(data_class=PeerInfo, data=data['sender'])
         alert = from_dict(data_class=Alert, data=data['payload'])
         return self.__on_alert(sender, alert)
@@ -98,6 +121,8 @@ class MessageHandler:
         return self.__on_alert_callback(sender, alert)
 
     def __on_nl2tl_intelligence_request(self, data: Dict):
+        logger.debug('nl2tl_intelligence_request message')
+
         request_id = data['request_id']
         sender = from_dict(data_class=PeerInfo, data=data['sender'])
         target = data['payload']
@@ -107,6 +132,8 @@ class MessageHandler:
         return self.__on_intelligence_request_callback(request_id, sender, target)
 
     def __on_nl2tl_intelligence_response(self, data: Dict):
+        logger.debug('nl2tl_intelligence_response message')
+
         responses = [PeerIntelligenceResponse(
             sender=from_dict(data_class=PeerInfo, data=single['sender']),
             intelligence=from_dict(data_class=ThreatIntelligence, data=single['payload']['intelligence']),

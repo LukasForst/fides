@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from gp2p.model.aliases import Target
+
 
 @dataclass
 class ThreatIntelligence:
@@ -16,3 +18,9 @@ class ThreatIntelligence:
     
     0 <= confidence <= 1
     """
+
+
+@dataclass
+class SlipsThreatIntelligence(ThreatIntelligence):
+    target: Target
+    """Target of the intelligence."""

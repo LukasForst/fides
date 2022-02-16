@@ -4,6 +4,8 @@ from typing import Callable
 class Queue:
     """
     Wrapper around actual implementation of queue.
+
+    Central point used for communication with the network layer and another peers.
     """
 
     def send(self, serialized_data: str):

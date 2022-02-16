@@ -3,7 +3,7 @@ from typing import List
 from gp2p.messaging.network_bridge import NetworkBridge
 from gp2p.model.peer import PeerInfo
 from gp2p.persistance.trust import TrustDatabase
-from gp2p.protocols.recommendation_protocol import RecommendationProtocol
+from gp2p.protocols.recommendation import RecommendationProtocol
 from gp2p.protocols.trust_protocol import TrustProtocol
 
 

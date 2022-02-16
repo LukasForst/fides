@@ -14,6 +14,9 @@ class PeerTrustData:
     info: PeerInfo
     """Information about the peer."""
 
+    has_fixed_trust: bool
+    """Determines if the trust is dynamic or fixed."""
+
     service_trust: float
     """Service Trust Metric.
     
@@ -96,10 +99,11 @@ TrustMatrix = Dict[PeerId, PeerTrustData]
 """Matrix that have PeerId as a key and then value is data about trust we have."""
 
 
-def trust_data_prototype(peer: PeerInfo) -> PeerTrustData:
+def trust_data_prototype(peer: PeerInfo, has_fixed_trust: bool = False) -> PeerTrustData:
     """Creates clear trust object with 0 values and given peer info."""
     return PeerTrustData(
         info=peer,
+        has_fixed_trust=has_fixed_trust,
         service_trust=0,
         reputation=0,
         recommendation_trust=0,

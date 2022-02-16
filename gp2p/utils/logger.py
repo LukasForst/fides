@@ -1,0 +1,62 @@
+import json
+import threading
+from dataclasses import is_dataclass, asdict
+from typing import Optional, List, Callable
+
+LoggerPrintCallbacks: List[Callable[[str], None]] = [print]
+"""Set this to custom callback that should be executed when there's new log message."""
+
+
+class Logger:
+    """Logger class used for logging.
+
+    When the application runs as a Slips module, it uses native Slips logging,
+    otherwise it uses basic println.
+    """
+
+    def __init__(self, name: Optional[str] = None):
+        # try to guess the name if it is not set explicitly
+        if name is None:
+            name = self.__try_to_guess_name()
+        self.__name = name
+
+    @staticmethod
+    def __try_to_guess_name() -> str:
+        try:
+            import sys
+            # noinspection PyUnresolvedReferences
+            name = sys._getframe().f_back.f_code.co_name
+            if name is None:
+                import inspect
+                inspect.currentframe()
+                curframe = inspect.currentframe()
+                calframe = inspect.getouterframes(curframe, 2)
+                name = calframe[1][3]
+        except:
+            name = "logger"
+        return name
+
+    def debug(self, message: str, params=None):
+        return self.__print('DEBUG', message, params)
+
+    def info(self, message: str, params=None):
+        return self.__print('INFO', message, params)
+
+    def warn(self, message: str, params=None):
+        return self.__print('WARN', message, params)
+
+    def error(self, message: str, params=None):
+        return self.__print('ERROR', message, params)
+
+    def __format(self, level: str, message: str, params=None):
+        threat = threading.get_ident()
+        formatted_message = f"T{threat}: {level} - {self.__name} -  {message}"
+        if params:
+            params = asdict(params) if is_dataclass(params) else params
+            formatted_message = f"{formatted_message} {json.dumps(params)}"
+        return formatted_message
+
+    def __print(self, level: str, message: str, params=None):
+        formatted_message = self.__format(level, message, params)
+        for print_callback in LoggerPrintCallbacks:
+            print_callback(formatted_message)

@@ -11,6 +11,9 @@ from gp2p.model.alert import Alert
 from gp2p.model.aliases import PeerId, Target
 from gp2p.model.recommendation import Recommendation
 from gp2p.model.threat_intelligence import ThreatIntelligence
+from gp2p.utils.logger import Logger
+
+logger = Logger(__name__)
 
 
 class NetworkBridge:
@@ -23,18 +26,24 @@ class NetworkBridge:
     version = 1
 
     def __init__(self, queue: Queue):
-        self._queue = queue
+        self.__queue = queue
 
     def listen(self, handler: MessageHandler):
         """Starts messages processing, this method is not blocking."""
+        logger.info(f'Starts listening...')
 
         def message_received(message: str):
-            # TODO: error handling
-            parsed = json.loads(message)
-            network_message = from_dict(data_class=NetworkMessage, data=parsed)
-            handler.on_message(network_message)
+            logger.debug(f'New message received! Trying to parse..')
+            try:
+                parsed = json.loads(message)
+                network_message = from_dict(data_class=NetworkMessage, data=parsed)
+                logger.debug('Message parsed. Executing handler.')
+                handler.on_message(network_message)
+            except Exception as e:
+                logger.error(f'There was an error processing message, Exception: {e}.')
+                handler.on_error(message)
 
-        self._queue.listen(message_received)
+        self.__queue.listen(message_received)
 
     def send_intelligence_response(self, request_id: str, target: Target, intelligence: ThreatIntelligence):
         """Shares Intelligence with peer that requested it. request_id comes from the first request."""
@@ -111,6 +120,9 @@ class NetworkBridge:
         self.__send(envelope)
 
     def __send(self, envelope: NetworkMessage):
-        # TODO: error handling
-        j = json.dumps(asdict(envelope))
-        self._queue.send(j)
+        logger.debug('Sending', envelope)
+        try:
+            j = json.dumps(asdict(envelope))
+            self.__queue.send(j)
+        except Exception as ex:
+            logger.error(f'Exception during sending an envelope: {ex}.', envelope)

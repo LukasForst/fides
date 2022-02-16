@@ -1,9 +1,0 @@
-name: base
-channels:
-  - conda-forge
-dependencies:
-  - python=3.9
-  - conda==4.11.0
-  - pip
-  - dacite
-prefix: /opt/homebrew/Caskroom/miniforge/base

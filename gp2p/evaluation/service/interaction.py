@@ -18,8 +18,9 @@ class Weight(Enum):
     0 <= weight <= 1
     where 0 is unimportant and 1 is important
     """
-    PING = 0.1
-    INTELLIGENCE_NO_DATA_REPORT = 0.2
+    FIRST_ENCOUNTER = 0.1
+    PING = 0.2
+    INTELLIGENCE_NO_DATA_REPORT = 0.3
     INTELLIGENCE_REQUEST = 0.5
     ALERT = 0.7
     RECOMMENDATION_REQUEST = 0.7

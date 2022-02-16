@@ -5,10 +5,11 @@ from gp2p.messaging.model import PeerIntelligenceResponse
 from gp2p.messaging.network_bridge import NetworkBridge
 from gp2p.model.aliases import Target
 from gp2p.model.peer import PeerInfo
-from gp2p.model.threat_intelligence import ThreatIntelligence
+from gp2p.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
 from gp2p.model.trust_model_configuration import TrustModelConfiguration
 from gp2p.persistance.slips import ThreatIntelligenceDatabase
 from gp2p.persistance.trust import TrustDatabase
+from gp2p.protocols.opinion import OpinionAggregator
 from gp2p.protocols.protocol import Protocol
 
 
@@ -20,10 +21,12 @@ class ThreatIntelligenceProtocol(Protocol):
                  ti_db: ThreatIntelligenceDatabase,
                  bridge: NetworkBridge,
                  configuration: TrustModelConfiguration,
-                 network_opinion_callback: Callable[[Target, ThreatIntelligence], None]
+                 aggregator: OpinionAggregator,
+                 network_opinion_callback: Callable[[SlipsThreatIntelligence], None]
                  ):
         super().__init__(configuration, trust_db, bridge)
         self.__ti_db = ti_db
+        self.__aggregator = aggregator
         self.__network_opinion_callback = network_opinion_callback
 
     def request_data(self, target: Target):
@@ -53,9 +56,11 @@ class ThreatIntelligenceProtocol(Protocol):
         assert len(target) == 1, 'Responses should be for a single target.'
         target = target.pop()
 
-        # TODO: how do we assemble network opinion on that
-        score, confidence = 0, 0
-        self.__network_opinion_callback(target, ThreatIntelligence(score=score, confidence=confidence))
+        # now everything is checked, so we aggregate it and get the threat intelligence
+        r = {r.sender.id: r for r in responses}
+        ti = self.__aggregator.evaluate_intelligence_response(target, r, trust_matrix)
+
+        self.__network_opinion_callback(ti)
 
         # TODO: correct evaluation of the sent data
         interaction_matrix = {p: (Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in trust_matrix.values()}
