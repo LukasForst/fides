@@ -4,7 +4,7 @@ Global Trust Model for P2P Intrusion Prevention System (IDS/IPS).
 
 ## How to
 
-Project needs to use same python as Slips does, thus we use Python 3.7.
+Project needs to use same python as Slips does, thus we use Python 3.8.
 
 ## Related work
 
