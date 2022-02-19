@@ -29,8 +29,6 @@ confidentiality:
       value: 0.5
     - name: RED
       value: 0.7
-    - name: BLACK
-      value: 1
     # do not share anything ever
     - name: PRIVATE
       value: 1.1 # never meets condition peer.privacyLevel >= data.leve as peer.privacyLevel <0, 1>
