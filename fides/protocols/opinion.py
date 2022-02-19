@@ -20,8 +20,7 @@ class OpinionAggregator:
         """Evaluates given data about alert and produces aggregated intelligence for Slips."""
         # TODO: implement correct aggregation
 
-        alert_trust = self.__configuration.alert_trust_from_unknown
-        alert_trust = max(alert_trust, peer_trust.service_trust)
+        alert_trust = max(self.__configuration.alert_trust_from_unknown, peer_trust.service_trust)
 
         score = alert.score
         confidence = alert.confidence * alert_trust

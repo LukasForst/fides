@@ -1,4 +1,4 @@
-from typing import List, Callable
+from typing import List, Callable, Optional
 
 from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.messaging.model import PeerIntelligenceResponse
@@ -6,11 +6,16 @@ from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import Target
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
+from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
 from fides.persistance.slips import ThreatIntelligenceDatabase
 from fides.persistance.trust import TrustDatabase
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.protocol import Protocol
+from fides.protocols.trust_protocol import TrustProtocol
+from fides.utils.logger import Logger
+
+logger = Logger(__name__)
 
 
 class ThreatIntelligenceProtocol(Protocol):
@@ -22,11 +27,13 @@ class ThreatIntelligenceProtocol(Protocol):
                  bridge: NetworkBridge,
                  configuration: TrustModelConfiguration,
                  aggregator: OpinionAggregator,
+                 trust_protocol: TrustProtocol,
                  network_opinion_callback: Callable[[SlipsThreatIntelligence], None]
                  ):
         super().__init__(configuration, trust_db, bridge)
         self.__ti_db = ti_db
         self.__aggregator = aggregator
+        self.__trust_protocol = trust_protocol
         self.__network_opinion_callback = network_opinion_callback
 
     def request_data(self, target: Target):
@@ -36,10 +43,13 @@ class ThreatIntelligenceProtocol(Protocol):
     def handle_intelligence_request(self, request_id: str, sender: PeerInfo, target: Target):
         """Handles intelligence request."""
         peer_trust = self.__trust_db.get_peer_trust_data(sender.id)
-        # TODO: implement privacy filter - what we can send and what needs to be filtered
-        ti = self.__ti_db.get_for(target)
-        # TODO: how to properly handle that? we need to send something
+        if not peer_trust:
+            logger.debug(f'We don\'t have any trust data for peer {sender.id}!')
+            peer_trust = self.__trust_protocol.determine_and_store_initial_trust(sender)
+
+        ti = self.__filter_ti(self.__ti_db.get_for(target), peer_trust)
         if ti is None:
+            # we send just zeros if we don't have any data about the target
             ti = ThreatIntelligence(score=0, confidence=0)
 
         # and respond with data we have
@@ -65,3 +75,22 @@ class ThreatIntelligenceProtocol(Protocol):
         # TODO: correct evaluation of the sent data
         interaction_matrix = {p: (Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in trust_matrix.values()}
         self.__evaluate_interactions(interaction_matrix)
+
+    def __filter_ti(self,
+                    ti: Optional[SlipsThreatIntelligence],
+                    peer_trust: PeerTrustData) -> Optional[SlipsThreatIntelligence]:
+        if ti is None:
+            return None
+
+        peers_allowed_levels = [p.confidentiality_level
+                                for p in self.__configuration.trusted_organisations if
+                                p.id in peer_trust.organisations]
+        # TODO: check if we want to use service_trust for this filtering or some other metric
+        peers_allowed_levels.append(peer_trust.service_trust)
+        # select maximum allowed level
+        allowed_level = max(peers_allowed_levels)
+
+        # set correct confidentiality
+        ti.confidentiality = ti.confidentiality if ti.confidentiality else self.__configuration.data_default_level
+        # check if data confidentiality is lower than allowed level for the peer
+        return ti if ti.confidentiality <= allowed_level else None

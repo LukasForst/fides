@@ -1,6 +1,7 @@
 from dataclasses import dataclass
+from typing import Optional
 
-from fides.model.aliases import Target
+from fides.model.aliases import Target, ConfidentialityLevel
 
 
 @dataclass
@@ -24,3 +25,6 @@ class ThreatIntelligence:
 class SlipsThreatIntelligence(ThreatIntelligence):
     target: Target
     """Target of the intelligence."""
+
+    confidentiality: Optional[ConfidentialityLevel] = None
+    """Confidentiality level if known."""

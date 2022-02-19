@@ -43,7 +43,7 @@ class NetworkBridge:
                 logger.error(f'There was an error processing message, Exception: {e}.')
                 handler.on_error(message)
 
-        self.__queue.listen(message_received)
+        return self.__queue.listen(message_received)
 
     def send_intelligence_response(self, request_id: str, target: Target, intelligence: ThreatIntelligence):
         """Shares Intelligence with peer that requested it. request_id comes from the first request."""
@@ -55,7 +55,7 @@ class NetworkBridge:
                 'payload': {'target': target, 'intelligence': intelligence}
             }
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def send_intelligence_request(self, target: Target):
         """Requests network intelligence from the network regarding this target."""
@@ -64,7 +64,7 @@ class NetworkBridge:
             version=self.version,
             data={'payload': target}
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def send_alert(self, target: Target, intelligence: ThreatIntelligence):
         """Broadcasts alert through the network about the target."""
@@ -79,7 +79,7 @@ class NetworkBridge:
                 )
             }
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def send_recommendation_response(self, request_id: str,
                                      recipient: PeerId,
@@ -95,7 +95,7 @@ class NetworkBridge:
                 'payload': {'subject': subject, 'recommendation': recommendation}
             }
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def send_recommendation_request(self, recipients: List[PeerId], peer: PeerId):
         """Request recommendation from recipients on given peer."""
@@ -107,7 +107,7 @@ class NetworkBridge:
                 'payload': peer
             }
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def send_peers_reliability(self, reliability: Dict[PeerId, float]):
         """Sends peer reliability, this message is only for network layer and is not dispatched to the network."""
@@ -117,12 +117,12 @@ class NetworkBridge:
             version=self.version,
             data=data
         )
-        self.__send(envelope)
+        return self.__send(envelope)
 
     def __send(self, envelope: NetworkMessage):
         logger.debug('Sending', envelope)
         try:
             j = json.dumps(asdict(envelope))
-            self.__queue.send(j)
+            return self.__queue.send(j)
         except Exception as ex:
             logger.error(f'Exception during sending an envelope: {ex}.', envelope)

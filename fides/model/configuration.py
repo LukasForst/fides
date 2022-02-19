@@ -24,7 +24,7 @@ class PrivacyLevel:
 
 
 @dataclass(frozen=True)
-class PrivacyThreshold:
+class ConfidentialityThreshold:
     level: float
     """For this level (and all levels > this) require peer to have at least this trust."""
     required_trust: float
@@ -50,7 +50,7 @@ class TrustedEntity:
     enforce_trust: bool
     """If true, entity nodes will have always initial trust."""
 
-    privacy_level: float
+    confidentiality_level: float
     """What level of data should be shared with this entity."""
 
 
@@ -89,7 +89,7 @@ class TrustModelConfiguration:
     privacy_levels: List[PrivacyLevel]
     """Privacy levels settings."""
 
-    privacy_thresholds: List[PrivacyThreshold]
+    confidentiality_thresholds: List[ConfidentialityThreshold]
     """Thresholds for data filtering."""
 
     data_default_level: float
@@ -133,11 +133,11 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
     return TrustModelConfiguration(
         privacy_levels=[PrivacyLevel(name=level['name'],
                                      value=level['value'])
-                        for level in data['privacy']['levels']],
-        privacy_thresholds=[PrivacyThreshold(level=threshold['level'],
-                                             required_trust=threshold['requiredTrust'])
-                            for threshold in data['privacy']['thresholds']],
-        data_default_level=data['privacy']['defaultLevel'],
+                        for level in data['confidentiality']['levels']],
+        confidentiality_thresholds=[ConfidentialityThreshold(level=threshold['level'],
+                                                             required_trust=threshold['requiredTrust'])
+                                    for threshold in data['confidentiality']['thresholds']],
+        data_default_level=data['confidentiality']['defaultLevel'],
         initial_reputation=data['trust']['service']['initialReputation'],
         service_history_max_size=data['trust']['service']['historyMaxSize'],
         recommendations=RecommendationsConfiguration(
@@ -154,12 +154,12 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                      name=e['name'],
                                      trust=e['trust'],
                                      enforce_trust=e['enforceTrust'],
-                                     privacy_level=e['privacyLevel'])
-                       for e in data['privacy']['peers']],
+                                     confidentiality_level=e['confidentialityLevel'])
+                       for e in data['confidentiality']['peers']],
         trusted_organisations=[TrustedEntity(id=e['id'],
                                              name=e['name'],
                                              trust=e['trust'],
                                              enforce_trust=e['enforceTrust'],
-                                             privacy_level=e['privacyLevel'])
-                               for e in data['privacy']['organisations']],
+                                             confidentiality_level=e['confidentialityLevel'])
+                               for e in data['confidentiality']['organisations']],
     )

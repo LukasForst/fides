@@ -11,13 +11,13 @@ my:
   id: myId
   organisations: [ ]
 
-# Privacy related settings
-privacy:
-  # possible levels of data that are labeled by SLIPS
+# Confidentiality related settings
+confidentiality:
+  # possible levels of data that are labeled by Slips
   # the value defines how secret the data are where 0 (can be shared
   # with anybody) and 1 (can not be shared at all)
   #
-  # the checks are: if(peer.privacyLevel >= data.leve) allowData()
+  # the checks are: if(entity.confidentiality_level >= data.confidentiality_level) allowData()
   # see https://www.cisa.gov/tlp
   levels:
     # share all data
@@ -95,7 +95,7 @@ trust:
       name: Organisation \#2
       trust: 0.9
       enforceTrust: False
-      privacyLevel: 0.9
+      confidentialityLevel: 0.9
 
   # trust these peers with given trust by default
   # see doc for trust.organisations
@@ -110,4 +110,4 @@ trust:
       name: Peer \#2
       trust: 0.9
       enforceTrust: False
-      privacyLevel: 0.9
+      confidentialityLevel: 0.9
