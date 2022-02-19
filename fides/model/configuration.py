@@ -92,6 +92,9 @@ class TrustModelConfiguration:
     data_default_level: float
     """If some data are not labeled, what value should we use."""
 
+    initial_reputation: float
+    """Initial reputation that is assigned for every peer when there's new encounter."""
+
     service_history_max_size: int
     """Maximal size of Service History.
     
@@ -107,8 +110,11 @@ class TrustModelConfiguration:
     0 <= alert_trust_from_unknown <= 1
     """
 
-    trusted_entities: List[TrustedEntity]
-    """List of preconfigured peers and organisations."""
+    trusted_peers: List[TrustedEntity]
+    """List of preconfigured peers."""
+
+    trusted_organisations: List[TrustedEntity]
+    """List of preconfigured organisations."""
 
 
 def load_configuration(file_path: str) -> TrustModelConfiguration:
@@ -129,6 +135,7 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                              required_trust=threshold['requiredTrust'])
                             for threshold in data['privacy']['thresholds']],
         data_default_level=data['privacy']['defaultLevel'],
+        initial_reputation=data['trust']['service']['initialReputation'],
         service_history_max_size=data['trust']['service']['historyMaxSize'],
         recommendations=RecommendationsConfiguration(
             enabled=data['trust']['recommendations']['enabled'],
@@ -139,10 +146,16 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
             history_max_size=data['trust']['recommendations']['historyMaxSize']
         ),
         alert_trust_from_unknown=data['trust']['alert']['defaultTrust'],
-        trusted_entities=[TrustedEntity(id=e['id'],
-                                        name=e['name'],
-                                        trust=e['trust'],
-                                        enforce_trust=e['enforceTrust'],
-                                        privacy_level=e['privacyLevel'])
-                          for e in (data['privacy']['organisations'] + data['privacy']['peers'])],
+        trusted_peers=[TrustedEntity(id=e['id'],
+                                     name=e['name'],
+                                     trust=e['trust'],
+                                     enforce_trust=e['enforceTrust'],
+                                     privacy_level=e['privacyLevel'])
+                       for e in data['privacy']['peers']],
+        trusted_organisations=[TrustedEntity(id=e['id'],
+                                             name=e['name'],
+                                             trust=e['trust'],
+                                             enforce_trust=e['enforceTrust'],
+                                             privacy_level=e['privacyLevel'])
+                               for e in data['privacy']['organisations']],
     )

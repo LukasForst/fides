@@ -22,6 +22,7 @@ class RecommendationProtocol(Protocol):
 
     def get_recommendation_for(self, peer: PeerInfo, recipients: Optional[List[PeerId]] = None):
         """Dispatches recommendation request from the network."""
+        # TODO: check if we can perform recommendations
         # TODO: implement peers selection according to the SORT protocol
         # TODO: involve peer reliability and trust
         # for now we just ask all of the connected peers for opinion

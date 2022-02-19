@@ -53,6 +53,9 @@ privacy:
 trust:
   # service trust evaluation
   service:
+    # initial reputation that is assigned for every peer when there's new encounter
+    initialReputation: 0
+
     # maximal size of Service History, sh_max
     historyMaxSize: 10
 
