@@ -1,7 +1,7 @@
 # Fides
 
-Global Trust Model for P2P Intrusion Prevention System (IDS/IPS). Named after *Fides* - goddess of trust and good faith
-- [Wiki](https://en.wikipedia.org/wiki/Fides_(deity)).
+Global Trust Model for P2P Intrusion Prevention System (IDS/IPS). Named
+after [Fides](https://en.wikipedia.org/wiki/Fides_(deity)) - goddess of trust and good faith.
 
 ## How to
 
