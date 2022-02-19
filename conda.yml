@@ -4,3 +4,4 @@ channels:
 dependencies:
   - python=3.8
   - dacite=1.6.0
+  - pyyaml=6.0

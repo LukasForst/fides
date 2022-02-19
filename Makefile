@@ -1,2 +1,5 @@
 install:
-	conda env create -f conda.yml
+	conda env create --file conda.yml
+
+update:
+	conda env update --file conda.yml --prune

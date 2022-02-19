@@ -1,7 +1,7 @@
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.recommendation import Recommendation
 from fides.model.recommendation_history import RecommendationHistoryRecord, RecommendationHistory
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.utils.time import now
 
 
@@ -33,9 +33,9 @@ def create_recommendation_history_for_peer(
                                                                                  weight=rw_ik,
                                                                                  timestamp=now())]
     # fix history len if we reached max size
-    if len(updated_history) > configuration.recommendation_history_max_size:
+    if len(updated_history) > configuration.recommendations.history_max_size:
         last_idx = len(updated_history)
-        updated_history = updated_history[last_idx - configuration.recommendation_history_max_size: last_idx]
+        updated_history = updated_history[last_idx - configuration.recommendations.history_max_size: last_idx]
 
     return updated_history
 
@@ -74,5 +74,5 @@ def __compute_weight_of_recommendation(
     :return: recommendation weight rw^z_ik
     """
     service_history = recommendation.service_history_size / configuration.service_history_max_size
-    used_peers = recommendation.initial_reputation_provided_by_count / configuration.recommending_peers_max_count
+    used_peers = recommendation.initial_reputation_provided_by_count / configuration.recommendations.peers_max_count
     return history_factor * service_history + (1 - history_factor) * used_peers

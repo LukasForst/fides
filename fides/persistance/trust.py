@@ -2,9 +2,9 @@ from typing import List, Optional, Union
 
 from fides.messaging.model import PeerInfo
 from fides.model.aliases import PeerId, Target
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import ThreatIntelligence
-from fides.model.trust_model_configuration import TrustModelConfiguration
 
 
 class TrustDatabase:

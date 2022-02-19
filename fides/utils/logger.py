@@ -20,18 +20,21 @@ class Logger:
             name = self.__try_to_guess_name()
         self.__name = name
 
+    # this whole method is a hack
+    # noinspection PyBroadException
     @staticmethod
     def __try_to_guess_name() -> str:
+        # noinspection PyPep8
         try:
             import sys
-            # noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences,PyProtectedMember
             name = sys._getframe().f_back.f_code.co_name
             if name is None:
                 import inspect
                 inspect.currentframe()
-                curframe = inspect.currentframe()
-                calframe = inspect.getouterframes(curframe, 2)
-                name = calframe[1][3]
+                frame = inspect.currentframe()
+                frame = inspect.getouterframes(frame, 2)
+                name = frame[1][3]
         except:
             name = "logger"
         return name

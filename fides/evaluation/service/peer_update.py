@@ -3,9 +3,9 @@ from math import sqrt
 from typing import List
 
 from fides.evaluation.discount_factor import compute_discount_factor
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.service_history import ServiceHistory
-from fides.model.trust_model_configuration import TrustModelConfiguration
 
 
 # noinspection DuplicatedCode
@@ -24,7 +24,8 @@ def update_service_data_for_peer(
     :param configuration: configuration of the current trust model
     :param peer: trust data for peer j with old history, to be updated
     :param new_history: history with updated records
-    :return: new peer trust data object with fresh service_trust, competence_belief, integrity_belief and service_history
+    :return: new peer trust data object with fresh service_trust, competence_belief, integrity_belief
+     and service_history
     """
 
     fading_factor = __compute_fading_factor(new_history)

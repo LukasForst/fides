@@ -5,9 +5,9 @@ from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.messaging.model import PeerRecommendationResponse
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import PeerId
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
 from fides.model.recommendation import Recommendation
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.persistance.trust import TrustDatabase
 from fides.protocols.protocol import Protocol
 

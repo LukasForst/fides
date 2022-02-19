@@ -3,9 +3,9 @@ from typing import Dict
 from fides.messaging.model import PeerIntelligenceResponse
 from fides.model.alert import Alert
 from fides.model.aliases import PeerId, Target
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.model.trust_model_configuration import TrustModelConfiguration
 
 
 class OpinionAggregator:
@@ -33,7 +33,7 @@ class OpinionAggregator:
                                        trust_matrix: TrustMatrix) -> SlipsThreatIntelligence:
         """Evaluates given threat intelligence report from the network."""
         for peer, response in data.items():
-            trust = trust_matrix[peer]
+            trust = trust_matrix[peer].service_trust * self.__configuration.alert_trust_from_unknown
             pass
 
         # TODO: implement correct aggregation

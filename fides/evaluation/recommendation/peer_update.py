@@ -3,9 +3,9 @@ from math import sqrt
 from typing import List
 
 from fides.evaluation.discount_factor import compute_discount_factor
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.recommendation_history import RecommendationHistory
-from fides.model.trust_model_configuration import TrustModelConfiguration
 
 
 # noinspection DuplicatedCode
@@ -31,7 +31,7 @@ def update_recommendation_data_for_peer(
     integrity_belief = __compute_integrity_belief(new_history, fading_factor, competence_belief)
     integrity_discount = compute_discount_factor()
 
-    history_factor = len(new_history) / configuration.recommendation_history_max_size
+    history_factor = len(new_history) / configuration.recommendations.history_max_size
 
     # (rh_ik / rh_max) * (rcb_ik -0.5 * rib_ik) -> where -0.5 is discount factor
     reputation_trust_own_experience = history_factor * (competence_belief + integrity_discount * integrity_belief)

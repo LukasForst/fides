@@ -3,8 +3,8 @@ from typing import Dict, Tuple
 from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.evaluation.service.process import process_service_interaction
 from fides.messaging.network_bridge import NetworkBridge
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.persistance.trust import TrustDatabase
 
 

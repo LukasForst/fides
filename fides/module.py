@@ -1,8 +1,8 @@
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.network_bridge import NetworkBridge
 from fides.messaging.queue import Queue
+from fides.model.configuration import load_configuration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.persistance.slips import ThreatIntelligenceDatabase
 from fides.persistance.trust import TrustDatabase
 from fides.protocols.alert import AlertProtocol
@@ -24,7 +24,7 @@ def initiate():
     trust_db = TrustDatabase()
     ti_db = ThreatIntelligenceDatabase()
 
-    config = TrustModelConfiguration(1, 1, 1, [], 0)
+    config = load_configuration('TODO')
     trust_db.store_model_configuration(config)
 
     queue = Queue()

@@ -1,1 +1,1 @@
-# classes used to access persistance in as persistent storage
+# classes used to access persistence in as persistent storage

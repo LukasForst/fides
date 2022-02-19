@@ -62,6 +62,8 @@ class MessageHandler:
         # noinspection PyArgumentList
         return execution_map.get(message.type, lambda data: self.__on_unknown_message(message))(message.data)
 
+    # it should not, we might need to use something from self
+    # noinspection PyMethodMayBeStatic
     def on_error(self, original_data: str):
         """
         Should be executed when it was not possible to parse the message.

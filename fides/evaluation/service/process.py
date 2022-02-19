@@ -1,8 +1,8 @@
 from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.evaluation.service.peer_update import update_service_data_for_peer
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.service_history import ServiceHistoryRecord
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.utils.logger import Logger
 from fides.utils.time import now
 

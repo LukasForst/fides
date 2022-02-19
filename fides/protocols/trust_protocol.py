@@ -1,8 +1,8 @@
 from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.evaluation.service.process import process_service_interaction
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
 from fides.model.peer_trust_data import PeerTrustData, trust_data_prototype
-from fides.model.trust_model_configuration import TrustModelConfiguration
 from fides.persistance.trust import TrustDatabase
 from fides.protocols.recommendation import RecommendationProtocol
 from fides.utils.logger import Logger
@@ -35,7 +35,7 @@ class TrustProtocol:
         # now we know that this is a new peer
         trust = trust_data_prototype(peer)
         # add values that are inherited from the organisation
-        peers_orgs = [org for org in self.__configuration.trusted_organisations if org.identifier in peer.organisations]
+        peers_orgs = [org for org in self.__configuration.trusted_entities if org.id in peer.organisations]
         if peers_orgs:
             logger.debug(f"Peer {peer.id} has known organisations.", peers_orgs)
             trust.initial_reputation_provided_by_count = len(peers_orgs)

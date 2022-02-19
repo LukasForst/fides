@@ -5,9 +5,9 @@ from fides.evaluation.discount_factor import compute_discount_factor
 from fides.evaluation.recommendation.new_history import create_recommendation_history_for_peer
 from fides.evaluation.recommendation.peer_update import update_recommendation_data_for_peer
 from fides.model.aliases import PeerId
+from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import TrustMatrix, PeerTrustData
 from fides.model.recommendation import Recommendation
-from fides.model.trust_model_configuration import TrustModelConfiguration
 
 
 def process_new_recommendations(
@@ -28,7 +28,7 @@ def process_new_recommendations(
     :param subject: subject of recommendations, this peer was asking other peers for recommendation about
     this subject, in model's notation this is "j"
     :param matrix: trust matrix with peers that provided recommendations, in model's notation this is "k"s,
-    part of the T_i set.
+    part of the T_i set
     :param recommendations: responses received from the network when
     asking for recommendations, peer ids here are in model's notation "k"s
     :return: new matrix that contains only peers that were updated - it should contain
