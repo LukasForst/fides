@@ -1,4 +1,4 @@
-name: gp2p
+name: fides
 channels:
   - conda-forge
 dependencies:
