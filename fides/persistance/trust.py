@@ -1,7 +1,7 @@
 from typing import List, Optional, Union
 
 from fides.messaging.model import PeerInfo
-from fides.model.aliases import PeerId, Target
+from fides.model.aliases import PeerId, Target, OrganisationId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import ThreatIntelligence
@@ -9,6 +9,8 @@ from fides.model.threat_intelligence import ThreatIntelligence
 
 class TrustDatabase:
     """Class responsible for persisting data for trust model."""
+
+    # TODO: implement this class
 
     def store_model_configuration(self, configuration: TrustModelConfiguration):
         """Stores trust model configuration."""
@@ -24,6 +26,14 @@ class TrustDatabase:
 
     def get_connected_peers(self) -> List[PeerInfo]:
         """Returns list of peers that are directly connected to the Slips."""
+        raise NotImplemented()
+
+    def get_peers_with_organisations(self, organisations: List[OrganisationId]) -> List[PeerInfo]:
+        """Returns list of peers that have one of given organisations."""
+        raise NotImplemented()
+
+    def get_peers_with_geq_recommendation_trust(self, minimal_recommendation_trust: float) -> List[PeerInfo]:
+        """Returns peers that have >= recommendation_trust then the minimal."""
         raise NotImplemented()
 
     def store_peer_trust_data(self, trust_data: PeerTrustData):

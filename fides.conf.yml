@@ -63,14 +63,16 @@ trust:
   recommendations:
     # if the recommendation protocol should be executed
     enabled: True
+    # when selecting recommenders, use only the ones that are currently connected
+    useOnlyConnected: False
     # if true, protocol will only ask pre-trusted peers / organisations for recommendations
     useOnlyPreconfigured: False
     # require minimal number of trusted connected peers before running recommendations
     # valid only if trust.recommendations.useOnlyPreconfigured == False
-    requiredTrustedPeersCount: 5
+    requiredTrustedPeersCount: 0
     # minimal trust for trusted peer
     # valid only if trust.recommendations.useOnlyPreconfigured == False
-    trustedPeerThreshold: 0.8
+    trustedPeerThreshold: 0.1
     # maximal count of peers that are asked to give recommendations on a peer, η_max
     peersMaxCount: 10
     # maximal size of Recommendation History, rh_max

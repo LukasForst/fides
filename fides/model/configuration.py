@@ -59,6 +59,9 @@ class RecommendationsConfiguration:
     enabled: bool
     """If the recommendation protocol should be executed."""
 
+    only_connected: bool
+    """When selecting recommenders, use only the ones that are currently connected."""
+
     only_preconfigured: bool
     """If true, protocol will only ask pre-trusted peers / organisations for recommendations."""
 
@@ -139,6 +142,7 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
         service_history_max_size=data['trust']['service']['historyMaxSize'],
         recommendations=RecommendationsConfiguration(
             enabled=data['trust']['recommendations']['enabled'],
+            only_connected=data['trust']['recommendations']['useOnlyConnected'],
             only_preconfigured=data['trust']['recommendations']['useOnlyPreconfigured'],
             required_trusted_peers_count=data['trust']['recommendations']['requiredTrustedPeersCount'],
             trusted_peer_threshold=data['trust']['recommendations']['trustedPeerThreshold'],
