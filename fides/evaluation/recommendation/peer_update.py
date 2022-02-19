@@ -9,7 +9,7 @@ from fides.model.recommendation_history import RecommendationHistory
 
 
 # noinspection DuplicatedCode
-# TODO: try to abstract this
+# TODO: [+] try to abstract this
 def update_recommendation_data_for_peer(
         configuration: TrustModelConfiguration,
         peer: PeerTrustData,
@@ -57,7 +57,7 @@ def __compute_fading_factor(recommendation_history: RecommendationHistory) -> Li
     :param recommendation_history: history for which should be fading factor generated
     :return: ordered list of fading factors, index of fading factor matches record in RecommendationHistory
     """
-    # TODO: this might be time based in the future
+    # TODO: [?] this might be time based in the future
     # f^k_ij = k / sh_ij
     # where 1 <= k <= sh_ij
     history_size = len(recommendation_history)

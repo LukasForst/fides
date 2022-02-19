@@ -58,7 +58,7 @@ class MessageHandler:
             'nl2tl_intelligence_request': self.__on_nl2tl_intelligence_request,
             'nl2tl_intelligence_response': self.__on_nl2tl_intelligence_response
         }
-        # TODO: add error handling
+        # TODO: [!] add error handling
         # noinspection PyArgumentList
         return execution_map.get(message.type, lambda data: self.__on_unknown_message(message))(message.data)
 

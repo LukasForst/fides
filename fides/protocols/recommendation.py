@@ -26,12 +26,17 @@ class RecommendationProtocol(Protocol):
         self.__trust_db = trust_db
         self.__bridge = bridge
 
-    def get_recommendation_for(self, peer: PeerInfo, recipients: Optional[List[PeerId]] = None):
-        """Dispatches recommendation request from the network."""
+    def get_recommendation_for(self, peer: PeerInfo, connected_peers: Optional[List[PeerId]] = None):
+        """Dispatches recommendation request from the network.
+
+        connected_peers - new peer list if the one from database is not accurate
+        """
         if not self.__rec_conf.enabled:
             logger.debug(f"Recommendation protocol is disabled. NOT getting recommendations for Peer {peer.id}.")
+            return
 
-        recipients = recipients if recipients else self.__get_recommendation_request_recipients()
+        connected_peers = connected_peers if connected_peers is not None else self.__trust_db.get_connected_peers()
+        recipients = self.__get_recommendation_request_recipients(connected_peers)
         if recipients:
             self.__bridge.send_recommendation_request(recipients=recipients, peer=peer.id)
         else:
@@ -92,17 +97,17 @@ class RecommendationProtocol(Protocol):
         # and dispatch event
         self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in updated_matrix.values()})
 
-        # TODO: correct evaluation of the sent data
+        # TODO: [!] correct evaluation of the sent data
         interaction_matrix = {p: (Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE) for p in trust_matrix.values()}
         self.__evaluate_interactions(interaction_matrix)
 
-    def __get_recommendation_request_recipients(self) -> List[PeerId]:
+    def __get_recommendation_request_recipients(self, connected_peers: List[PeerInfo]) -> List[PeerId]:
         recommenders = []
         require_trusted_peer_count = self.__rec_conf.required_trusted_peers_count
         trusted_peer_threshold = self.__rec_conf.trusted_peer_threshold
 
         if self.__rec_conf.only_connected:
-            recommenders = self.__trust_db.get_connected_peers()
+            recommenders = connected_peers
 
         if self.__rec_conf.only_preconfigured:
             preconfigured_peers = set(p.id for p in self.__configuration.trusted_peers)

@@ -39,7 +39,7 @@ class AlertProtocol(Protocol):
 
         if peer_trust is None:
             peer_trust = self.__trust_protocol.determine_and_store_initial_trust(sender, get_recommendations=False)
-            # TODO: maybe dispatch request to ask fellow peers?
+            # TODO: [?] maybe dispatch request to ask fellow peers?
 
         # aggregate request
         ti = self.__aggregator.evaluate_alert(peer_trust, alert)
@@ -47,5 +47,5 @@ class AlertProtocol(Protocol):
         self.__alert_callback(ti)
 
         # and update service data
-        # TODO: analyse how good was alert and then add assign weight for that
+        # TODO: [!] analyse how good was alert and then add assign weight for that
         self.__evaluate_interaction(peer_trust, Satisfaction.OK, Weight.ALERT)

@@ -29,11 +29,11 @@ class RedisDuplexQueue(Queue):
         self.__queue = queue
 
     def send(self, serialized_data: str):
-        # TODO: check correct method for the queue
+        # TODO: [!] check correct method for the queue
         self.__queue.send(serialized_data)
 
     def listen(self, on_message: Callable[[str], None]):
-        # TODO: check correct method for the queue
+        # TODO: [!] check correct method for the queue
         self.__queue.listen(on_message)
 
 
@@ -48,9 +48,9 @@ class RedisSimplexQueue(Queue):
         self.__receive_queue = receive_queue
 
     def send(self, serialized_data: str):
-        # TODO: check correct method for the queue
+        # TODO: [!] check correct method for the queue
         self.__send_queue.send(serialized_data)
 
     def listen(self, on_message: Callable[[str], None]):
-        # TODO: check correct method for the queue
+        # TODO: [!] check correct method for the queue
         self.__receive_queue.listen(on_message)

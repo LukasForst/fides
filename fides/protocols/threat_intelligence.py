@@ -72,7 +72,7 @@ class ThreatIntelligenceProtocol(Protocol):
 
         self.__network_opinion_callback(ti)
 
-        # TODO: correct evaluation of the sent data
+        # TODO: [!] correct evaluation of the sent data
         interaction_matrix = {p: (Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in trust_matrix.values()}
         self.__evaluate_interactions(interaction_matrix)
 
@@ -85,7 +85,7 @@ class ThreatIntelligenceProtocol(Protocol):
         peers_allowed_levels = [p.confidentiality_level
                                 for p in self.__configuration.trusted_organisations if
                                 p.id in peer_trust.organisations]
-        # TODO: check if we want to use service_trust for this filtering or some other metric
+        # TODO: [?] check if we want to use service_trust for this filtering or some other metric
         peers_allowed_levels.append(peer_trust.service_trust)
         # select maximum allowed level
         allowed_level = max(peers_allowed_levels)

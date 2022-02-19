@@ -18,7 +18,7 @@ class OpinionAggregator:
 
     def evaluate_alert(self, peer_trust: PeerTrustData, alert: Alert) -> SlipsThreatIntelligence:
         """Evaluates given data about alert and produces aggregated intelligence for Slips."""
-        # TODO: implement correct aggregation
+        # TODO: [!] implement correct aggregation
 
         alert_trust = max(self.__configuration.alert_trust_from_unknown, peer_trust.service_trust)
 
@@ -35,5 +35,5 @@ class OpinionAggregator:
             trust = trust_matrix[peer].service_trust * self.__configuration.alert_trust_from_unknown
             pass
 
-        # TODO: implement correct aggregation
+        # TODO: [!] implement correct aggregation
         return SlipsThreatIntelligence(0, 0, target=target)

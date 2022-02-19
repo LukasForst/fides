@@ -10,7 +10,7 @@ from fides.model.threat_intelligence import ThreatIntelligence
 class TrustDatabase:
     """Class responsible for persisting data for trust model."""
 
-    # TODO: implement this class
+    # TODO: [!] implement this
 
     def store_model_configuration(self, configuration: TrustModelConfiguration):
         """Stores trust model configuration."""

@@ -37,9 +37,8 @@ class PeerListUpdateProtocol:
                 # we don't have correct peer list in database
                 peer_trust = self.__trust_protocol.determine_and_store_initial_trust(peer, get_recommendations=False)
                 new_trusts.append(peer_trust)
-                # TODO: add logic when to get recommendations
                 # get recommendations for this peer
-                self.__recommendation_protocol.get_recommendation_for(peer, list(known_peers))
+                self.__recommendation_protocol.get_recommendation_for(peer, connected_peers=list(known_peers))
             # send only updated trusts to the network layer
             self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in new_trusts})
         # now set update peer list in database

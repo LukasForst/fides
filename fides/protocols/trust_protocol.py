@@ -75,7 +75,7 @@ class TrustProtocol:
 
     @staticmethod
     def __inherit_trust(trust: PeerTrustData, parent: TrustedEntity) -> PeerTrustData:
-        # TODO check which believes / trust metrics can we set as well
+        # TODO [?] check which believes / trust metrics can we set as well
         trust.reputation = max(trust.reputation, parent.trust)
         trust.recommendation_trust = trust.reputation
         # if we need to enforce that the peer has the same trust during the runtime,
