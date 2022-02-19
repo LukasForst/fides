@@ -38,7 +38,7 @@ def initiate():
     trust = TrustProtocol(trust_db, config, recommendations)
     peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
     opinion = OpinionAggregator(config)
-    intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, network_opinion_callback)
+    intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
     # TODO: now connect alert to the queue receiving data from blocking module
