@@ -41,7 +41,7 @@ class ThreatIntelligenceProtocol(Protocol):
         cached = self.__trust_db.get_cached_network_opinion(target)
         if cached:
             logger.debug(f'TI for target {target} found in cache.')
-            return cached
+            return self.__network_opinion_callback(cached)
         else:
             logger.debug(f'Requesting data for target {target} from network.')
             self.__bridge.send_intelligence_request(target)
@@ -78,11 +78,11 @@ class ThreatIntelligenceProtocol(Protocol):
         # cache data for further retrieval
         self.__trust_db.cache_network_opinion(ti)
 
-        self.__network_opinion_callback(ti)
-
         # TODO: [!] correct evaluation of the sent data
         interaction_matrix = {p: (Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in trust_matrix.values()}
         self.__evaluate_interactions(interaction_matrix)
+
+        return self.__network_opinion_callback(ti)
 
     def __filter_ti(self,
                     ti: Optional[SlipsThreatIntelligence],
