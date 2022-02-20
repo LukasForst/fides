@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-# TODO: check this evaluation
+# TODO: [!] check this evaluation
 
 class Satisfaction(Enum):
     """Represents value how much was client satisfied with the interaction

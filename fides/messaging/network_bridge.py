@@ -41,7 +41,7 @@ class NetworkBridge:
                 handler.on_message(network_message)
             except Exception as e:
                 logger.error(f'There was an error processing message, Exception: {e}.')
-                handler.on_error(message)
+                handler.on_error(message, e)
 
         return self.__queue.listen(message_received)
 

@@ -1,4 +1,4 @@
-from typing import Dict, List, Callable, Optional
+from typing import Dict, List, Callable, Optional, Union
 
 from dacite import from_dict
 
@@ -29,7 +29,8 @@ class MessageHandler:
                  on_alert: Callable[[PeerInfo, Alert], None],
                  on_intelligence_request: Callable[[str, PeerInfo, Target], None],
                  on_intelligence_response: Callable[[List[PeerIntelligenceResponse]], None],
-                 on_unknown: Optional[Callable[[NetworkMessage], None]] = None
+                 on_unknown: Optional[Callable[[NetworkMessage], None]] = None,
+                 on_error: Optional[Callable[[Union[str, NetworkMessage], Exception], None]] = None
                  ):
         self.__on_peer_list_update_callback = on_peer_list_update
         self.__on_recommendation_request_callback = on_recommendation_request
@@ -38,6 +39,7 @@ class MessageHandler:
         self.__on_intelligence_request_callback = on_intelligence_request
         self.__on_intelligence_response_callback = on_intelligence_response
         self.__on_unknown_callback = on_unknown
+        self.__on_error = on_error
 
     def on_message(self, message: NetworkMessage):
         """
@@ -58,19 +60,28 @@ class MessageHandler:
             'nl2tl_intelligence_request': self.__on_nl2tl_intelligence_request,
             'nl2tl_intelligence_response': self.__on_nl2tl_intelligence_response
         }
-        # TODO: [!] add error handling
-        # noinspection PyArgumentList
-        return execution_map.get(message.type, lambda data: self.__on_unknown_message(message))(message.data)
+        func = execution_map.get(message.type, lambda data: self.__on_unknown_message(message))
+        # we want to handle everything
+        # noinspection PyBroadException
+        try:
+            # we know that the functions can handle that, and if not, there's always error handling
+            # noinspection PyArgumentList
+            return func(message.data)
+        except Exception as ex:
+            logger.error(f"Error when executing handler for message: {message.type}.", message)
+            if self.__on_error:
+                return self.__on_error(message, ex)
 
-    # it should not, we might need to use something from self
-    # noinspection PyMethodMayBeStatic
-    def on_error(self, original_data: str):
+    def on_error(self, original_data: str, exception: Optional[Exception] = None):
         """
         Should be executed when it was not possible to parse the message.
         :param original_data: string received from the queue
+        :param exception: exception that occurred during handling
         :return:
         """
         logger.error(f'Unknown data received: {original_data}.')
+        if self.__on_error:
+            self.__on_error(original_data, exception if exception else Exception('Unknown data type!'))
 
     def __on_unknown_message(self, message: NetworkMessage):
         logger.warn(f'Unknown message handler executed!')

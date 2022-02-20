@@ -1,4 +1,7 @@
+from typing import Union
+
 from fides.messaging.message_handler import MessageHandler
+from fides.messaging.model import NetworkMessage
 from fides.messaging.network_bridge import NetworkBridge
 from fides.messaging.queue_in_memory import InMemoryQueue
 from fides.model.configuration import load_configuration
@@ -39,6 +42,12 @@ def initiate():
     intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
+    def on_unknown_message(message: NetworkMessage):
+        logger.error('Unknown message received!', message)
+
+    def on_error(msg: Union[str, NetworkMessage], ex: Exception):
+        logger.error(f'Error during event handling! {ex}', msg)
+
     # TODO: [S] now connect alert to the queue receiving data from blocking module
     message_handler = MessageHandler(
         on_peer_list_update=peer_list.handle_peer_list_updated,
@@ -47,6 +56,8 @@ def initiate():
         on_alert=alert.handle_alert,
         on_intelligence_request=intelligence.handle_intelligence_request,
         on_intelligence_response=intelligence.handle_intelligence_response,
+        on_unknown=on_unknown_message,
+        on_error=on_error
     )
 
     bridge.listen(message_handler)
