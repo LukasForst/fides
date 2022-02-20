@@ -4,17 +4,16 @@ from fides.messaging.model import PeerInfo
 from fides.model.aliases import PeerId, Target, OrganisationId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
-from fides.model.threat_intelligence import ThreatIntelligence
+from fides.model.threat_intelligence import SlipsThreatIntelligence
 
 
 class TrustDatabase:
     """Class responsible for persisting data for trust model."""
 
-    # TODO: [!] implement this
+    def __init__(self, configuration: TrustModelConfiguration):
+        self.__configuration = configuration
 
-    def store_model_configuration(self, configuration: TrustModelConfiguration):
-        """Stores trust model configuration."""
-        raise NotImplemented()
+    # TODO: [!] implement this
 
     def get_model_configuration(self) -> TrustModelConfiguration:
         """Returns current trust model configuration if set."""
@@ -53,10 +52,10 @@ class TrustDatabase:
         """Return trust data for each peer from peer_ids."""
         return {peer_id: self.get_peer_trust_data(peer_id) for peer_id in peer_ids}
 
-    def cache_network_opinion(self, target: Target, intelligence: ThreatIntelligence):
+    def cache_network_opinion(self, ti: SlipsThreatIntelligence):
         """Caches aggregated opinion on given target."""
         raise NotImplemented()
 
-    def get_cached_network_opinion(self, target: Target) -> Optional[ThreatIntelligence]:
+    def get_cached_network_opinion(self, target: Target) -> Optional[SlipsThreatIntelligence]:
         """Returns cached network opinion. Checks cache time and returns None if data expired."""
         raise NotImplemented()

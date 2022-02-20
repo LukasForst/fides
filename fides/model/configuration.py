@@ -119,6 +119,9 @@ class TrustModelConfiguration:
     trusted_organisations: List[TrustedEntity]
     """List of preconfigured organisations."""
 
+    network_opinion_cache_valid_seconds: int
+    """How many minutes is network opinion considered valid."""
+
 
 def load_configuration(file_path: str) -> TrustModelConfiguration:
     with open(file_path, "r") as stream:
@@ -162,4 +165,5 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                              enforce_trust=e['enforceTrust'],
                                              confidentiality_level=e['confidentialityLevel'])
                                for e in data['confidentiality']['organisations']],
+        network_opinion_cache_valid_seconds=data['trust']['networkOpinionCacheValidSeconds']
     )

@@ -109,3 +109,6 @@ trust:
       trust: 0.9
       enforceTrust: False
       confidentialityLevel: 0.9
+
+  # how many minutes is network opinion considered valid
+  networkOpinionCacheValidSeconds: 3600

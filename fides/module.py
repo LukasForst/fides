@@ -21,11 +21,10 @@ def initiate():
 
     logger = Logger("TestStartup")
 
-    trust_db = TrustDatabase()
-    ti_db = ThreatIntelligenceDatabase()
-
     config = load_configuration('TODO')
-    trust_db.store_model_configuration(config)
+
+    trust_db = TrustDatabase(config)
+    ti_db = ThreatIntelligenceDatabase()
 
     queue = Queue()
 

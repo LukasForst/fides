@@ -75,7 +75,6 @@ class RecommendationProtocol(Protocol):
         assert all(responses[0].subject == r.subject for r in responses), \
             "Responses are not for the same subject!"
 
-        config = self.__trust_db.get_model_configuration()
         subject = self.__trust_db.get_peer_trust_data(responses[0].subject)
 
         recommendations = {r.sender.id: r.recommendation for r in responses}
@@ -87,7 +86,7 @@ class RecommendationProtocol(Protocol):
 
         # update all recommendations
         updated_matrix = process_new_recommendations(
-            configuration=config,
+            configuration=self.__configuration,
             subject=subject,
             matrix=trust_matrix,
             recommendations=recommendations

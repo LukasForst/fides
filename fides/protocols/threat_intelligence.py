@@ -38,7 +38,13 @@ class ThreatIntelligenceProtocol(Protocol):
 
     def request_data(self, target: Target):
         """Requests network opinion on given target."""
-        self.__bridge.send_intelligence_request(target)
+        cached = self.__trust_db.get_cached_network_opinion(target)
+        if cached:
+            logger.debug(f'TI for target {target} found in cache.')
+            return cached
+        else:
+            logger.debug(f'Requesting data for target {target} from network.')
+            self.__bridge.send_intelligence_request(target)
 
     def handle_intelligence_request(self, request_id: str, sender: PeerInfo, target: Target):
         """Handles intelligence request."""
@@ -69,6 +75,8 @@ class ThreatIntelligenceProtocol(Protocol):
         # now everything is checked, so we aggregate it and get the threat intelligence
         r = {r.sender.id: r for r in responses}
         ti = self.__aggregator.evaluate_intelligence_response(target, r, trust_matrix)
+        # cache data for further retrieval
+        self.__trust_db.cache_network_opinion(ti)
 
         self.__network_opinion_callback(ti)
 
