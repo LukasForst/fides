@@ -3,8 +3,8 @@ from fides.messaging.network_bridge import NetworkBridge
 from fides.messaging.queue import Queue
 from fides.model.configuration import load_configuration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.persistance.slips import ThreatIntelligenceDatabase
-from fides.persistance.trust import TrustDatabase
+from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
+from fides.persistance.trust_in_memory import InMemoryTrustDatabase
 from fides.protocols.alert import AlertProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.peer_list import PeerListUpdateProtocol
@@ -18,13 +18,12 @@ def initiate():
     # setup logger (for slips add the handler from the module)
     LoggerPrintCallbacks.clear()
     LoggerPrintCallbacks.append(print)
-
     logger = Logger("TestStartup")
 
-    config = load_configuration('TODO')
+    config = load_configuration('../fides.conf.yml')
 
-    trust_db = TrustDatabase(config)
-    ti_db = ThreatIntelligenceDatabase()
+    trust_db = InMemoryTrustDatabase(config)
+    ti_db = InMemoryThreatIntelligenceDatabase()
 
     queue = Queue()
 
@@ -40,7 +39,7 @@ def initiate():
     intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
-    # TODO: [!] now connect alert to the queue receiving data from blocking module
+    # TODO: [+] now connect alert to the queue receiving data from blocking module
     message_handler = MessageHandler(
         on_peer_list_update=peer_list.handle_peer_list_updated,
         on_recommendation_request=recommendations.handle_recommendation_request,

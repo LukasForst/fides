@@ -9,5 +9,5 @@ class ThreatIntelligenceDatabase:
 
     def get_for(self, target: Target) -> Optional[SlipsThreatIntelligence]:
         """Returns threat intelligence for given target or None if there are no data."""
-        # TODO: [!] implement this
+        # TODO: [+] add implementation for Slips module
         raise NotImplemented()
