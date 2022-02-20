@@ -39,7 +39,7 @@ def initiate():
     intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
-    # TODO: [+] now connect alert to the queue receiving data from blocking module
+    # TODO: [S] now connect alert to the queue receiving data from blocking module
     message_handler = MessageHandler(
         on_peer_list_update=peer_list.handle_peer_list_updated,
         on_recommendation_request=recommendations.handle_recommendation_request,

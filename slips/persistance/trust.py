@@ -5,13 +5,18 @@ from fides.model.aliases import PeerId, Target, OrganisationId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
+from fides.persistance.trust import TrustDatabase
 
 
-class TrustDatabase:
-    """Class responsible for persisting data for trust model."""
+# because this will be implemented
+# noinspection DuplicatedCode
+class SlipsTrustDatabase(TrustDatabase):
+    """Trust database implementation that uses Slips redis as a storage."""
+
+    # TODO: [S] implement this
 
     def __init__(self, configuration: TrustModelConfiguration):
-        self.__configuration = configuration
+        super().__init__(configuration)
 
     def get_model_configuration(self) -> TrustModelConfiguration:
         """Returns current trust model configuration if set."""
