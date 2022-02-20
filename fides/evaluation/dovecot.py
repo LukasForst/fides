@@ -1,9 +1,12 @@
 # This file, class and computational algorithm was inspired by Draliii's implementation of Trust Model for local
 # network peer-to-peer module for Slips
 # https://github.com/draliii/StratosphereLinuxIPS/blob/ac854a8e18ff2acef558036fa3c8cc764bbf2323/modules/p2ptrust/trust/trust_model.py
+from fides.model.threat_intelligence import ThreatIntelligence
 
 
 class Dovecot:
+
+    # TODO: [!] migrate this class so it uses data structures from Fides
 
     def __init__(self, reliability_weight: float):
         self.__reliability_weight = reliability_weight
@@ -39,7 +42,7 @@ class Dovecot:
         weighted_trust = [nt / normalize_net_trust_sum for nt in normalized_trust]
         return weighted_trust
 
-    def assemble_peer_opinion(self, data: list) -> (float, float, float):
+    def assemble_peer_opinion(self, data: list) -> ThreatIntelligence:
         """
         Assemble reports given by all peers and compute the overall network opinion.
 
@@ -65,4 +68,4 @@ class Dovecot:
         combined_score = sum([r[0] * w for r, w, in zip(reports, weighted_reporters)])
         combined_confidence = sum([max(0, r[1] * w) for r, w, in zip(reports, reporters)]) / len(reporters)
 
-        return combined_score, combined_confidence
+        return ThreatIntelligence(score=combined_score, confidence=combined_confidence)

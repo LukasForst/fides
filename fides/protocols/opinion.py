@@ -1,5 +1,6 @@
 from typing import Dict
 
+from fides.evaluation.dovecot import Dovecot
 from fides.messaging.model import PeerIntelligenceResponse
 from fides.model.alert import Alert
 from fides.model.aliases import PeerId, Target
@@ -13,12 +14,14 @@ class OpinionAggregator:
     Class responsible for evaluation of the intelligence received from the network.
     """
 
-    def __init__(self, configuration: TrustModelConfiguration):
+    def __init__(self, configuration: TrustModelConfiguration, dovecot: Dovecot):
         self.__configuration = configuration
+        self.__dovecot = dovecot
 
     def evaluate_alert(self, peer_trust: PeerTrustData, alert: Alert) -> SlipsThreatIntelligence:
         """Evaluates given data about alert and produces aggregated intelligence for Slips."""
         # TODO: [!] implement correct aggregation
+        self.__dovecot.assemble_peer_opinion([])
 
         alert_trust = max(self.__configuration.alert_trust_from_unknown, peer_trust.service_trust)
 
@@ -34,6 +37,6 @@ class OpinionAggregator:
         for peer, response in data.items():
             trust = trust_matrix[peer].service_trust * self.__configuration.alert_trust_from_unknown
             pass
-
         # TODO: [!] implement correct aggregation
-        return SlipsThreatIntelligence(0, 0, target=target)
+        ti = self.__dovecot.assemble_peer_opinion([])
+        return SlipsThreatIntelligence(score=ti.score, confidence=ti.confidence, target=target)
