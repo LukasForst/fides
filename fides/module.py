@@ -1,6 +1,6 @@
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.network_bridge import NetworkBridge
-from fides.messaging.queue import Queue
+from fides.messaging.queue_in_memory import InMemoryQueue
 from fides.model.configuration import load_configuration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
@@ -25,7 +25,7 @@ def initiate():
     trust_db = InMemoryTrustDatabase(config)
     ti_db = InMemoryThreatIntelligenceDatabase()
 
-    queue = Queue()
+    queue = InMemoryQueue()
 
     bridge = NetworkBridge(queue)
 
