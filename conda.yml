@@ -8,3 +8,4 @@ dependencies:
   - pyyaml=6.0
   - pip:
       - redis==3.5.3
+      - validators=0.18.2

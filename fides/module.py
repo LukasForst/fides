@@ -16,8 +16,7 @@ from fides.protocols.threat_intelligence import ThreatIntelligenceProtocol
 from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import LoggerPrintCallbacks, Logger
 
-
-def initiate():
+if __name__ == '__main__':
     # setup logger (for slips add the handler from the module)
     LoggerPrintCallbacks.clear()
     LoggerPrintCallbacks.append(print)
@@ -32,8 +31,10 @@ def initiate():
 
     bridge = NetworkBridge(queue)
 
+
     def network_opinion_callback(ti: SlipsThreatIntelligence):
         logger.info(f'Callback: Target: {ti.target}, Score: {ti.score}, Confidence: {ti.confidence}')
+
 
     recommendations = RecommendationProtocol(config, trust_db, bridge)
     trust = TrustProtocol(trust_db, config, recommendations)
@@ -42,13 +43,15 @@ def initiate():
     intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
+
     def on_unknown_message(message: NetworkMessage):
         logger.error('Unknown message received!', message)
+
 
     def on_error(msg: Union[str, NetworkMessage], ex: Exception):
         logger.error(f'Error during event handling! {ex}', msg)
 
-    # TODO: [S] now connect alert to the queue receiving data from blocking module
+
     message_handler = MessageHandler(
         on_peer_list_update=peer_list.handle_peer_list_updated,
         on_recommendation_request=recommendations.handle_recommendation_request,

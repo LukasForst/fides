@@ -3,8 +3,11 @@ import threading
 from dataclasses import is_dataclass, asdict
 from typing import Optional, List, Callable
 
-LoggerPrintCallbacks: List[Callable[[str], None]] = [print]
-"""Set this to custom callback that should be executed when there's new log message."""
+LoggerPrintCallbacks: List[Callable[[str, str], None]] = [lambda level, msg: print(f'{level}: {msg}')]
+"""Set this to custom callback that should be executed when there's new log message.
+
+First parameter is level ('DEBUG', 'INFO', 'WARN', 'ERROR'), second is message to be logged.
+"""
 
 
 class Logger:
@@ -51,15 +54,15 @@ class Logger:
     def error(self, message: str, params=None):
         return self.__print('ERROR', message, params)
 
-    def __format(self, level: str, message: str, params=None):
+    def __format(self, message: str, params=None):
         threat = threading.get_ident()
-        formatted_message = f"T{threat}: {level} - {self.__name} -  {message}"
+        formatted_message = f"T{threat}: {self.__name} -  {message}"
         if params:
             params = asdict(params) if is_dataclass(params) else params
             formatted_message = f"{formatted_message} {json.dumps(params)}"
         return formatted_message
 
     def __print(self, level: str, message: str, params=None):
-        formatted_message = self.__format(level, message, params)
+        formatted_message = self.__format(message, params)
         for print_callback in LoggerPrintCallbacks:
-            print_callback(formatted_message)
+            print_callback(level, formatted_message)
