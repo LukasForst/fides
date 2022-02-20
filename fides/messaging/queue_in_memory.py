@@ -19,7 +19,7 @@ class InMemoryQueue(Queue):
 
         self.__on_message: Callable[[str], None] = on_message if on_message else default_on_message
 
-    def send(self, serialized_data: str, should_wait_for_join: bool = False):
+    def send(self, serialized_data: str, should_wait_for_join: bool = False, **argv):
         """Sends serialized data to the queue."""
         logger.debug('New data received for send.')
         if self.__on_message is None:
@@ -32,7 +32,7 @@ class InMemoryQueue(Queue):
 
         return th
 
-    def listen(self, on_message: Callable[[str], None]):
+    def listen(self, on_message: Callable[[str], None], **argv):
         """Starts listening, executes :param: on_message when new message arrives.
         This method is not blocking.
         """

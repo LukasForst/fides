@@ -8,12 +8,13 @@ class Queue:
     Central point used for communication with the network layer and another peers.
     """
 
-    def send(self, serialized_data: str):
+    def send(self, serialized_data: str, **argv):
         """Sends serialized data to the queue."""
         raise NotImplemented('This is interface. Use implementation.')
 
-    def listen(self, on_message: Callable[[str], None]):
+    def listen(self, on_message: Callable[[str], None], **argv):
         """Starts listening, executes :param: on_message when new message arrives.
-        This method is not blocking.
+
+        Depending on the implementation, this method might be blocking.
         """
         raise NotImplemented('This is interface. Use implementation.')

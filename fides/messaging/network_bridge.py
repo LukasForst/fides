@@ -1,6 +1,6 @@
 import json
 from dataclasses import asdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from dacite import from_dict
 
@@ -28,9 +28,11 @@ class NetworkBridge:
     def __init__(self, queue: Queue):
         self.__queue = queue
 
-    def listen(self, handler: MessageHandler):
-        """Starts messages processing, this method is not blocking."""
-        logger.info(f'Starts listening...')
+    def listen(self, handler: MessageHandler, block: bool = False):
+        """Starts messages processing
+
+        If :param: block = False, this method won't block this thread.
+        """
 
         def message_received(message: str):
             logger.debug(f'New message received! Trying to parse..')
@@ -43,7 +45,33 @@ class NetworkBridge:
                 logger.error(f'There was an error processing message, Exception: {e}.')
                 handler.on_error(message, e)
 
-        return self.__queue.listen(message_received)
+        logger.info(f'Starts listening...')
+        return self.__queue.listen(message_received, block=block)
+
+    def get_message(self, timeout_seconds: float = 0) -> Optional[NetworkMessage]:
+        """Starts messages processing
+
+        This method might block, depending on Queue implementation of "listen" method.
+        """
+        # check if current implementation of queue supports this option
+        if not hasattr(self.__queue, 'get_message'):
+            raise NotImplemented('Current implementation of Queue does not support this method!')
+
+        # we checked that existence in step before
+        # noinspection PyUnresolvedReferences
+        message = self.__queue.get_message(timeout=timeout_seconds)
+        if message is not None:
+            try:
+                logger.debug('Message received, trying to parse.')
+                parsed = json.loads(message)
+                network_message = from_dict(data_class=NetworkMessage, data=parsed)
+                logger.debug('Message parsed. Executing handler.')
+                return network_message
+            except Exception as ex:
+                logger.error(f'There was an error processing message, Exception: {ex}.')
+        else:
+            logger.debug(f'Timeout expired - {timeout_seconds}s - and no message was received.')
+        return None
 
     def send_intelligence_response(self, request_id: str, target: Target, intelligence: ThreatIntelligence):
         """Shares Intelligence with peer that requested it. request_id comes from the first request."""

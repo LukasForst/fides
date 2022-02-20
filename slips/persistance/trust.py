@@ -1,5 +1,7 @@
 from typing import List, Optional, Union
 
+from redis.client import Redis
+
 from fides.messaging.model import PeerInfo
 from fides.model.aliases import PeerId, Target, OrganisationId
 from fides.model.configuration import TrustModelConfiguration
@@ -15,15 +17,13 @@ class SlipsTrustDatabase(TrustDatabase):
 
     # TODO: [S] implement this
 
-    def __init__(self, configuration: TrustModelConfiguration):
+    def __init__(self, configuration: TrustModelConfiguration, r: Redis):
         super().__init__(configuration)
-
-    def get_model_configuration(self) -> TrustModelConfiguration:
-        """Returns current trust model configuration if set."""
-        return self.__configuration
+        self.__r = r
 
     def store_connected_peers_list(self, current_peers: List[PeerInfo]):
         """Stores list of peers that are directly connected to the Slips."""
+
         raise NotImplemented()
 
     def get_connected_peers(self) -> List[PeerInfo]:
