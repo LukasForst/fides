@@ -3,5 +3,8 @@ channels:
   - conda-forge
 dependencies:
   - python=3.8
+  - pip=22.0.3
   - dacite=1.6.0
   - pyyaml=6.0
+  - pip:
+      - redis==3.5.3
