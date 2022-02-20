@@ -55,8 +55,8 @@ class Logger:
         return self.__print('ERROR', message, params)
 
     def __format(self, message: str, params=None):
-        threat = threading.get_ident()
-        formatted_message = f"T{threat}: {self.__name} -  {message}"
+        thread = threading.get_ident()
+        formatted_message = f"T{thread}: {self.__name} -  {message}"
         if params:
             params = asdict(params) if is_dataclass(params) else params
             formatted_message = f"{formatted_message} {json.dumps(params)}"
