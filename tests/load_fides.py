@@ -77,7 +77,7 @@ def get_fides(**kwargs) -> Fides:
         import sys
         info = sys.exc_info()[2]
         logger.error(f'Error during event handling:\n{info.tb_frame}! {ex}', msg)
-        assert False
+        assert False, 'Error during event handling!'
 
     on_error = kwargs.get('on_error', default_on_error)
 

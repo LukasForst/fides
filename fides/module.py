@@ -37,7 +37,7 @@ if __name__ == '__main__':
         logger.info(f'Callback: Target: {ti.target}, Score: {ti.score}, Confidence: {ti.confidence}')
 
 
-    recommendations = RecommendationProtocol(config, trust_db, bridge)
+    recommendations = RecommendationProtocol(config, trust_db, bridge, )
     trust = TrustProtocol(trust_db, config, recommendations)
     peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
     opinion = OpinionAggregator(config, ti_db, Dovecot(config))

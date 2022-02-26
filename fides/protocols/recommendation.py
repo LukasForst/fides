@@ -47,7 +47,8 @@ class RecommendationProtocol(Protocol):
         sender_trust = self.__trust_db.get_peer_trust_data(sender)
         # TODO: [+] implement data filtering based on the sender
         trust = self.__trust_db.get_peer_trust_data(subject)
-        if trust is not None:
+        # if we know sender, and we have some trust for the target
+        if sender_trust and trust:
             recommendation = Recommendation(
                 competence_belief=trust.competence_belief,
                 integrity_belief=trust.integrity_belief,
@@ -64,8 +65,10 @@ class RecommendationProtocol(Protocol):
                 initial_reputation_provided_by_count=0
             )
         self.__bridge.send_recommendation_response(request_id, sender.id, subject, recommendation)
-
-        self._evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
+        # it is possible that we saw sender for the first time
+        # TODO: [+] initialise peer if we saw it for the first time
+        if sender_trust:
+            self._evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
 
     def handle_recommendation_response(self, responses: List[PeerRecommendationResponse]):
         """Handles response from peers with recommendations. Updates all necessary values in db."""
