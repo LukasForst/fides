@@ -7,13 +7,20 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    container: continuumio/miniconda3:4.10.3
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup Conda
-        run: conda env create --file conda.yml
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: false
+          condarc-file: conda.yml
+          activate-environment: fides
+
+      - name: Conda info
+        shell: bash -l {0}
+        run: conda info
 
       - name: Execute Tests
-        run: |
-          conda init bash && conda activate fides && pytest tests
+        shell: bash -l {0}
+        run: pytest tests
