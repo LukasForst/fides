@@ -14,7 +14,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: false
-          condarc-file: conda.yml
+          environment-file: conda.yml
           activate-environment: fides
 
       - name: Conda info
