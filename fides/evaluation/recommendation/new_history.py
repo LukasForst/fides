@@ -55,9 +55,9 @@ def __compute_recommendation_satisfaction_parameter(
     :param eib_ij: estimation about integrity belief
     :return: recommendation satisfaction rs_ik
     """
-    r_diff = 1 - abs(recommendation.recommendation - er_ij) / er_ij
-    cb_diff = 1 - abs(recommendation.competence_belief - ecb_ij) / ecb_ij
-    ib_diff = 1 - abs(recommendation.integrity_belief - eib_ij) / eib_ij
+    r_diff = (1 - abs(recommendation.recommendation - er_ij) / er_ij) if er_ij > 0 else 0
+    cb_diff = (1 - abs(recommendation.competence_belief - ecb_ij) / ecb_ij) if ecb_ij > 0 else 0
+    ib_diff = (1 - abs(recommendation.integrity_belief - eib_ij) / eib_ij) if eib_ij > 0 else 0
     return (r_diff + cb_diff + ib_diff) / 3
 
 

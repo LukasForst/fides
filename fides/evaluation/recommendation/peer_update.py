@@ -82,7 +82,7 @@ def __compute_competence_belief(recommendation_history: RecommendationHistory, f
                   for service, fading
                   in zip(recommendation_history, fading_factor)])
 
-    return belief / normalisation
+    return belief / normalisation if normalisation > 0 else 0
 
 
 def __compute_integrity_belief(recommendation_history: RecommendationHistory,

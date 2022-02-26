@@ -79,6 +79,9 @@ class RecommendationProtocol(Protocol):
             "Responses are not for the same subject!"
 
         subject = self.__trust_db.get_peer_trust_data(responses[0].subject)
+        if subject is None:
+            logger.warn(f'Received recommendation for subject {responses[0].subject} that does not exist!')
+            return
 
         recommendations = {r.sender.id: r.recommendation for r in responses}
         trust_matrix = self.__trust_db.get_peers_trust_data(list(recommendations.keys()))
@@ -103,6 +106,14 @@ class RecommendationProtocol(Protocol):
         interaction_matrix = {p.peer_id: (p, Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE)
                               for p in trust_matrix.values()}
         self._evaluate_interactions(interaction_matrix)
+
+    @staticmethod
+    def __is_zero_recommendation(recommendation: Recommendation) -> bool:
+        return recommendation.competence_belief == 0 and \
+               recommendation.integrity_belief == 0 and \
+               recommendation.service_history_size == 0 and \
+               recommendation.recommendation == 0 and \
+               recommendation.initial_reputation_provided_by_count == 0
 
     def __get_recommendation_request_recipients(self, connected_peers: List[PeerInfo]) -> List[PeerId]:
         recommenders = []

@@ -104,7 +104,7 @@ def __estimate_recommendation(
          for peer, response
          in recommendations.items()])
 
-    return recommendations / normalisation
+    return recommendations / normalisation if normalisation > 0 else 0
 
 
 def __estimate_competence_integrity_belief(
@@ -134,7 +134,7 @@ def __estimate_competence_integrity_belief(
         # rt_ik * sh_kj * ib_kj
         integrity += trust_history_size * response.integrity_belief
 
-    competence_belief = competence / normalisation
-    integrity_belief = integrity / normalisation
+    competence_belief = competence / normalisation if normalisation > 0 else 0
+    integrity_belief = integrity / normalisation if normalisation > 0 else 0
 
     return [competence_belief, integrity_belief]
