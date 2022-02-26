@@ -12,3 +12,6 @@ redis-cli:
 
 down:
 	docker-compose down
+
+test:
+	pytest tests
