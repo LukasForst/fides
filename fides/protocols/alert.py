@@ -31,11 +31,11 @@ class AlertProtocol(Protocol):
 
     def dispatch_alert(self, target: Target, score: float, confidence: float):
         """Dispatches alert to the network."""
-        self.__bridge.send_alert(target, ThreatIntelligence(score=score, confidence=confidence))
+        self._bridge.send_alert(target, ThreatIntelligence(score=score, confidence=confidence))
 
     def handle_alert(self, sender: PeerInfo, alert: Alert):
         """Handle alert received from the network."""
-        peer_trust = self.__trust_db.get_peer_trust_data(sender.id)
+        peer_trust = self._trust_db.get_peer_trust_data(sender.id)
 
         if peer_trust is None:
             peer_trust = self.__trust_protocol.determine_and_store_initial_trust(sender, get_recommendations=False)
@@ -48,4 +48,4 @@ class AlertProtocol(Protocol):
 
         # and update service data
         # TODO: [!] analyse how good was alert and then add assign weight for that
-        self.__evaluate_interaction(peer_trust, Satisfaction.OK, Weight.ALERT)
+        self._evaluate_interaction(peer_trust, Satisfaction.OK, Weight.ALERT)

@@ -38,17 +38,17 @@ class ThreatIntelligenceProtocol(Protocol):
 
     def request_data(self, target: Target):
         """Requests network opinion on given target."""
-        cached = self.__trust_db.get_cached_network_opinion(target)
+        cached = self._trust_db.get_cached_network_opinion(target)
         if cached:
             logger.debug(f'TI for target {target} found in cache.')
             return self.__network_opinion_callback(cached)
         else:
             logger.debug(f'Requesting data for target {target} from network.')
-            self.__bridge.send_intelligence_request(target)
+            self._bridge.send_intelligence_request(target)
 
     def handle_intelligence_request(self, request_id: str, sender: PeerInfo, target: Target):
         """Handles intelligence request."""
-        peer_trust = self.__trust_db.get_peer_trust_data(sender.id)
+        peer_trust = self._trust_db.get_peer_trust_data(sender.id)
         if not peer_trust:
             logger.debug(f'We don\'t have any trust data for peer {sender.id}!')
             peer_trust = self.__trust_protocol.determine_and_store_initial_trust(sender)
@@ -59,14 +59,14 @@ class ThreatIntelligenceProtocol(Protocol):
             ti = ThreatIntelligence(score=0, confidence=0)
 
         # and respond with data we have
-        self.__bridge.send_intelligence_response(request_id, target, ti)
-        self.__evaluate_interaction(peer_trust,
-                                    Satisfaction.OK if ti.confidence else Satisfaction.UNSURE,
-                                    Weight.INTELLIGENCE_REQUEST)
+        self._bridge.send_intelligence_response(request_id, target, ti)
+        self._evaluate_interaction(peer_trust,
+                                   Satisfaction.OK if ti.confidence else Satisfaction.UNSURE,
+                                   Weight.INTELLIGENCE_REQUEST)
 
     def handle_intelligence_response(self, responses: List[PeerIntelligenceResponse]):
         """Handles intelligence responses."""
-        trust_matrix = self.__trust_db.get_peers_trust_data([r.sender.id for r in responses])
+        trust_matrix = self._trust_db.get_peers_trust_data([r.sender.id for r in responses])
         assert len(trust_matrix) == len(responses), 'We need to have trust data for all peers that sent the response.'
         target = {r.target for r in responses}
         assert len(target) == 1, 'Responses should be for a single target.'
@@ -76,11 +76,12 @@ class ThreatIntelligenceProtocol(Protocol):
         r = {r.sender.id: r for r in responses}
         ti = self.__aggregator.evaluate_intelligence_response(target, r, trust_matrix)
         # cache data for further retrieval
-        self.__trust_db.cache_network_opinion(ti)
+        self._trust_db.cache_network_opinion(ti)
 
         # TODO: [!] correct evaluation of the sent data
-        interaction_matrix = {p: (Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in trust_matrix.values()}
-        self.__evaluate_interactions(interaction_matrix)
+        interaction_matrix = {p.peer_id: (p, Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in
+                              trust_matrix.values()}
+        self._evaluate_interactions(interaction_matrix)
 
         return self.__network_opinion_callback(ti)
 
@@ -91,7 +92,7 @@ class ThreatIntelligenceProtocol(Protocol):
             return None
 
         peers_allowed_levels = [p.confidentiality_level
-                                for p in self.__configuration.trusted_organisations if
+                                for p in self._configuration.trusted_organisations if
                                 p.id in peer_trust.organisations]
         # TODO: [?] check if we want to use service_trust for this filtering or some other metric
         peers_allowed_levels.append(peer_trust.service_trust)
@@ -99,6 +100,6 @@ class ThreatIntelligenceProtocol(Protocol):
         allowed_level = max(peers_allowed_levels)
 
         # set correct confidentiality
-        ti.confidentiality = ti.confidentiality if ti.confidentiality else self.__configuration.data_default_level
+        ti.confidentiality = ti.confidentiality if ti.confidentiality else self._configuration.data_default_level
         # check if data confidentiality is lower than allowed level for the peer
         return ti if ti.confidentiality <= allowed_level else None

@@ -27,10 +27,10 @@ class PeerListUpdateProtocol:
         self.__trust_db.store_connected_peers_list(peers)
         # and now find their trust metrics to send it to the network module
         trust_data = self.__trust_db.get_peers_trust_data([p.id for p in peers])
+        known_peers = {peer_id for peer_id, trust in trust_data.items() if trust is not None}
         # if we don't have data for all peers that means that there are some new peers
         # we need to establish initial trust for them
-        if len(trust_data) != len(peers):
-            known_peers = trust_data.keys()
+        if len(known_peers) != len(peers):
             new_trusts = []
             for peer in [p for p in peers if p.id not in known_peers]:
                 # this stores trust in database as well, do not get recommendations because at this point

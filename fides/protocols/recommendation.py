@@ -65,7 +65,7 @@ class RecommendationProtocol(Protocol):
             )
         self.__bridge.send_recommendation_response(request_id, sender.id, subject, recommendation)
 
-        self.__evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
+        self._evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
 
     def handle_recommendation_response(self, responses: List[PeerRecommendationResponse]):
         """Handles response from peers with recommendations. Updates all necessary values in db."""
@@ -86,7 +86,7 @@ class RecommendationProtocol(Protocol):
 
         # update all recommendations
         updated_matrix = process_new_recommendations(
-            configuration=self.__configuration,
+            configuration=self._configuration,
             subject=subject,
             matrix=trust_matrix,
             recommendations=recommendations
@@ -97,8 +97,9 @@ class RecommendationProtocol(Protocol):
         self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in updated_matrix.values()})
 
         # TODO: [!] correct evaluation of the sent data
-        interaction_matrix = {p: (Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE) for p in trust_matrix.values()}
-        self.__evaluate_interactions(interaction_matrix)
+        interaction_matrix = {p.peer_id: (p, Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE)
+                              for p in trust_matrix.values()}
+        self._evaluate_interactions(interaction_matrix)
 
     def __get_recommendation_request_recipients(self, connected_peers: List[PeerInfo]) -> List[PeerId]:
         recommenders = []
@@ -109,8 +110,8 @@ class RecommendationProtocol(Protocol):
             recommenders = connected_peers
 
         if self.__rec_conf.only_preconfigured:
-            preconfigured_peers = set(p.id for p in self.__configuration.trusted_peers)
-            preconfigured_organisations = set(p.id for p in self.__configuration.trusted_organisations)
+            preconfigured_peers = set(p.id for p in self._configuration.trusted_peers)
+            preconfigured_organisations = set(p.id for p in self._configuration.trusted_organisations)
 
             if recommenders:
                 # if there are already some recommenders it means that only_connected filter is enabled
@@ -138,7 +139,7 @@ class RecommendationProtocol(Protocol):
         candidates = [p for p in self.__trust_db.get_peers_trust_data(recommenders).values()
                       if p.recommendation_trust > trusted_peer_threshold]
         # check if we can proceed
-        if len(candidates) < require_trusted_peer_count:
+        if not candidates or len(candidates) < require_trusted_peer_count:
             logger.debug(
                 f"Not enough trusted peers! Candidates: {len(candidates)}, requirement: {require_trusted_peer_count}.")
             return []

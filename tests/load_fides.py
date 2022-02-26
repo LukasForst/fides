@@ -5,7 +5,6 @@ from fides.evaluation.dovecot import Dovecot
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.model import NetworkMessage
 from fides.messaging.network_bridge import NetworkBridge
-from fides.messaging.queue_in_memory import InMemoryQueue
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
@@ -18,6 +17,7 @@ from fides.protocols.threat_intelligence import ThreatIntelligenceProtocol
 from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import Logger
 from tests.load_config import find_config
+from tests.messaging.queue import TestQueue
 
 logger = Logger(__name__)
 
@@ -27,7 +27,7 @@ class Fides:
     config: TrustModelConfiguration
     trust_db: InMemoryTrustDatabase
     ti_db: InMemoryThreatIntelligenceDatabase
-    queue: InMemoryQueue
+    queue: TestQueue
     bridge: NetworkBridge
     recommendations: RecommendationProtocol
     trust: TrustProtocol
@@ -49,7 +49,7 @@ def get_fides(**kwargs) -> Fides:
     trust_db = kwargs.get('trust_db', InMemoryTrustDatabase(config))
     ti_db = kwargs.get('ti_db', InMemoryThreatIntelligenceDatabase())
 
-    queue = kwargs.get('queue', InMemoryQueue())
+    queue = kwargs.get('queue', TestQueue())
 
     bridge = kwargs.get('bridge', NetworkBridge(queue))
 
@@ -74,7 +74,10 @@ def get_fides(**kwargs) -> Fides:
     on_unknown_message = kwargs.get('on_unknown_message', default_on_unknown_message)
 
     def default_on_error(msg: Union[str, NetworkMessage], ex: Exception):
-        logger.error(f'Error during event handling! {ex}', msg)
+        import sys
+        info = sys.exc_info()[2]
+        logger.error(f'Error during event handling:\n{info.tb_frame}! {ex}', msg)
+        assert False
 
     on_error = kwargs.get('on_error', default_on_error)
 

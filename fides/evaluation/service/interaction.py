@@ -8,9 +8,9 @@ class Satisfaction(Enum):
     0 <= satisfaction <= 1
     where 0 is NOT satisfied and 1 is satisfied
     """
-    ERROR = 0,
-    UNSURE = 0.5,
-    OK = 1,
+    ERROR = 0
+    UNSURE = 0.5
+    OK = 1
 
 
 class Weight(Enum):

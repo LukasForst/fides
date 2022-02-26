@@ -3,6 +3,7 @@ from typing import Dict, Tuple
 from fides.evaluation.service.interaction import Satisfaction, Weight
 from fides.evaluation.service.process import process_service_interaction
 from fides.messaging.network_bridge import NetworkBridge
+from fides.model.aliases import PeerId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.persistance.trust import TrustDatabase
@@ -14,28 +15,28 @@ class Protocol:
                  configuration: TrustModelConfiguration,
                  trust_db: TrustDatabase,
                  bridge: NetworkBridge):
-        self.__configuration = configuration
-        self.__trust_db = trust_db
-        self.__bridge = bridge
+        self._configuration = configuration
+        self._trust_db = trust_db
+        self._bridge = bridge
 
-    def __evaluate_interaction(self,
-                               peer: PeerTrustData,
-                               satisfaction: Satisfaction,
-                               weight: Weight
-                               ) -> PeerTrustData:
+    def _evaluate_interaction(self,
+                              peer: PeerTrustData,
+                              satisfaction: Satisfaction,
+                              weight: Weight
+                              ) -> PeerTrustData:
         """Callback to evaluate and save new trust data for given peer."""
-        return self.__evaluate_interactions({peer: (satisfaction, weight)})[peer.peer_id]
+        return self._evaluate_interactions({peer.peer_id: (peer, satisfaction, weight)})[peer.peer_id]
 
-    def __evaluate_interactions(self,
-                                data: Dict[PeerTrustData, Tuple[Satisfaction, Weight]]) -> TrustMatrix:
+    def _evaluate_interactions(self,
+                               data: Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]) -> TrustMatrix:
         """Callback to evaluate and save new trust data for given peer matrix."""
         trust_matrix: TrustMatrix = {}
         # first process all interactions
-        for peer_trust, (satisfaction, weight) in data.items():
-            updated_trust = process_service_interaction(self.__configuration, peer_trust, satisfaction, weight)
+        for _, (peer_trust, satisfaction, weight) in data.items():
+            updated_trust = process_service_interaction(self._configuration, peer_trust, satisfaction, weight)
             trust_matrix[updated_trust.peer_id] = updated_trust
         # then store matrix
-        self.__trust_db.store_peer_trust_matrix(trust_matrix)
+        self._trust_db.store_peer_trust_matrix(trust_matrix)
         # and dispatch this update to the network layer
-        self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in trust_matrix.values()})
+        self._bridge.send_peers_reliability({p.peer_id: p.service_trust for p in trust_matrix.values()})
         return trust_matrix
