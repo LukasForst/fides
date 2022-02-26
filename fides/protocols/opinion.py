@@ -1,12 +1,13 @@
 from typing import Dict
 
-from fides.evaluation.dovecot import Dovecot
+from fides.evaluation.dovecot import Dovecot, PeerReport
 from fides.messaging.model import PeerIntelligenceResponse
 from fides.model.alert import Alert
 from fides.model.aliases import PeerId, Target
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
+from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
 
 
 class OpinionAggregator:
@@ -14,17 +15,20 @@ class OpinionAggregator:
     Class responsible for evaluation of the intelligence received from the network.
     """
 
-    def __init__(self, configuration: TrustModelConfiguration, dovecot: Dovecot):
+    # TODO: [!] check if we really need to get the reporter_ti or not
+
+    def __init__(self,
+                 configuration: TrustModelConfiguration,
+                 ti_db: ThreatIntelligenceDatabase,
+                 dovecot: Dovecot):
         self.__configuration = configuration
+        self.__ti_db = ti_db
         self.__dovecot = dovecot
 
     def evaluate_alert(self, peer_trust: PeerTrustData, alert: Alert) -> SlipsThreatIntelligence:
         """Evaluates given data about alert and produces aggregated intelligence for Slips."""
-        # TODO: [!] implement correct aggregation
-        self.__dovecot.assemble_peer_opinion([])
 
         alert_trust = max(self.__configuration.alert_trust_from_unknown, peer_trust.service_trust)
-
         score = alert.score
         confidence = alert.confidence * alert_trust
         return SlipsThreatIntelligence(score=score, confidence=confidence, target=alert.target)
@@ -34,9 +38,10 @@ class OpinionAggregator:
                                        data: Dict[PeerId, PeerIntelligenceResponse],
                                        trust_matrix: TrustMatrix) -> SlipsThreatIntelligence:
         """Evaluates given threat intelligence report from the network."""
-        for peer, response in data.items():
-            trust = trust_matrix[peer].service_trust * self.__configuration.alert_trust_from_unknown
-            pass
-        # TODO: [!] implement correct aggregation
-        ti = self.__dovecot.assemble_peer_opinion([])
+        reports = [PeerReport(report_ti=ti.intelligence,
+                              reporter_trust=trust_matrix[peer_id],
+                              reporter_ti=None
+                              ) for peer_id, ti in data.items()]
+        # use Dovecot to aggregate opinion from the reports
+        ti = self.__dovecot.assemble_peer_opinion(reports)
         return SlipsThreatIntelligence(score=ti.score, confidence=ti.confidence, target=target)

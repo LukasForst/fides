@@ -1,30 +1,50 @@
 # This file, class and computational algorithm was inspired by Draliii's implementation of Trust Model for local
 # network peer-to-peer module for Slips
 # https://github.com/draliii/StratosphereLinuxIPS/blob/ac854a8e18ff2acef558036fa3c8cc764bbf2323/modules/p2ptrust/trust/trust_model.py
+from dataclasses import dataclass
+from typing import List, Optional
+
+from fides.model.configuration import TrustModelConfiguration
+from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence
+
+
+@dataclass
+class PeerReport:
+    report_ti: ThreatIntelligence
+    """Threat intelligence report."""
+
+    reporter_trust: PeerTrustData
+    """How much does Slips trust the reporter."""
+
+    reporter_ti: Optional[ThreatIntelligence]
+    """Threat intelligence that Slips has about the reporter."""
 
 
 class Dovecot:
 
-    # TODO: [!] migrate this class so it uses data structures from Fides
+    def __init__(self, config: TrustModelConfiguration):
+        self.__peer_trust_weight = config.peer_trust_weight
 
-    def __init__(self, reliability_weight: float):
-        self.__reliability_weight = reliability_weight
-
-    def compute_peer_trust(self, reliability: float, score: float, confidence: float) -> float:
+    def compute_peer_trust(self, reporter_trust: PeerTrustData, reporter_ti: Optional[ThreatIntelligence]) -> float:
         """
-        Compute the opinion value from a peer by multiplying his report data and his reputation
+        Compute the opinion value from a peer by multiplying his report data and his reputation.
 
-        :param reliability: trust value for the peer, obtained from the go level
-        :param score: score by slips for the peer's IP address
-        :param confidence: confidence by slips for the peer's IP address
+        score: score by slips for the peer's IP address
+        confidence: confidence by slips for the peer's IP address
+
+        :param reporter_trust: trust value for the peer
+        :param reporter_ti threat intelligence about the peer from Slips
         :return: The trust we should put in the report given by this peer
         """
-
-        return ((reliability * self.__reliability_weight) + (score * confidence)) / 2
+        if reporter_ti is not None:
+            return ((reporter_trust.service_trust * self.__peer_trust_weight) + (
+                        reporter_ti.score * reporter_ti.confidence)) / 2
+        else:
+            return reporter_trust.service_trust
 
     @staticmethod
-    def normalize_peer_reputations(peers: list) -> (float, float, list):
+    def normalize_peer_reputations(peers: List[float]) -> List[float]:
         """
         Normalize peer reputation
 
@@ -42,7 +62,7 @@ class Dovecot:
         weighted_trust = [nt / normalize_net_trust_sum for nt in normalized_trust]
         return weighted_trust
 
-    def assemble_peer_opinion(self, data: list) -> ThreatIntelligence:
+    def assemble_peer_opinion(self, data: List[PeerReport]) -> ThreatIntelligence:
         """
         Assemble reports given by all peers and compute the overall network opinion.
 
@@ -58,14 +78,13 @@ class Dovecot:
         reports = []
         reporters = []
 
-        for peer_report in data:
-            report_score, report_confidence, reporter_reliability, reporter_score, reporter_confidence = peer_report
-            reports.append((report_score, report_confidence))
-            reporters.append(self.compute_peer_trust(reporter_reliability, reporter_score, reporter_confidence))
+        for d in data:
+            reports.append(d.report_ti)
+            reporters.append(self.compute_peer_trust(d.reporter_trust, d.reporter_ti))
 
         weighted_reporters = self.normalize_peer_reputations(reporters)
 
-        combined_score = sum([r[0] * w for r, w, in zip(reports, weighted_reporters)])
-        combined_confidence = sum([max(0, r[1] * w) for r, w, in zip(reports, reporters)]) / len(reporters)
+        combined_score = sum([r.score * w for r, w, in zip(reports, weighted_reporters)])
+        combined_confidence = sum([max(0.0, r.confidence * w) for r, w, in zip(reports, reporters)]) / len(reporters)
 
         return ThreatIntelligence(score=combined_score, confidence=combined_confidence)

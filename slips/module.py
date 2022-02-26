@@ -3,6 +3,7 @@ import sys
 from dataclasses import asdict
 from multiprocessing import Process
 
+from fides.evaluation.dovecot import Dovecot
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.configuration import load_configuration
@@ -70,7 +71,7 @@ class SlipsFidesModule(Module, Process):
         recommendations = RecommendationProtocol(self.__trust_model_config, trust_db, bridge)
         trust = TrustProtocol(trust_db, self.__trust_model_config, recommendations)
         peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
-        opinion = OpinionAggregator(self.__trust_model_config)
+        opinion = OpinionAggregator(self.__trust_model_config, ti_db, Dovecot(self.__trust_model_config))
 
         intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, self.__trust_model_config, opinion, trust,
                                                   self.__network_opinion_callback)

@@ -112,3 +112,6 @@ trust:
 
   # how many minutes is network opinion considered valid
   networkOpinionCacheValidSeconds: 3600
+
+  # when computing aggregated opinions, how much should computation take in account computed trust from peer
+  peerTrustWeight: 1

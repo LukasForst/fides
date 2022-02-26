@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 
 from fides.model.aliases import Target
+from fides.model.threat_intelligence import ThreatIntelligence
 
 
 @dataclass
-class Alert:
+class Alert(ThreatIntelligence):
     """Alert that was broadcast on the network."""
 
     target: Target
