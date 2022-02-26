@@ -162,13 +162,13 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                      trust=e['trust'],
                                      enforce_trust=e['enforceTrust'],
                                      confidentiality_level=e['confidentialityLevel'])
-                       for e in data['confidentiality']['peers']],
+                       for e in data['trust']['peers']],
         trusted_organisations=[TrustedEntity(id=e['id'],
                                              name=e['name'],
                                              trust=e['trust'],
                                              enforce_trust=e['enforceTrust'],
                                              confidentiality_level=e['confidentialityLevel'])
-                               for e in data['confidentiality']['organisations']],
+                               for e in data['trust']['organisations']],
         network_opinion_cache_valid_seconds=data['trust']['networkOpinionCacheValidSeconds'],
         peer_trust_weight=data['trust']['peerTrustWeight']
     )

@@ -1,5 +1,3 @@
-from ctypes import Union
-
 IP = str
 """IPv4, IPv6 in string representation."""
 
@@ -12,7 +10,7 @@ PeerId = str
 OrganisationId = str
 """String representation of organisation ID."""
 
-Target = Union[IP, Domain]
+Target = str
 """Intelligence Target - domain or IP."""
 
 ConfidentialityLevel = float

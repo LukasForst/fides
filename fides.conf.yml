@@ -83,11 +83,11 @@ trust:
 
   # trust these organisations with given trust by default
   organisations:
-    - id: org1                # public key of the organisation
-      name: Organisation \#1  # name
-      trust: 0.1              # how much should the model trust peers from this org
-      enforceTrust: True      # whether to allow (if false) changing trust during runtime (when we received more data from org)
-      privacyLevel: 0.7       # what level of data should be shared with peers from this org, see privacy.levels
+    - id: org1                  # public key of the organisation
+      name: Organisation \#1    # name
+      trust: 0.1                # how much should the model trust peers from this org
+      enforceTrust: True        # whether to allow (if false) changing trust during runtime (when we received more data from org)
+      confidentialityLevel: 0.7 # what level of data should be shared with peers from this org, see privacy.levels
 
     - id: org2
       name: Organisation \#2
@@ -102,7 +102,7 @@ trust:
       name: Peer \#1
       trust: 0.1
       enforceTrust: True
-      privacyLevel: 0.7
+      confidentialityLevel: 0.7
 
     - id: peer2
       name: Peer \#2
