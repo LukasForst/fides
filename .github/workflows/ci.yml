@@ -15,4 +15,5 @@ jobs:
         run: conda env create --file conda.yml
 
       - name: Execute Tests
-        run: conda activate fides && pytest tests
+        run: |
+          conda init bash && conda activate fides && pytest tests
