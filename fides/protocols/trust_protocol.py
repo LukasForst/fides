@@ -66,7 +66,8 @@ class TrustProtocol:
         logger.debug(f"New trust for peer:", trust)
 
         # determine if it is necessary to get recommendations from the network
-        if trust.reputation == 0 and get_recommendations:
+        # get recommendations if peer does not have any trusted organisation, or it is not pre-trusted
+        if not peers_orgs and not pre_trusted_peer and get_recommendations:
             logger.debug("Getting recommendations.")
             self.__recommendation_protocol.get_recommendation_for(trust.info)
 
