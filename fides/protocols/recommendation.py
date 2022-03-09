@@ -159,7 +159,10 @@ class RecommendationProtocol(Protocol):
             return []
 
         # and finally use SORT selection algorithm to pick the correct list of recipients
-        return select_trustworthy_peers_for_recommendations(
-            data={p.peer_id: p.recommendation_trust for p in candidates},
-            max_peers=self.__rec_conf.peers_max_count
-        )
+        if self.__rec_conf.peers_max_count > len(candidates):
+            return select_trustworthy_peers_for_recommendations(
+                data={p.peer_id: p.recommendation_trust for p in candidates},
+                max_peers=self.__rec_conf.peers_max_count
+            )
+        else:
+            return [p.peer_id for p in candidates]
