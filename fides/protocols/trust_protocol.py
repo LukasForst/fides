@@ -37,13 +37,14 @@ class TrustProtocol:
         # set initial reputation from the config
         trust.reputation = self.__configuration.initial_reputation
         trust.recommendation_trust = trust.reputation
+        trust.initial_reputation_provided_by_count = 1
 
         # check if this is pre-trusted peer
         pre_trusted_peer = [p for p in self.__configuration.trusted_peers if trust.peer_id == p.id]
         if len(pre_trusted_peer) == 1:
             configured_peer = pre_trusted_peer[0]
             self.__inherit_trust(trust, configured_peer)
-            trust.initial_reputation_provided_by_count = 1
+            trust.initial_reputation_provided_by_count += 1
 
         # add values that are inherited from the organisations
         peers_orgs = [org for org in self.__configuration.trusted_organisations if org.id in peer.organisations]
