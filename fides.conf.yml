@@ -128,5 +128,3 @@ trust:
     distance:
     threshold:
       threshold: 0.5
-
-  tiInteractionEvaluationStrategy: 'even'
