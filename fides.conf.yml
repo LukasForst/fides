@@ -125,6 +125,13 @@ trust:
     used: 'threshold'
     # these are configuration for the strategies, content will be passed as a **kwargs to the instance
     even:
+      # value used as a default satisfaction for all peers
+      satisfaction: 0.8
     distance:
     threshold:
+      # minimal confidence level
       threshold: 0.5
+      # this strategy is used when the aggregated confidence is lower than the threshold
+      lower: 'even'
+      # and this one when it is higher
+      higher: 'distance'

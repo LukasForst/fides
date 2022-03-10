@@ -28,6 +28,7 @@ class EvenTIEvaluation(TIEvaluation):
 
     def __init__(self, **kwargs):
         self.__kwargs = kwargs
+        self.__satisfaction = kwargs.get('satisfaction', SatisfactionLevels.Ok)
 
     def evaluate(self,
                  aggregated_ti: SlipsThreatIntelligence,
@@ -36,7 +37,7 @@ class EvenTIEvaluation(TIEvaluation):
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         super()._assert_keys(responses, trust_matrix)
 
-        return {p.peer_id: (p, SatisfactionLevels.Ok, Weight.INTELLIGENCE_DATA_REPORT) for p in
+        return {p.peer_id: (p, self.__satisfaction, Weight.INTELLIGENCE_DATA_REPORT) for p in
                 trust_matrix.values()}
 
 
@@ -82,8 +83,8 @@ class ThresholdTIEvaluation(TIEvaluation):
     def __init__(self, **kwargs):
         self.__kwargs = kwargs
         self.__threshold = kwargs.get('threshold', 0.5)
-        self.__even = EvenTIEvaluation()
-        self.__distance = DistanceBasedTIEvaluation()
+        self.__lower = kwargs.get('lower', EvenTIEvaluation())
+        self.__higher = kwargs.get('higher', DistanceBasedTIEvaluation())
 
     def evaluate(self,
                  aggregated_ti: SlipsThreatIntelligence,
@@ -92,9 +93,9 @@ class ThresholdTIEvaluation(TIEvaluation):
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         super()._assert_keys(responses, trust_matrix)
 
-        return self.__distance.evaluate(aggregated_ti, responses, trust_matrix) \
+        return self.__higher.evaluate(aggregated_ti, responses, trust_matrix) \
             if self.__threshold <= aggregated_ti.confidence \
-            else self.__even.evaluate(aggregated_ti, responses, trust_matrix)
+            else self.__lower.evaluate(aggregated_ti, responses, trust_matrix)
 
 
 EvaluationStrategy = {
