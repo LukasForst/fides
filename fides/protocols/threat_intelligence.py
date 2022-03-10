@@ -85,7 +85,7 @@ class ThreatIntelligenceProtocol(Protocol):
             aggregated_ti=ti,
             responses=r,
             trust_matrix=trust_matrix,
-            ti_getter=self.__ti_db.get_for
+            local_ti=self.__ti_db.get_for(target)
         )
         self._evaluate_interactions(interaction_matrix)
 

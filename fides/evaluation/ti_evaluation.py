@@ -1,8 +1,8 @@
-from typing import Dict, Tuple, Callable, Optional
+from typing import Dict, Tuple, Optional
 
 from fides.evaluation.service.interaction import Satisfaction, Weight, SatisfactionLevels
 from fides.messaging.model import PeerIntelligenceResponse
-from fides.model.aliases import PeerId, Target
+from fides.model.aliases import PeerId
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.utils.logger import Logger
@@ -111,21 +111,19 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
                  aggregated_ti: SlipsThreatIntelligence,
                  responses: Dict[PeerId, PeerIntelligenceResponse],
                  trust_matrix: TrustMatrix,
-                 ti_getter: Optional[Callable[[Target], SlipsThreatIntelligence]] = None,
+                 local_ti: Optional[SlipsThreatIntelligence] = None,
                  **kwargs,
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         super()._assert_keys(responses, trust_matrix)
 
-        ti_getter = ti_getter if ti_getter else self.__default_ti_getter
-        if not ti_getter:
-            raise Exception('No Threat Intelligence getter given, ' +
-                            'use different evaluation strategy when the local TI is not available!')
-
-        ti = ti_getter(aggregated_ti.target)
-        if not ti:
-            logger.warn(f'No local threat intelligence found for target {aggregated_ti.target}! ' +
-                        'Falling back to DistanceBasedTIEvaluation.')
-            ti = aggregated_ti
+        ti = aggregated_ti
+        if local_ti or self.__default_ti_getter:
+            local_ti = local_ti if local_ti else self.__default_ti_getter(ti.target)
+            if local_ti:
+                ti = local_ti
+            else:
+                logger.warn(f'No local threat intelligence available for target {ti.target}! ' +
+                            'Falling back to DistanceBasedTIEvaluation.')
 
         return self._build_evaluation(
             baseline_score=ti.score,
