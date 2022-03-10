@@ -120,7 +120,7 @@ trust:
 
   # which strategy should be used to evaluate interaction when peer provided threat intelligence on a target
   # see fides.evaluation.ti_evaluation.py for options
-  # options: ['even', 'distance', 'threshold]
+  # options: ['even', 'distance', 'localDistance', 'threshold']
   tiStrategies:
     used: 'threshold'
     # these are configuration for the strategies, content will be passed as a **kwargs to the instance
@@ -128,6 +128,7 @@ trust:
       # value used as a default satisfaction for all peers
       satisfaction: 0.8
     distance:
+    localDistance:
     threshold:
       # minimal confidence level
       threshold: 0.5

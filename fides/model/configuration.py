@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Union, Optional
+from typing import List, Union
 
 import yaml
 
@@ -182,17 +182,14 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
 def __parse_evaluation_strategy(data: dict) -> TIEvaluation:
     strategies = data['trust']['tiStrategies']
 
-    def get_strategy_for_key(key: str, tkwargs: Optional[dict] = None) -> TIEvaluation:
-        kwargs = tkwargs if tkwargs else strategies[key]
+    def get_strategy_for_key(key: str) -> TIEvaluation:
+        kwargs = strategies[key]
         kwargs = kwargs if kwargs else {}
+        # there's special handling as this one combines multiple of them
+        if key == 'threshold':
+            kwargs['lower'] = get_strategy_for_key(kwargs['lower'])
+            kwargs['higher'] = get_strategy_for_key(kwargs['higher'])
+
         return EvaluationStrategy[key](**kwargs)
 
-    used = strategies['used']
-    params = None
-    # there's special handling as this one combines multiple of them
-    if used == 'threshold':
-        params = strategies[used]
-        params['lower'] = get_strategy_for_key(params['lower'])
-        params['higher'] = get_strategy_for_key(params['higher'])
-
-    return get_strategy_for_key(used, params)
+    return get_strategy_for_key(strategies['used'])
