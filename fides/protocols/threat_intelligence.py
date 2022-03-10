@@ -99,7 +99,7 @@ class ThreatIntelligenceProtocol(Protocol):
         peers_allowed_levels = [p.confidentiality_level
                                 for p in self._configuration.trusted_organisations if
                                 p.id in peer_trust.organisations]
-        # TODO: [?] check if we want to use service_trust for this filtering or some other metric
+
         peers_allowed_levels.append(peer_trust.service_trust)
         # select maximum allowed level
         allowed_level = max(peers_allowed_levels)

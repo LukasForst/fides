@@ -15,8 +15,6 @@ class OpinionAggregator:
     Class responsible for evaluation of the intelligence received from the network.
     """
 
-    # TODO: [!] check if we really need to get the reporter_ti or not
-
     def __init__(self,
                  configuration: TrustModelConfiguration,
                  ti_db: ThreatIntelligenceDatabase,
