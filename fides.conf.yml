@@ -114,4 +114,18 @@ trust:
   networkOpinionCacheValidSeconds: 3600
 
   # when computing aggregated opinions, how much should computation take in account computed trust from peer
+  # see fides.evaluation.dovecot.py
   peerTrustWeight: 1
+
+  # which strategy should be used to evaluate interaction when peer provided threat intelligence on a target
+  # see fides.evaluation.ti_evaluation.py for options
+  # options: ['even', 'distance', 'threshold]
+  tiStrategies:
+    used: 'threshold'
+    # these are configuration for the strategies, content will be passed as a **kwargs to the instance
+    even:
+    distance:
+    threshold:
+      threshold: 0.5
+
+  tiInteractionEvaluationStrategy: 'even'

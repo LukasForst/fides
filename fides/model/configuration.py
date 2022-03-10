@@ -3,6 +3,7 @@ from typing import List, Union
 
 import yaml
 
+from fides.evaluation.ti_evaluation import TIEvaluation, EvaluationStrategy
 from fides.model.aliases import OrganisationId, PeerId
 from fides.utils.logger import Logger
 
@@ -126,6 +127,9 @@ class TrustModelConfiguration:
     """When computing aggregated opinions, how much should computation
     take in account computed trust from peer."""
 
+    ti_interaction_evaluation_strategy: TIEvaluation
+    """Evaluation str"""
+
 
 def load_configuration(file_path: str) -> TrustModelConfiguration:
     with open(file_path, "r") as stream:
@@ -170,5 +174,13 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                              confidentiality_level=e['confidentialityLevel'])
                                for e in data['trust']['organisations']],
         network_opinion_cache_valid_seconds=data['trust']['networkOpinionCacheValidSeconds'],
-        peer_trust_weight=data['trust']['peerTrustWeight']
+        peer_trust_weight=data['trust']['peerTrustWeight'],
+        ti_interaction_evaluation_strategy=__parse_evaluation_strategy(data)
     )
+
+
+def __parse_evaluation_strategy(data: dict) -> TIEvaluation:
+    strategies = data['trust']['tiStrategies']
+    used = strategies['used']
+    kwargs = strategies[used]
+    return EvaluationStrategy[used](**(kwargs if kwargs else {}))

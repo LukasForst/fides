@@ -1,4 +1,4 @@
-from fides.evaluation.service.interaction import Satisfaction, Weight
+from fides.evaluation.service.interaction import Weight, SatisfactionLevels
 from fides.evaluation.service.process import process_service_interaction
 from fides.model.configuration import TrustModelConfiguration, TrustedEntity
 from fides.model.peer import PeerInfo
@@ -60,7 +60,7 @@ class TrustProtocol:
         # process interaction and assign all others values
         trust = process_service_interaction(configuration=self.__configuration,
                                             peer=trust,
-                                            satisfaction=Satisfaction.OK,
+                                            satisfaction=SatisfactionLevels.Ok,
                                             weight=Weight.FIRST_ENCOUNTER
                                             )
         logger.debug(f"New trust for peer:", trust)

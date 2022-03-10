@@ -1,6 +1,6 @@
 from typing import Callable
 
-from fides.evaluation.service.interaction import Satisfaction, Weight
+from fides.evaluation.service.interaction import Weight, SatisfactionLevels
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.alert import Alert
 from fides.model.aliases import Target
@@ -47,5 +47,4 @@ class AlertProtocol(Protocol):
         self.__alert_callback(ti)
 
         # and update service data
-        # TODO: [!] analyse how good was alert and then add assign weight for that
-        self._evaluate_interaction(peer_trust, Satisfaction.OK, Weight.ALERT)
+        self._evaluate_interaction(peer_trust, SatisfactionLevels.Ok, Weight.ALERT)

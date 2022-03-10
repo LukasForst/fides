@@ -19,7 +19,7 @@ def process_service_interaction(
 ) -> PeerTrustData:
     """Processes given interaction and updates trust data."""
     new_history = peer.service_history + [ServiceHistoryRecord(
-        satisfaction=satisfaction.value,
+        satisfaction=satisfaction,
         weight=weight.value,
         timestamp=now()
     )]

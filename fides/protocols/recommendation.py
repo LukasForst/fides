@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from fides.evaluation.recommendation.process import process_new_recommendations
 from fides.evaluation.recommendation.selection import select_trustworthy_peers_for_recommendations
-from fides.evaluation.service.interaction import Satisfaction, Weight
+from fides.evaluation.service.interaction import Weight, SatisfactionLevels
 from fides.messaging.model import PeerRecommendationResponse
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import PeerId
@@ -68,7 +68,7 @@ class RecommendationProtocol(Protocol):
         # it is possible that we saw sender for the first time
         # TODO: [+] initialise peer if we saw it for the first time
         if sender_trust:
-            self._evaluate_interaction(sender_trust, Satisfaction.OK, Weight.INTELLIGENCE_REQUEST)
+            self._evaluate_interaction(sender_trust, SatisfactionLevels.Ok, Weight.INTELLIGENCE_REQUEST)
 
     def handle_recommendation_response(self, responses: List[PeerRecommendationResponse]):
         """Handles response from peers with recommendations. Updates all necessary values in db."""
@@ -103,7 +103,7 @@ class RecommendationProtocol(Protocol):
         self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in updated_matrix.values()})
 
         # TODO: [!] correct evaluation of the sent data
-        interaction_matrix = {p.peer_id: (p, Satisfaction.OK, Weight.RECOMMENDATION_RESPONSE)
+        interaction_matrix = {p.peer_id: (p, SatisfactionLevels.Ok, Weight.RECOMMENDATION_RESPONSE)
                               for p in trust_matrix.values()}
         self._evaluate_interactions(interaction_matrix)
 

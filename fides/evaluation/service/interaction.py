@@ -1,16 +1,14 @@
 from enum import Enum
 
+Satisfaction = float
+"""Represents value how much was client satisfied with the interaction
+0 <= satisfaction <= 1 where 0 is NOT satisfied and 1 is satisfied.
+"""
 
-# TODO: [!] check this evaluation
 
-class Satisfaction(Enum):
-    """Represents value how much was client satisfied with the interaction
-    0 <= satisfaction <= 1
-    where 0 is NOT satisfied and 1 is satisfied
-    """
-    ERROR = 0
-    UNSURE = 0.5
-    OK = 1
+class SatisfactionLevels:
+    Ok: float = 1
+    Unsure: float = 0.5
 
 
 class Weight(Enum):

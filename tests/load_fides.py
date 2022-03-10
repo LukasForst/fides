@@ -1,5 +1,8 @@
+import json
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
+
+from dacite import from_dict
 
 from fides.evaluation.dovecot import Dovecot
 from fides.messaging.message_handler import MessageHandler
@@ -63,8 +66,10 @@ def get_fides(**kwargs) -> Fides:
     peer_list = kwargs.get('peer_list', PeerListUpdateProtocol(trust_db, bridge, recommendations, trust))
     dovecot = kwargs.get('dovecot', Dovecot(config))
     opinion = kwargs.get('opinion', OpinionAggregator(config, ti_db, dovecot))
+    ti_evaluation_strategy = kwargs.get('ti_evaluation_strategy', config.ti_interaction_evaluation_strategy)
     intelligence = kwargs.get('intelligence',
                               ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust,
+                                                         ti_evaluation_strategy,
                                                          network_opinion_callback))
     alert = kwargs.get('alert', AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback))
 
@@ -106,3 +111,16 @@ def get_fides(**kwargs) -> Fides:
         alert,
         message_handler,
     )
+
+
+def get_fides_stream() -> (Fides, List[NetworkMessage]):
+    """Returns fides and list of messages that will be updated when new message comes."""
+    f = get_fides()
+    messages: List[NetworkMessage] = []
+
+    def on_message(m: str):
+        messages.append(from_dict(data_class=NetworkMessage, data=json.loads(m)))
+
+    f.queue.on_send_called = on_message
+    f.listen()
+    return f, messages

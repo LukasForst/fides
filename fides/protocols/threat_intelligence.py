@@ -1,6 +1,7 @@
 from typing import List, Callable, Optional
 
-from fides.evaluation.service.interaction import Satisfaction, Weight
+from fides.evaluation.service.interaction import Weight, SatisfactionLevels
+from fides.evaluation.ti_evaluation import TIEvaluation
 from fides.messaging.model import PeerIntelligenceResponse
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import Target
@@ -28,12 +29,14 @@ class ThreatIntelligenceProtocol(Protocol):
                  configuration: TrustModelConfiguration,
                  aggregator: OpinionAggregator,
                  trust_protocol: TrustProtocol,
+                 ti_evaluation_strategy: TIEvaluation,
                  network_opinion_callback: Callable[[SlipsThreatIntelligence], None]
                  ):
         super().__init__(configuration, trust_db, bridge)
         self.__ti_db = ti_db
         self.__aggregator = aggregator
         self.__trust_protocol = trust_protocol
+        self.__ti_evaluation_strategy = ti_evaluation_strategy
         self.__network_opinion_callback = network_opinion_callback
 
     def request_data(self, target: Target):
@@ -61,7 +64,7 @@ class ThreatIntelligenceProtocol(Protocol):
         # and respond with data we have
         self._bridge.send_intelligence_response(request_id, target, ti)
         self._evaluate_interaction(peer_trust,
-                                   Satisfaction.OK if ti.confidence else Satisfaction.UNSURE,
+                                   SatisfactionLevels.Ok,
                                    Weight.INTELLIGENCE_REQUEST)
 
     def handle_intelligence_response(self, responses: List[PeerIntelligenceResponse]):
@@ -78,9 +81,11 @@ class ThreatIntelligenceProtocol(Protocol):
         # cache data for further retrieval
         self._trust_db.cache_network_opinion(ti)
 
-        # TODO: [!] correct evaluation of the sent data
-        interaction_matrix = {p.peer_id: (p, Satisfaction.OK, Weight.INTELLIGENCE_DATA_REPORT) for p in
-                              trust_matrix.values()}
+        interaction_matrix = self.__ti_evaluation_strategy.evaluate(
+            aggregated_ti=ti,
+            responses=r,
+            trust_matrix=trust_matrix
+        )
         self._evaluate_interactions(interaction_matrix)
 
         return self.__network_opinion_callback(ti)
