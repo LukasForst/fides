@@ -21,7 +21,7 @@ class PeerReport:
     """Threat intelligence that Slips has about the reporter."""
 
 
-class Dovecot:
+class TIAggregation:
 
     def __init__(self, config: TrustModelConfiguration):
         self.__peer_trust_weight = config.peer_trust_weight

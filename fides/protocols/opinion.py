@@ -1,6 +1,6 @@
 from typing import Dict
 
-from fides.evaluation.dovecot import Dovecot, PeerReport
+from fides.evaluation.ti_aggregation import TIAggregation, PeerReport
 from fides.messaging.model import PeerIntelligenceResponse
 from fides.model.alert import Alert
 from fides.model.aliases import PeerId, Target
@@ -18,7 +18,7 @@ class OpinionAggregator:
     def __init__(self,
                  configuration: TrustModelConfiguration,
                  ti_db: ThreatIntelligenceDatabase,
-                 dovecot: Dovecot):
+                 dovecot: TIAggregation):
         self.__configuration = configuration
         self.__ti_db = ti_db
         self.__dovecot = dovecot

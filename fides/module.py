@@ -1,6 +1,6 @@
 from typing import Union
 
-from fides.evaluation.dovecot import Dovecot
+from fides.evaluation.ti_aggregation import TIAggregation
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.model import NetworkMessage
 from fides.messaging.network_bridge import NetworkBridge
@@ -40,8 +40,10 @@ if __name__ == '__main__':
     recommendations = RecommendationProtocol(config, trust_db, bridge, )
     trust = TrustProtocol(trust_db, config, recommendations)
     peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
-    opinion = OpinionAggregator(config, ti_db, Dovecot(config))
-    intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust, network_opinion_callback)
+    opinion = OpinionAggregator(config, ti_db, TIAggregation(config))
+
+    intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, config, opinion, trust,
+                                              config.ti_interaction_evaluation_strategy, network_opinion_callback)
     alert = AlertProtocol(trust_db, bridge, trust, config, opinion, network_opinion_callback)
 
 

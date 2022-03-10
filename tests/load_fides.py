@@ -4,7 +4,7 @@ from typing import Union, List
 
 from dacite import from_dict
 
-from fides.evaluation.dovecot import Dovecot
+from fides.evaluation.ti_aggregation import TIAggregation
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.model import NetworkMessage
 from fides.messaging.network_bridge import NetworkBridge
@@ -35,7 +35,7 @@ class Fides:
     recommendations: RecommendationProtocol
     trust: TrustProtocol
     peer_list: PeerListUpdateProtocol
-    dovecot: Dovecot
+    dovecot: TIAggregation
     opinion: OpinionAggregator
     intelligence: ThreatIntelligenceProtocol
     alert: AlertProtocol
@@ -64,7 +64,7 @@ def get_fides(**kwargs) -> Fides:
     recommendations = kwargs.get('recommendations', RecommendationProtocol(config, trust_db, bridge))
     trust = kwargs.get('trust', TrustProtocol(trust_db, config, recommendations))
     peer_list = kwargs.get('peer_list', PeerListUpdateProtocol(trust_db, bridge, recommendations, trust))
-    dovecot = kwargs.get('dovecot', Dovecot(config))
+    dovecot = kwargs.get('dovecot', TIAggregation(config))
     opinion = kwargs.get('opinion', OpinionAggregator(config, ti_db, dovecot))
     ti_evaluation_strategy = kwargs.get('ti_evaluation_strategy', config.ti_interaction_evaluation_strategy)
     intelligence = kwargs.get('intelligence',
