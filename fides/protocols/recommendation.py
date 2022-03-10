@@ -102,7 +102,7 @@ class RecommendationProtocol(Protocol):
         # and dispatch event
         self.__bridge.send_peers_reliability({p.peer_id: p.service_trust for p in updated_matrix.values()})
 
-        # TODO: [!] correct evaluation of the sent data
+        # TODO: [+] optionally employ same thing as when receiving TI
         interaction_matrix = {p.peer_id: (p, SatisfactionLevels.Ok, Weight.RECOMMENDATION_RESPONSE)
                               for p in trust_matrix.values()}
         self._evaluate_interactions(interaction_matrix)
