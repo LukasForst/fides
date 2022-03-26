@@ -19,6 +19,7 @@ test:
 pull-text:
 	rm -rf thesis;
 	git clone https://git.overleaf.com/61f1781dda616ff9b2082708 thesis;
+	cd thesis && git push --mirror git@github.com:LukasForst/master-thesis.git;
 	rm -rf thesis/.git;
 	git add thesis;
 	git commit -m "update thesis text";
