@@ -22,15 +22,26 @@ Static initial trust is supported by Fides as form of fallback, when no other co
 \subsubsection{Pre-Trusted Peers}
 In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership of some group, the trust model can utilize this knowledge and assign higher or lower trust.
 
-The network layer, designed for Slips and Fides, supports this\cite{nl} and provides
+The network layer, designed for Slips and Fides, supports this\cite{nl} and provides a cryptographically-secure way how to identify single peer in the network and its membership in an organization.
+This allows administrators to \textit{pre-trust} peers or the whole organization - by assigning them either initial reputation or directly service trust.
 
-% TODO: probably do not have it here, but it is great example
-To whom trust or which initial reputation value to use, is entirely on the administrator of the trust model. The inspiration for whom to trust provides, for example, Tor and their directory authorities\cite{torauth}.
+The Fides configuration allows administrators to specify static initial reputation for the specific peer or for all peers from the specific organization. 
+This means that whenever new peer joins the network and it is pre-trusted, it gains initial reputation specified in the configuration.
+During the time, it interacts with the local peer and provides threat intelligence, the data are evaluated and trust model decides how much it trusts them (assigns service trust) based on the reputation and the quality of the data. In detail is this process described in \ref{subsec:interaction-evaluation}.
+
+Another option, the administrator can use, is to enforce the service trust for the peer for the time being. This effectively means that trust model will not evaluate any data received from the pre-trusted peer and directly assigns them service trust from the configuration. This configuration for the Fides is called \textit{enforceTrust}.
+
+Option to pre-trust peers solves the cold start problem for specific peers and organizations, as they will start with/keep the high reputation.
+Which organization or which peer to trust or not is entirely on the administrator of the trust model. The inspiration for whom to trust provides, for example, Tor and their directory authorities\cite{torauth}. 
+% TODO: probably do not have it here, but it is great example, this refers to "super trusted we-know-you-and-have-had-many-beers-with-you Tor volunteers"
+However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
 
 \subsubsection{Recommendations}
-here we describe how we handle recommendations comming from the sort
+As the local peer might have multiple remote peers, that it \textit{trusts enough}, it could be able to utilize this relationship and ask remote peers \textit{what do they think about newcomer}. 
+In other words, whenever local peer encounters peer that wasn't seen before, it can ask for recommendation on this peer from the local peer's most trusted remote peers.
 
-
+However, the recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peer that might have some threat intelligence about the malicious actor. 
+These attacks are called bad-mouthing and unfair praises. 
 
 
 
