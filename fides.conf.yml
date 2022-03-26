@@ -32,7 +32,7 @@ confidentiality:
       value: 0.7
     # do not share anything ever
     - name: PRIVATE
-      value: 1.1 # never meets condition peer.privacyLevel >= data.leve as peer.privacyLevel <0, 1>
+      value: 1.1 # never meets condition peer.privacyLevel >= data.level as peer.privacyLevel <0, 1>
 
   # if some data are not labeled, what value should we use
   defaultLevel: 0
