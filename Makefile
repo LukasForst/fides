@@ -15,3 +15,6 @@ down:
 
 test:
 	pytest tests
+
+sync-text:
+	git submodule update --init
