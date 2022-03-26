@@ -1,2 +1,7 @@
 \subsection{Recommendation System}
 \textbf{Problem}: cold boot, with the dynamically changing network, how do new peers get initial trust, how can trusted peers recommend initial trust. Describe how recommendation system based on SORT works. Describe how do we approach pre-configured and pre-trusted peers and organizations.
+
+\subsubsection{Cold Start Problem}
+Because the peer-to-peer network is open and any peer can freely join and leave, the local peer will encounter many peers that were not seen before. As there was no previous encounter with the peer, the trust model does not have any information about their reliability nor how much can trust them. 
+We call this \textit{Cold Start Problem} - how does new peer gain trust in the network? 
+
