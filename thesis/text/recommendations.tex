@@ -2,6 +2,44 @@
 \textbf{Problem}: cold boot, with the dynamically changing network, how do new peers get initial trust, how can trusted peers recommend initial trust. Describe how recommendation system based on SORT works. Describe how do we approach pre-configured and pre-trusted peers and organizations.
 
 \subsubsection{Cold Start Problem}
-Because the peer-to-peer network is open and any peer can freely join and leave, the local peer will encounter many peers that were not seen before. As there was no previous encounter with the peer, the trust model does not have any information about their reliability nor how much can trust them. 
-We call this \textit{Cold Start Problem} - how does new peer gain trust in the network? 
+Dynamic and global environment such as global peer-to-peer network, used by Fides, is open to anyone and any peer can freely join and leave. Because of that, the local peer will encounter many peers that were not seen before. As there was no previous encounter with the peer, the trust model does not have any information about their reliability nor how much can trust them. 
+New peers need to be able to trust from the local peer in order to be useful part of the network. However, the local peer needs to be able to discover malicious actors that are trying to gain its trust to misuse it. 
+
+We call this \textit{Cold Start Problem} - how does the new peer gain initial trust from the network. There are multiple ways how to approach this issue, we identified following potential solutions.
+
+\subsubsection{Static Initial Trust}
+In this approach, whenever trust model encounters new peer, it assigns static value as an initial trust. What the value is depends on the specific implementation of the trust model.
+
+For example, in \textbf{Dovecot} trust model, every peer starts with the trust of $1$ (highest possible) and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning and only during the time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peers.
+
+On the other hand, \textbf{Sality} botnet uses \textit{goodcount} as a counter of interactions with any other peer, higher the \textit{goodcount}, the higher trust the peer has for the local peer. The goodcount for each new peer starts with $0$. Meaning, that the botnet does not trust fresh peers at all and they can gain trust only by following the protocol which depends on number of good interaction and time.
+
+Static initial trust is easy to implement, but it somewhat requires assumptions about the network. If the network is considered \textit{mostly being}, it might be safe to use initial trust of $1$, however for highly adversarial networks using initial trust of $1$ might be dangerous and it is better to use $0$. 
+On the other hand, using low initial trust and no mechanism how to gain more trust fast means, that the being peers that joined recently, don't affect the final decisions of the model even though they might have useful information about adversaries.
+
+Static initial trust is supported by Fides as form of fallback, when no other cold start technique is used. Administrator provides configuration which contains initial reputation for each new peer.
+
+\subsubsection{Pre-Trusted Peers}
+In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership of some group, the trust model can utilize this knowledge and assign higher or lower trust.
+
+The network layer, designed for Slips and Fides, supports this\cite{nl} and provides
+
+% TODO: probably do not have it here, but it is great example
+To whom trust or which initial reputation value to use, is entirely on the administrator of the trust model. The inspiration for whom to trust provides, for example, Tor and their directory authorities\cite{torauth}.
+
+\subsubsection{Recommendations}
+here we describe how we handle recommendations comming from the sort
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -8,6 +8,14 @@
 \usepackage{algorithm} % fancier pseudocode
 \usepackage{array} % better alignments of tables
 
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=ynt
+]{biblatex}
+\addbibresource{biblio.bib}
+
+
 \title{Fides, Trust Model for Highly Adversarial Global Peer-To-Peer Networks of Intrusion Prevention Systems}
 \author{Bc. Lukáš Forst}
 \date{2022}
@@ -49,5 +57,9 @@ So far this document is just set of random paragraphs and notes for the future.
 \include{text/recommendations}
 
 \include{text/equations}
+
+\medskip
+
+\printbibliography
 
 \end{document}
