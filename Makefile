@@ -22,5 +22,5 @@ pull-text:
 	cd thesis && git push --mirror git@github.com:LukasForst/master-thesis.git;
 	rm -rf thesis/.git;
 	git add thesis;
-	git commit -m "update thesis text";
+	git commit -m "update thesis text" || exit 0;
 	git push;
