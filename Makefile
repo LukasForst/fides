@@ -17,4 +17,7 @@ test:
 	pytest tests
 
 sync-text:
-	git submodule update --init
+	git submodule update --remote --rebase
+
+pull-text:
+	git submodule update --init --recursive
