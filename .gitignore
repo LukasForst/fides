@@ -1,3 +1,9 @@
+# data from compiled tex
+thesis/**/*.aux
+thesis/**/*.bcf
+thesis/**/*.out
+thesis/**/*.run.xml
+thesis/main.pdf
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,venv,macos,jetbrains+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,venv,macos,jetbrains+all
@@ -104,7 +110,8 @@ modules.xml
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
