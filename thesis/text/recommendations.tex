@@ -7,6 +7,7 @@ We call this \textit{Cold Start Problem} - how does the new peer gain initial tr
 Fides has reference implementation for all of the following approaches and combines them according to provided configuration with aim to achieve best results for cold starts with malicious peers and behavior in mind.
 
 \subsubsection{Static Initial Trust}
+\label{subsubsec:static-initial-trust}
 In this approach, whenever trust model encounters new peer, it assigns static value as an initial trust. What the value is depends on the specific implementation of the trust model.
 
 For example, in \textbf{Dovecot} trust model, every peer starts with the trust of $1$ (highest possible) and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning and only during the time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peers.
@@ -19,6 +20,7 @@ On the other hand, using low initial trust and no mechanism how to gain more tru
 Static initial trust is supported by Fides as form of fallback, when no other cold start technique is used. Administrator provides configuration which contains initial reputation for each new peer.
 
 \subsubsection{Pre-Trusted Peers}
+\label{subsubsec:pre-trusted-peers}
 In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership of some group, the trust model can utilize this knowledge and assign higher or lower trust.
 
 The network layer, designed for Slips and Fides, supports this\cite{nl} and provides a cryptographically-secure way how to identify single peer in the network and its membership in an organization.
@@ -36,30 +38,19 @@ Which organization or which peer to trust or not is entirely on the administrato
 However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
 
 \subsubsection{Recommendations}
+\label{subsubsec:recommendations}
 As the local peer might have multiple remote peers, that it \textit{trusts enough}, it could be able to utilize this relationship and ask remote peers \textit{what do they think about newcomer}. 
 In other words, whenever local peer encounters peer that wasn't seen before, it can ask for recommendation on this peer from the local peer's most trusted remote peers.
 
 The recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peer that might have some threat intelligence about the malicious actor. 
-These attacks are called bad-mouthing and unfair praises and we need to consider them and implement countermeasures.
+These attacks are called \textit{bad-mouthing} and \textit{unfair praises} and we need to consider them and implement countermeasures.
 
+Because of the possible attacks, the local peer should not solely rely on the network recommendations when computing final service trust for the fresh peer. In case, when the recommending peers are malicious, it might skew the decisions of the local peer for the time being.
+In order to solve this, when computing the final service trust for the remote peer, the local peer should take in account its own interaction with the peer as well as the received recommendations.
 
+Moreover, the local peer should request recommendations only if it has \textit{enough} trusted remote peers, otherwise it can expose itself to the \textit{bad-mouthing} and \textit{unfair praises} attacks more easily.
 
+\vspace{7mm}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Fides employs recommendation systems based on SORT \cite{sort} and combines it with the pre-trusted peers (\ref{subsubsec:pre-trusted-peers}) as well as with the static initial trust (\ref{subsubsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
+The algorithm used for the recommendation system is explained in detail in section \ref{sec:computational-model}.
