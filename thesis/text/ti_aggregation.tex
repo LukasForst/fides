@@ -1,2 +1,8 @@
 \subsection{Network Intelligence Aggregation}
-\textbf{Problem to solve}: How do we aggregate the intelligence across the peers. Mathematically speaking, how do we come up with $S^{k}_{T} = agg(\forall {i} \in P: S^{k}_{i, T})$ and same with the confidence.
+Fides is a trust model designed for global peer-to-peer network that is created by instances of Slips.
+It is designed to support Slips in detecting malicious actors on the network and enables threat intelligence sharing between peers of Slips instances.
+Because Slips was designed to be as modular as possible, Fides is effectively running as a module which provides aggregated threat intelligence to Slips. 
+In other words, Fides provides a view on what does the network think about some threat intelligence target.
+
+This means that Fides needs to be able to aggregate elements of threat intelligence from remote peers ($S^{k}_{j, T}$, $C^{k}_{j, T}$) into a single value that is then presented to Slips - ($S^{k}_{T}$, $C^{k}_{T}$).
+

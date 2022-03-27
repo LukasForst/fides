@@ -1,20 +1,9 @@
 \subsection{Interaction Evaluations}
 \label{subsec:interaction-evaluation}
 In order to determine what remote peers are providing valuable data and what peers are are not, the local peer needs to be able to evaluate each interaction it had with the remote peer.
+In general, there are two options how to approach this - either by designing evaluation that is protocol aware (meaning, that it understands the protocol and the data that are two peers sharing with each other), or by having an evaluation function that does not need to understand the protocol and can be used for any data.
 
-% TODO: change to subsection if needed and change the introduction for the problem
-
-
-\textbf{The problem for this section}: we need to be able to somehow evaluate that the peer is giving us data, that do not make any sense. 
-For example, during badmouthing or unfair praises attacks, the adversaries provide intentionally wrong data in order to influence the final decision of the trust model.
-
-There are multiple possibilities how to solve this:
-\begin{enumerate}
-\item ignore the problem and rely on a fact that the longer we are connected to the peer, we are more sure that the peer is giving us correct data - this is actually based purely on the Salinity botnet model and Dovecot (Dita's thesis) is using exactly this approach
-\item compare each interaction with each other and then evaluate how far was the reporting peer from the aggregated result
-\item compare each TI report with the local Slips opinion 
-\item combination of previous approaches
-\end{enumerate}
+We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in section \ref{sec:simulations-and-evaluations}.
 
 % TODO: maybe do not use S and C when referring to score and confidence as we use "s" for satisfaction
 We will use notation from table (\ref{table:interaction-eval})  when referring to peers and their interactions.
@@ -45,18 +34,25 @@ We will use notation from table (\ref{table:interaction-eval})  when referring t
 
 
 \subsubsection{Evaluate all interactions with the same value}
-A naive approach when the trust model uses the same satisfaction value for all threat intelligence data it received. It does not check, if the data make sense (for example when all other peers but one are reporting that the IP address is malicious) and assigns all peers same $s^{k}_{i, j}$. The idea behind this algorithm is that when the peers are interacting for a longer time and have more interactions, they're more trustworthy.
+\label{subsubsec:same-eval-for-all-interactions}
+The strategy, that does not need to understand underlying data, their semantics nor their structure.
+It is a naive approach when the trust model uses the same satisfaction value for all data it received. It does not check, if the data make sense (for example when all other peers but one are reporting that the IP address is malicious) and assigns all peers same satisfaction value $s^{k}_{i, j}$. 
+The idea behind this algorithm is that when the peers are interacting for a longer time or have more interactions, they're more trustworthy.
 
-This approach is for example used by the botnet Sality or by the Dovecot trust model. Fides implements it as $EvenTIEvaluation$ strategy with configurable satisfaction value and administrator can use this strategy if they see it as the most optimal.
+This approach is for example used by the botnet \textbf{Sality} or by the \textbf{Dovecot} trust model. Fides implements it as $EvenTIEvaluation$ strategy with configurable satisfaction value and administrator can use this strategy if they see it as the most optimal.
 
-The disadvantage of this approach is that we do not penalize remote peers when they provide wrong data. In a case when the adversary gains the service trust of the model by following the protocol for longer time, it may significantly influence the aggregated score as the adversary has higher trust then other remote peers. If this happens, there is no way to automatically downgrade adversary's service trust.
+The disadvantage of this approach is, that we do not penalize remote peers when they provide wrong data, because the evaluation method does not care nor understand the underlying data.
+Because of that and in a case when the adversary gains the service trust of the model by following the protocol for longer time, it may significantly influence the aggregated score as the adversary has higher trust then other remote peers. If this happens, there is no way to automatically downgrade adversary's service trust.
 
-\subsubsection{Use aggregated network intelligence for evaluation}\label{subsub:distance-based-eval}
-As during the time, we evaluate the provided threat intelligence from the peers, we know the aggregated result from the Fides, we can utilize it as a base line and then compare it against each threat intelligence we received. This evaluation strategy is implemented in the Fides a as a $DistanceBasedTIEvaluation$.
+\subsubsection{Use aggregated network intelligence for evaluation}
+\label{subsub:distance-based-eval}
+Because Fides is designed for the sharing and aggregating threat intelligence and understands the protocol that is being used, we can utilize this and penalize peers that are providing local peer with incorrect data.
+The interaction evaluation is performed at the end of the threat intelligence sharing process, at that point, Fides already aggregated data and decided what is the aggregated network score and confidence. 
+Thus, we can utilize aggregated values and use it as a base line. Then we compare it against every each remote peer's threat intelligence we received. This evaluation strategy is implemented in the Fides a as a $DistanceBasedTIEvaluation$.
 
 % TODO: here we need to set correct indexes, because k-th interaction between local and peer i is not necessarily the same number as for the peer i+1 -> that means that for S_a we will need another number
 % TODO: we need to move this to another section and to describe what is score and what is confidence
-Remote peer $j$ provided data about target $T$ to local peer $i$ in window $k$. Provided data consist of score and confidence - ($S^{k}_{j, T}$, $C^{k}_{j, T}$). Where score,  $-1 \leq S^{k}_{j, T} \leq 1$, indicates if the target is malicious ($-1$) or begin ($1$). The confidence $0 \leq C^{k}_{j, T} \leq 1$ on the other hand indicates, how much is the peer sure about its assessment of $S^{k}_{j, T}$.
+Suppose, that remote peer $j$ provided data about target $T$ to local peer $i$ in window $k$. Provided data consist of score and confidence - ($S^{k}_{j, T}$, $C^{k}_{j, T}$). Where score,  $-1 \leq S^{k}_{j, T} \leq 1$, indicates if the target is malicious ($-1$) or begin ($1$). The confidence $0 \leq C^{k}_{j, T} \leq 1$ on the other hand indicates, how much is the peer sure about its assessment of $S^{k}_{j, T}$.
 
 In order to evaluate interaction between the local peer $i$ and remote peer $j$ we need to compute satisfaction value $s^{k}_{i, j}$. 
 It holds that  $0 \leq s^{k}_{i, j} \leq 1$ - where $1$ means peer $i$ was satisfied with the interaction.
@@ -70,7 +66,11 @@ Where $S^{k}_{T}$ is final score aggregated across the reports from the peers, $
 The problem in this evaluation algorithm are the situations when the aggregated confidence $C^{k}_{T}$ is close to $0$. In this case the algorithm will penalize all peers for providing any threat intelligence as the final $s^{k}_{i, j}$ is close to $0$. Another issue with this approach is that when a single honest peer has a unique information about an IP address or domain, which is significantly different then what other peers have, it is automatically penalized for not sharing the same opinion as the other peers. However, if the peer is trusted enough, it has higher impact on the aggregated value and it is not penalized too much.
 
 \subsubsection{Use network intelligence only if the confidence is high enough}
-In order to compensate for the low confidence $C^{k}_{T}$ and penalizing all peers in algorithm explained in \ref{subsub:distance-based-eval}, this evaluation strategy considers $C^{k}_{T}$ value and employs  $DistanceBasedTIEvaluation$ only when the  $C^{k}_{T}$ is \textit{"high enough"}. In this case \textit{"high enough"} means higher then configured value by the Slips administrator - ${CT}$. In a case when  $C^{k}_{T} < {CT}$, the algorithm fall backs to using $EvenTIEvaluation$, because it is not possible to distinguish between \textit{"good"} and \textit{"bad"} network intelligence due to low confidence of the decision. This strategy is implemented in Fides under the name $ThresholdTIEvaluation$.
+\label{subsubsec:network-intelligence-conf-high-enough}
+In order to compensate for the low confidence $C^{k}_{T}$ and penalizing all peers in algorithm explained in \ref{subsub:distance-based-eval}, this evaluation strategy considers $C^{k}_{T}$ value and employs  $DistanceBasedTIEvaluation$ only when the  $C^{k}_{T}$ is \textit{"high enough"}. In this case \textit{"high enough"} means higher then configured value by the Slips administrator - ${CT}$.
+In a case when  $C^{k}_{T} < {CT}$, the algorithm fall backs to using $EvenTIEvaluation$, because it is not possible to distinguish between \textit{"good"} and \textit{"bad"} network intelligence due to low confidence of the decision. 
+This strategy is implemented in Fides under the name $ThresholdTIEvaluation$.
+
 % TODO: I'm not sure if we really need this schema
 \begin{algorithm}
 \caption{$ThresholdTIEvaluation$}\label{alg:threshold-ti-evaluation}
@@ -84,7 +84,7 @@ In order to compensate for the low confidence $C^{k}_{T}$ and penalizing all pee
 \end{algorithmic}
 \end{algorithm}
 
-\noindent What should be the correct value for $CT$ from configuration is subject to evaluation in the simulations.
+\noindent What should be the correct value for $CT$ from configuration is subject to evaluation in the simulations in section \ref{sec:simulations-and-evaluations}.
 
 \subsubsection{Use local threat intelligence to evaluate network intelligence}
 This approach uses similar equation for computing satisfaction value outlined in \ref{subsub:distance-based-eval}. However, the input is different - instead of comparing remote peer's ($j$ ) threat intelligence ($S^{k}_{j, T}$, $C^{k}_{j, T}$) to aggregated intelligence ($S^{k}_{T}$, $C^{k}_{T}$), we compare it to the threat intelligence of the local ($i$) Slips instance - ($S^{k}_{i, T}$, $C^{k}_{i, T}$). Thus the evaluation is following:
@@ -93,4 +93,7 @@ This approach uses similar equation for computing satisfaction value outlined in
 s^{k}_{i, j} = (1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}) \cdot C^{k}_{i, T}
 \end{equation}
 
-This approach is useful when local peer has enough information about the target, but it wants to verify the behavior of the remote peers. To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
+This approach is useful when local peer has enough information about the target, but it wants to verify the behavior of the remote peers.
+To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
+Unfortunately, this strategy can not be used in situations when the remote peer can not be identified by public IP address and thus Slips does not have any threat intelligence on the peer.
+This situation can be fairly common in global peer-to-peer network, because many peers will be running behind NAT or NAPT. Moreover, the network layer, facilitating data transfer for Fides, does not, in some situation, know any IP address, as the peers can join using TURN servers. % TODO: check with Martin for reasoning behind this
