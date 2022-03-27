@@ -4,5 +4,14 @@ It is designed to support Slips in detecting malicious actors on the network and
 Because Slips was designed to be as modular as possible, Fides is effectively running as a module which provides aggregated threat intelligence to Slips. 
 In other words, Fides provides a view on what does the network think about some threat intelligence target.
 
-This means that Fides needs to be able to aggregate elements of threat intelligence from remote peers ($S^{k}_{j, T}$, $C^{k}_{j, T}$) into a single value that is then presented to Slips - ($S^{k}_{T}$, $C^{k}_{T}$).
+This means that Fides needs to be able to aggregate elements of threat intelligence from remote peers ($S^{k}_{j, T}$, $C^{k}_{j, T}$) into a single value that is then presented to Slips - ($S^{k}_{T}$, $C^{k}_{T}$) - a network opinion on given target $T$ in window $k$.
+\vspace{5mm}
+
+\noindent
+The inputs for the network intelligence aggregation algorithm is collection of threat intelligence reports from the remote peers where each record contains following information:
+\begin{enumerate}
+\item service trust - $st_{i, j}$ - trust in remote peer $j$ that it provides expected service, in other words, how much does local peer $i$ trust the data it receives from remote peer $j$
+\item threat intelligence about target $T$ provided by remote peer $j$ - ($S^{k}_{j, T}$, $C^{k}_{j, T}$)
+\item \textit{(optionally)} - threat intelligence ($S^{k}_{i, j}$, $C^{k}_{i, j}$) provided by local Slips $i$ about remote peer $j$ - optionally because in some cases it is not available, because local peer does not know IP address of the remote peer
+\end{enumerate}
 

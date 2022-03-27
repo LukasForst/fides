@@ -95,5 +95,3 @@ s^{k}_{i, j} = (1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}
 
 This approach is useful when local peer has enough information about the target, but it wants to verify the behavior of the remote peers.
 To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
-Unfortunately, this strategy can not be used in situations when the remote peer can not be identified by public IP address and thus Slips does not have any threat intelligence on the peer.
-This situation can be fairly common in global peer-to-peer network, because many peers will be running behind NAT or NAPT. Moreover, the network layer, facilitating data transfer for Fides, does not, in some situation, know any IP address, as the peers can join using TURN servers. % TODO: check with Martin for reasoning behind this
