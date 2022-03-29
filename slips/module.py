@@ -71,7 +71,7 @@ class SlipsFidesModule(Module, Process):
         recommendations = RecommendationProtocol(self.__trust_model_config, trust_db, bridge)
         trust = TrustProtocol(trust_db, self.__trust_model_config, recommendations)
         peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
-        opinion = OpinionAggregator(self.__trust_model_config, ti_db, TIAggregation(self.__trust_model_config))
+        opinion = OpinionAggregator(self.__trust_model_config, ti_db, TIAggregation())
 
         intelligence = ThreatIntelligenceProtocol(trust_db, ti_db, bridge, self.__trust_model_config, opinion, trust,
                                                   self.__slips_config.ti_interaction_evaluation_strategy,

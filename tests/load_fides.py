@@ -64,7 +64,7 @@ def get_fides(**kwargs) -> Fides:
     recommendations = kwargs.get('recommendations', RecommendationProtocol(config, trust_db, bridge))
     trust = kwargs.get('trust', TrustProtocol(trust_db, config, recommendations))
     peer_list = kwargs.get('peer_list', PeerListUpdateProtocol(trust_db, bridge, recommendations, trust))
-    dovecot = kwargs.get('dovecot', TIAggregation(config))
+    dovecot = kwargs.get('dovecot', TIAggregation())
     opinion = kwargs.get('opinion', OpinionAggregator(config, ti_db, dovecot))
     ti_evaluation_strategy = kwargs.get('ti_evaluation_strategy', config.ti_interaction_evaluation_strategy)
     intelligence = kwargs.get('intelligence',
