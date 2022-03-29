@@ -123,10 +123,6 @@ class TrustModelConfiguration:
     network_opinion_cache_valid_seconds: int
     """How many minutes is network opinion considered valid."""
 
-    peer_trust_weight: float
-    """When computing aggregated opinions, how much should computation
-    take in account computed trust from peer."""
-
     ti_interaction_evaluation_strategy: TIEvaluation
     """Evaluation str"""
 
@@ -174,7 +170,6 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                              confidentiality_level=e['confidentialityLevel'])
                                for e in data['trust']['organisations']],
         network_opinion_cache_valid_seconds=data['trust']['networkOpinionCacheValidSeconds'],
-        peer_trust_weight=data['trust']['peerTrustWeight'],
         ti_interaction_evaluation_strategy=__parse_evaluation_strategy(data)
     )
 
