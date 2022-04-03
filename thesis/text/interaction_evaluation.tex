@@ -104,7 +104,7 @@ In order to do that, we combine all previous strategies into one, where we utili
 We introduce new variables here - $p_{0}, p_{1}, p_{2}$ - which are essentially weights of the particular strategies. These weights are based on the confidence, that the strategy has in its own decision.
 Note, that there is a hierarchy and order matters. 
 In our case we decided to prefer decisions coming from strategy \ref{subsub:distance-based-eval}, then we add data from the \ref{subsub:use-local-threat-to-evaluate} and if the final decision still does not have confidence of $1$, we add static value configured by the administrator (noted as $S_{C}$). 
-The last part - $S_{C}$ - simulates static strategy described in \ref{subsubsec:same-eval-for-all-interactions}.
+The last part - $S_{C}$ - simulates static strategy described in \ref{subsubsec:same-eval-for-all-interactions} and is set by the Slips administrator.
 % TODO should we use min or the detailed version?
 
 \begin{equation}
@@ -123,8 +123,8 @@ When we have the weights, we can compute final $s^{k}_{i, j}$ where we use strat
 \begin{equation}
 \begin{split}
     s^{k}_{i, j} &= \\
-    &p_{0} \cdot [(1 - \frac{|{S}^{k}_{T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}) \cdot C^{k}_{T}] + \\
-    &p_{1} \cdot [(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}) \cdot C^{k}_{i, T}] + \\
+    &p_{0} \cdot \left[\left(1 - \frac{|{S}^{k}_{T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{T}\right] + \\
+    &p_{1} \cdot \left[\left(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{i, T}\right] + \\
     &p_{2} \cdot S_{C}
 \end{split}
 \end{equation}

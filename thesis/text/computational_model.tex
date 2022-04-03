@@ -1,3 +1,12 @@
 \section{Computational Model of Fides}
 \label{sec:computational-model}
 \textbf{Problem} - here we want to describe what we actually used and how to we determine real service trust and reputations across  the whole system, we also want to describe whole data flow, what we compute where and how do we get to final result
+
+\vspace{10mm}
+
+This section describes how does Fides come up with a single most important value $0 \leq st_{i,j} \leq 1$ service trust. Service trust describes how much can local peer $i$ trust remote peer $j$.
+Used algorithm, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence.
+
+\begin{equation}
+st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} \cdot ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
+\end{equation}
