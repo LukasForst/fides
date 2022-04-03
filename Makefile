@@ -25,13 +25,13 @@ update-text:
 	cd thesis && git push --mirror git@github.com:LukasForst/master-thesis.git;
 	rm -rf thesis/.git;
 	git add thesis;
-	git commit -m "Sync thesis text" || exit 0;
+	git commit -m "sync thesis text" || exit 0;
 	git push;
 
 build-pdf: build-tex
 	mv thesis/main.pdf assets/thesis.pdf
 	git add assets/thesis.pdf
-	git commit -m 'Build thesis.pdf' || exit 0;
+	git commit -m 'build assets/thesis.pdf' || exit 0;
 	git push;
 
 build-tex:
