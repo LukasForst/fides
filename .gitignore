@@ -1,6 +1,8 @@
 # data from compiled tex
 thesis/**/*.aux
 thesis/**/*.bcf
+thesis/**/*.bbl
+thesis/**/*.blg
 thesis/**/*.out
 thesis/**/*.run.xml
 thesis/main.pdf
