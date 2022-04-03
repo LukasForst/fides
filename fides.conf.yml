@@ -116,16 +116,27 @@ trust:
 
   # which strategy should be used to evaluate interaction when peer provided threat intelligence on a target
   # see fides.evaluation.ti_evaluation.py for options
-  # options: ['even', 'distance', 'localDistance', 'threshold', 'maxConfidence']
+  # options: ['even', 'distance', 'localDistance', 'threshold', 'maxConfidence', 'weightedDistance']
   tiStrategies:
     used: 'maxConfidence'
     # these are configuration for the strategies, content will be passed as a **kwargs to the instance
+    # even strategy uses the same satisfaction value for every interaction
     even:
       # value used as a default satisfaction for all peers
-      satisfaction: 0.8
+      satisfaction: 0.1
+    # distance measures distance between aggregated network intelligence and each intelligence from the peers
     distance:
+    # localDistance measures distance between each peer's intelligence to local threat intelligence by Slips
     localDistance:
+    # weightedDistance combines distance and localDistance with given weight
+    weightedDistance:
+      # weight of the local TI to TI aggregated from the network
+      localWeight: 0.4
+    # maxConfidence uses combination of distance, localDistance and even - utilizes their confidence to
+    # make decisions with the highest possible confidence
     maxConfidence:
+    # threshold employs 'lower' value strategy when the confidence of the aggregated TI is lower than 'threshold',
+    # otherwise it uses 'higher' - 'even' and 'distance' strategies work best with this
     threshold:
       # minimal confidence level
       threshold: 0.5

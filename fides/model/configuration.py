@@ -188,6 +188,9 @@ def __parse_evaluation_strategy(data: dict) -> TIEvaluation:
             kwargs['distance'] = get_strategy_for_key('distance')
             kwargs['localDistance'] = get_strategy_for_key('localDistance')
             kwargs['even'] = get_strategy_for_key('even')
+        elif key == 'weightedDistance':
+            kwargs['distance'] = get_strategy_for_key('distance')
+            kwargs['localDistance'] = get_strategy_for_key('localDistance')
 
         return EvaluationStrategy[key](**kwargs)
 

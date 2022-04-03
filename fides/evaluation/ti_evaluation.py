@@ -145,7 +145,34 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
         )
 
 
-class MaxConfidenceEvaluation(TIEvaluation):
+class WeightedDistanceToLocalTIEvaluation(TIEvaluation):
+    """Strategy combines DistanceBasedTIEvaluation and LocalCompareTIEvaluation with the local weight parameter."""
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.__distance = kwargs.get('distance', DistanceBasedTIEvaluation())
+        self.__local = kwargs.get('localDistance', LocalCompareTIEvaluation())
+        self.__local_weight = kwargs.get('localWeight', 0.5)
+
+    def evaluate(self,
+                 aggregated_ti: SlipsThreatIntelligence,
+                 responses: Dict[PeerId, PeerIntelligenceResponse],
+                 trust_matrix: TrustMatrix,
+                 **kwargs,
+                 ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
+        super()._assert_keys(responses, trust_matrix)
+
+        distance_data = self.__distance.evaluate(aggregated_ti, responses, trust_matrix, **kwargs)
+        local_data = self.__local.evaluate(aggregated_ti, responses, trust_matrix, **kwargs)
+
+        return {p.peer_id: (p,
+                            self.__local_weight * local_data[p.peer_id][1] +
+                            (1 - self.__local_weight) * distance_data[p.peer_id][1],
+                            self._weight()
+                            ) for p in trust_matrix.values()}
+
+
+class MaxConfidenceTIEvaluation(TIEvaluation):
     """Strategy combines DistanceBasedTIEvaluation, LocalCompareTIEvaluation and EvenTIEvaluation
     in order to achieve maximal confidence when producing decision.
     """
@@ -223,5 +250,6 @@ EvaluationStrategy = {
     'distance': DistanceBasedTIEvaluation,
     'localDistance': LocalCompareTIEvaluation,
     'threshold': ThresholdTIEvaluation,
-    'maxConfidence': MaxConfidenceEvaluation
+    'maxConfidence': MaxConfidenceTIEvaluation,
+    'weightedDistance': WeightedDistanceToLocalTIEvaluation
 }
