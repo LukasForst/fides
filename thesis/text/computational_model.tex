@@ -44,17 +44,63 @@ Remote experience is what happened between one remote peer and another remote pe
 The table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
 
 \subsection{Service Trust}
+\label{subsec:service-trust}
 One of the major goals of the algorithm is to compute the service trust $st_{i,j}$.
 We do that by weighting local experience with peer's $j$ service, with the reputation, $j$ got when it connected to the $i$. The weight here is size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
 
 \begin{equation}\label{eq:service-trust}
-st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} \cdot ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
+st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
 \end{equation}
 
 The equation implies that the more interaction there was, between $i$ and $j$, the bigger impact on $st_{i,j}$ it has. 
 In other words, the more $i$ and $j$ interact the less $i$ rely on the reputation that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time.
 
-First part of the equation contains $cb_{i,j}$ - \textit{competence belief} - and $ib_{i,j}$ - \textit{integrity belief}. \textit{Competence belief} represents how well $j$ satisfied the $i$ with the past interactions. We measure it as an average of interactions from the past.
-\textit{Integrity belief} is a level of confidence in predictability of future interactions. $ib_{i,j}$ is then measured as deviation from the average behavior $cb_{i,j}$. \cite{sort}
+\subsection{Local Experience for Service Trust}
+First part of the equation \ref{eq:service-trust} contains \textit{competence belief}, $cb_{i,j}$, and $ib_{i,j}$ - \textit{integrity belief}.
+Both of the values are based solely on the interactions history that peer $i$ experienced with the peer $j$.
 
-In order to mitigate cold start problem outlined in \ref{subsec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - reputation value.
+\subsubsection{Competence Belief}
+\textit{Competence belief} represents how much did peer $j$ satisfy local peer $i$ with the past interactions. We measure it as an average of interactions from the past \cite{sort}.
+\begin{equation}
+\begin{split}
+    cb_{i,j} &= \frac{1}{\beta_{cb}} \sum_{k=1}^{sh_{i, j}} s_{i,j}^{k} \cdot w_{i,j}^{k} \cdot f_{i,j}^{k} \\
+    \beta_{cb} &= \sum_{k=1}^{sh_{i, j}} s_{i,j}^{k} \cdot w_{i,j}^{k}
+\end{split}
+\end{equation}
+It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation of the interaction in window $k$, $w^{k}_{i, j}$ is the weight of the interaction (how important it was) and $f^{k}_{i,j}$ is the fading effect of that interaction. We describe $s^{k}_{i,j}$, $w^{k}_{i,j}$ and $f^{k}_{i,j}$ in greater detail in \ref{subsec:evaluating-an-interaction}. 
+$\beta_{cb}$ is the normalization coefficient that ensures that $cb_{i, j}$ stays within the interval of $0 \leq cb_{i,j} \leq 1$.
+
+\subsubsection{Integrity Belief}
+\textit{Integrity belief} is a level of confidence in predictability of future interactions. $ib_{i,j}$ is then measured as deviation from the average behavior $cb_{i,j}$. 
+Therefore, $ib_{i,j}$ is calculated as an approximation to the standard deviation of interaction parameters\cite{sort}.
+\begin{equation}
+\begin{split}
+    ib_{i,j} &= \sqrt{\frac{1}{sh_{i,j}} \sum_{k=1}^{sh_{i,j}}\left(s_{i,j}^{k} \cdot w_{i,j}^{\mu} \cdot f_{i,j}^{\mu} - cb_{i,j}\right)^{2}} \\
+    f_{i,j}^{\mu} &= \frac{1}{sh_{i, j}} \sum_{k=1}^{sh_{i,j}} f^{k}_{i,j} \\
+    w_{i,j}^{\mu} &= \frac{1}{sh_{i, j}} \sum_{k=1}^{sh_{i,j}} w^{k}_{i,j}
+\end{split}
+\end{equation}
+
+It holds that $0 \leq ib_{i,j} \leq 1$.
+The more consistent behavior peer $j$ has, the lower the $ib_{i,j}$ is. Consistency is highly desired property as the local peer then have more precise estimates about future behavior of the remote peer.
+
+\subsection{Evaluating an Interaction}
+\label{subsec:evaluating-an-interaction}
+In section \ref{subsec:interaction-evaluation}, we described multiple strategies, how to compute $s^{k}_{i,j}$ - satisfaction value with $k$th interaction of the local peer $i$ with peer $j$.
+However, not all interactions are same - some of the interactions are more important then the others. 
+Moreover, because peers can change their behavior, most recent interactions should be more important the the interactions that happened long time ago.
+
+\subsubsection{Weight of the Interaction}
+Because each interaction is different and its importance is different, we have $w^{k}_{i,j}$ that measures the importance.
+Weight belongs to interval $0 \leq w^{k}_{i,j} \leq 1$ and Fides implements it as a discrete function of interaction type. 
+For example, weight of interaction when remote peer shares the threat intelligence is higher, then when the peer sends threat intelligence request.
+
+
+\subsubsection{Fading Effect}
+Fading effect $f^{k}_{i,j}$ determines \textit{"how much does algorithm forget"} as the algorithm prefers most recent interactions over past interactions and thus $f^{k}_{i,j}$ reduces weight of the past interactions. 
+$f^{k}_{i,j}$ is a \textit{non-increasing function} of interaction and time, or an index of said interaction in the history.
+This depends on the implementation - Fides implements it as a decreasing linear function $f^{k}_{i,j} = \frac{k}{sh_{i,j}}$. 
+However, it can be implemented as a function of time as well. In that case, the function does not depend on $k$ (as an index of a time window) bur rather on the time, when the interaction happened.
+
+\subsection{Reputation}
+In order to mitigate cold start problem outlined in \ref{subsec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}.
