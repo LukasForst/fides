@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence
@@ -12,9 +12,6 @@ class PeerReport:
 
     reporter_trust: PeerTrustData
     """How much does Slips trust the reporter."""
-
-    reporter_ti: Optional[ThreatIntelligence]
-    """Threat intelligence that Slips has about the reporter."""
 
 
 class TIAggregation:

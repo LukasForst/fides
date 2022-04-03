@@ -37,8 +37,7 @@ class OpinionAggregator:
                                        trust_matrix: TrustMatrix) -> SlipsThreatIntelligence:
         """Evaluates given threat intelligence report from the network."""
         reports = [PeerReport(report_ti=ti.intelligence,
-                              reporter_trust=trust_matrix[peer_id],
-                              reporter_ti=self.__ti_db.get_for(ti.sender.ip) if ti.sender.ip else None
+                              reporter_trust=trust_matrix[peer_id]
                               ) for peer_id, ti in data.items()]
         # use Dovecot to aggregate opinion from the reports
         ti = self.__dovecot.assemble_peer_opinion(reports)
