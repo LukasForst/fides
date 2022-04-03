@@ -1,8 +1,9 @@
+from collections import defaultdict
 from typing import Dict, Tuple, Optional
 
 from fides.evaluation.service.interaction import Satisfaction, Weight, SatisfactionLevels
 from fides.messaging.model import PeerIntelligenceResponse
-from fides.model.aliases import PeerId
+from fides.model.aliases import PeerId, Target
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.utils.logger import Logger
@@ -19,6 +20,10 @@ class TIEvaluation:
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         """Evaluate interaction with all peers that gave intelligence responses."""
         raise NotImplemented('Use implementation rather then interface!')
+
+    @staticmethod
+    def _weight() -> Weight:
+        return Weight.INTELLIGENCE_DATA_REPORT
 
     @staticmethod
     def _assert_keys(responses: Dict[PeerId, PeerIntelligenceResponse], trust_matrix: TrustMatrix):
@@ -42,7 +47,7 @@ class EvenTIEvaluation(TIEvaluation):
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         super()._assert_keys(responses, trust_matrix)
 
-        return {p.peer_id: (p, self.__satisfaction, Weight.INTELLIGENCE_DATA_REPORT) for p in
+        return {p.peer_id: (p, self.__satisfaction, self._weight()) for p in
                 trust_matrix.values()}
 
 
@@ -83,7 +88,7 @@ class DistanceBasedTIEvaluation(TIEvaluation):
             for peer_id, ti in responses.items()
         }
 
-        return {p.peer_id: (p, satisfactions[p.peer_id], Weight.INTELLIGENCE_DATA_REPORT) for p in
+        return {p.peer_id: (p, satisfactions[p.peer_id], self._weight()) for p in
                 trust_matrix.values()}
 
     @staticmethod
@@ -107,6 +112,16 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
         super().__init__(**kwargs)
         self.__default_ti_getter = kwargs.get('default_ti_getter', None)
 
+    def get_local_ti(self,
+                     target: Target,
+                     local_ti: Optional[SlipsThreatIntelligence] = None) -> Optional[SlipsThreatIntelligence]:
+        if local_ti:
+            return local_ti
+        elif self.__default_ti_getter:
+            return self.__default_ti_getter(target)
+        else:
+            return None
+
     def evaluate(self,
                  aggregated_ti: SlipsThreatIntelligence,
                  responses: Dict[PeerId, PeerIntelligenceResponse],
@@ -116,14 +131,11 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
                  ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
         super()._assert_keys(responses, trust_matrix)
 
-        ti = aggregated_ti
-        if local_ti or self.__default_ti_getter:
-            local_ti = local_ti if local_ti else self.__default_ti_getter(ti.target)
-            if local_ti:
-                ti = local_ti
-            else:
-                logger.warn(f'No local threat intelligence available for target {ti.target}! ' +
-                            'Falling back to DistanceBasedTIEvaluation.')
+        ti = self.get_local_ti(aggregated_ti.target, local_ti)
+        if not ti:
+            ti = aggregated_ti
+            logger.warn(f'No local threat intelligence available for target {ti.target}! ' +
+                        'Falling back to DistanceBasedTIEvaluation.')
 
         return self._build_evaluation(
             baseline_score=ti.score,
@@ -131,6 +143,55 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
             responses=responses,
             trust_matrix=trust_matrix
         )
+
+
+class MaxConfidenceEvaluation(TIEvaluation):
+    """Strategy combines DistanceBasedTIEvaluation, LocalCompareTIEvaluation and EvenTIEvaluation
+    in order to achieve maximal confidence when producing decision.
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.__distance = kwargs.get('distance', DistanceBasedTIEvaluation())
+        self.__local = kwargs.get('localDistance', LocalCompareTIEvaluation())
+        self.__even = kwargs.get('even', EvenTIEvaluation())
+
+    def evaluate(self,
+                 aggregated_ti: SlipsThreatIntelligence,
+                 responses: Dict[PeerId, PeerIntelligenceResponse],
+                 trust_matrix: TrustMatrix,
+                 **kwargs,
+                 ) -> Dict[PeerId, Tuple[PeerTrustData, Satisfaction, Weight]]:
+        super()._assert_keys(responses, trust_matrix)
+        zero_dict = defaultdict(lambda: (None, 0, None))
+
+        # weight of the distance based evaluation
+        distance_weight = aggregated_ti.confidence
+        distance_data = self.__distance.evaluate(aggregated_ti, responses, trust_matrix, **kwargs) \
+            if distance_weight > 0 \
+            else zero_dict
+
+        # now we need to check if we even have some threat intelligence data
+        local_ti = self.__local.get_local_ti(aggregated_ti.target, **kwargs)
+        # weight of the local evaluation
+        local_weight = min(1 - distance_weight, local_ti.confidence) if local_ti else 0
+        local_data = self.__local.evaluate(aggregated_ti, responses, trust_matrix, **kwargs) \
+            if local_weight > 0 \
+            else zero_dict
+
+        # weight of the same eval
+        even_weight = 1 - distance_weight - local_weight
+        even_data = self.__even.evaluate(aggregated_ti, responses, trust_matrix, **kwargs) \
+            if even_weight > 0 \
+            else zero_dict
+
+        def aggregate(peer: PeerId):
+            return distance_weight * distance_data[peer][1] + \
+                   local_weight * local_data[peer][1] + \
+                   even_weight * even_data[peer][1]
+
+        return {p.peer_id: (p, aggregate(p.peer_id), self._weight()) for p in
+                trust_matrix.values()}
 
 
 class ThresholdTIEvaluation(TIEvaluation):
@@ -161,5 +222,6 @@ EvaluationStrategy = {
     'even': EvenTIEvaluation,
     'distance': DistanceBasedTIEvaluation,
     'localDistance': LocalCompareTIEvaluation,
-    'threshold': ThresholdTIEvaluation
+    'threshold': ThresholdTIEvaluation,
+    'maxConfidence': MaxConfidenceEvaluation
 }

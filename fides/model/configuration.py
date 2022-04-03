@@ -184,6 +184,10 @@ def __parse_evaluation_strategy(data: dict) -> TIEvaluation:
         if key == 'threshold':
             kwargs['lower'] = get_strategy_for_key(kwargs['lower'])
             kwargs['higher'] = get_strategy_for_key(kwargs['higher'])
+        elif key == 'maxConfidence':
+            kwargs['distance'] = get_strategy_for_key('distance')
+            kwargs['localDistance'] = get_strategy_for_key('localDistance')
+            kwargs['even'] = get_strategy_for_key('even')
 
         return EvaluationStrategy[key](**kwargs)
 
