@@ -87,6 +87,7 @@ This strategy is implemented in Fides under the name $ThresholdTIEvaluation$.
 \noindent What should be the correct value for $CT$ from configuration is subject to evaluation in the simulations in section \ref{sec:simulations-and-evaluations}.
 
 \subsubsection{Use local threat intelligence to evaluate network intelligence}
+\label{subsub:use-local-threat-to-evaluate}
 This approach uses similar equation for computing satisfaction value outlined in \ref{subsub:distance-based-eval}. However, the input is different - instead of comparing remote peer's ($j$ ) threat intelligence ($S^{k}_{j, T}$, $C^{k}_{j, T}$) to aggregated intelligence ($S^{k}_{T}$, $C^{k}_{T}$), we compare it to the threat intelligence of the local ($i$) Slips instance - ($S^{k}_{i, T}$, $C^{k}_{i, T}$). Thus the evaluation is following:
 
 \begin{equation}
@@ -95,3 +96,38 @@ s^{k}_{i, j} = (1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}
 
 This approach is useful when local peer has enough information about the target, but it wants to verify the behavior of the remote peers.
 To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
+
+\subsubsection{Utilize all available data in evaluation}
+The goal of this strategy is to evaluate the received data with as much confidence as possible. 
+In order to do that, we combine all previous strategies into one, where we utilize all available information into a single $s^{k}_{i, j}$ value.
+
+We introduce new variables here - $p_{0}, p_{1}, p_{2}$ - which are essentially weights of the particular strategies. These weights are based on the confidence, that the strategy has in its own decision.
+Note, that there is a hierarchy and order matters. 
+In our case we decided to prefer decisions coming from strategy \ref{subsub:distance-based-eval}, then we add data from the \ref{subsub:use-local-threat-to-evaluate} and if the final decision still does not have confidence of $1$, we add static value configured by the administrator (noted as $S_{C}$). 
+The last part - $S_{C}$ - simulates static strategy described in \ref{subsubsec:same-eval-for-all-interactions}.
+% TODO should we use min or the detailed version?
+
+\begin{equation}
+\label{equation:strategies-weights}
+\begin{split}
+    p_{0} &= {C}^{k}_{T} \\
+    p_{1} &= \frac{1 - {C}^{k}_{T} + {C}^{k}_{i, T} - |1 - {C}^{k}_{T} - {C}^{k}_{i, T}|}{2} \\
+    p_{1} &= min(1 - {C}^{k}_{T}, {C}^{k}_{i, T}) \\
+    p_{2} &= 1 - p_{0} - p_{1}
+\end{split}
+\end{equation}
+The weights $p_{0}, p_{1}, p_{2}$ in \ref{equation:strategies-weights}, are designed to gather as much confidence as possible. $p_{0}$ is confidence of the aggregated network data, essentially saying how much is the network sure about the given score. 
+$p_{1}$ is the confidence coming from the local IPS and the $p_{2}$ is the remaining confidence to $1$.
+
+When we have the weights, we can compute final $s^{k}_{i, j}$ where we use strategies - $p_{0} \cdot \ref{subsub:distance-based-eval}$, $p_{1} \cdot \ref{subsub:use-local-threat-to-evaluate}$ and $p_{2} \cdot \ref{subsubsec:same-eval-for-all-interactions}$. 
+\begin{equation}
+\begin{split}
+    s^{k}_{i, j} &= \\
+    &p_{0} \cdot [(1 - \frac{|{S}^{k}_{T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}) \cdot C^{k}_{T}] + \\
+    &p_{1} \cdot [(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}) \cdot C^{k}_{i, T}] + \\
+    &p_{2} \cdot S_{C}
+\end{split}
+\end{equation}
+
+\noindent
+This strategy is implemented in Fides under a name $MaxConfidenceEvaluation$.
