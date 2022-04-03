@@ -17,17 +17,26 @@ test:
 	pytest tests
 
 ## Latex Section
-pull-text:
+sync-text: update-text build-pdf
+
+update-text:
 	rm -rf thesis;
 	git clone https://git.overleaf.com/61f1781dda616ff9b2082708 thesis;
 	cd thesis && git push --mirror git@github.com:LukasForst/master-thesis.git;
 	rm -rf thesis/.git;
 	git add thesis;
-	git commit -m "update thesis text" || exit 0;
+	git commit -m "Sync thesis text" || exit 0;
+	git push;
+
+build-pdf: build-tex
+	mv thesis/main.pdf assets/thesis.pdf
+	git add assets/thesis.pdf
+	git commit -m 'Build thesis.pdf' || exit 0;
 	git push;
 
 build-tex:
-	(cd thesis && /Library/TeX/texbin/pdflatex main.tex);
+	# we do that twice to sync references
+	(cd thesis && pdflatex main.tex && pdflatex main.tex);
 
 install-latex-distro:
 	brew install basictex;
