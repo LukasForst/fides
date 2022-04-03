@@ -24,3 +24,20 @@ jobs:
       - name: Execute Tests
         shell: bash -l {0}
         run: pytest tests
+
+  generate-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: xu-cheng/latex-action@v2
+        name: Build Thesis PDF
+        with:
+          working_directory: thesis
+          root_file: main.tex
+
+      - uses: actions/upload-artifact@v2
+        name: Upload PDF
+        with:
+          name: PDF
+          path: thesis/main.pdf
