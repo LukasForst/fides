@@ -4,9 +4,21 @@
 
 \vspace{10mm}
 
-This section describes how does Fides come up with a single most important value $0 \leq st_{i,j} \leq 1$ service trust. Service trust describes how much can local peer $i$ trust remote peer $j$.
-Used algorithm, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence.
+This section describes how does Fides come up with a single most important value $st_{i,j}$ service trust. Service trust describes how much can local peer $i$ trust remote peer $j$.
+Used algorithm, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence. The modifications are based on the interaction evaluation strategies proposed in \ref{subsec:interaction-evaluation} and algorithms to solve cold start problem described in \ref{subsec:cold-start-problem}.
 
-\begin{equation}
+\subsection{Intuition}
+In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down to bits.
+There are two main ideas behind the most of the equations. 
+
+The first one is that we want to robustly capture average behavior of the peers. In order to do that, we will be computing average behavior and standard deviations from said behavior and normalizing them.
+
+Secondly, we will be comparing and weighting first hand experience with the remote experience. 
+First hand experience is what happened between local and remote peer during time they interacted. This can be, for example, threat intelligence sharing, file sharing or the results of recommendation protocol.
+Remote experience is what happened between one remote peer and another remote peer. In other words, first hand experience for peer $j$ are actions between $j$ and $z$. When $j$ shares information about these action with peer $i$, for $i$ it is a remote experience.
+
+\subsection{Service Trust}
+
+\begin{equation}\label{eq:service-trust}
 st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} \cdot ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
 \end{equation}
