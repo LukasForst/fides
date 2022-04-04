@@ -107,10 +107,16 @@ However, it can be implemented as a function of time as well. In that case, the 
 In order to mitigate cold start problem outlined in section \ref{subsec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
 $r_{i,j}$ is the second part of the service trust equation \ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
 
-Reputation value is computed from the recommendations received from the remote peers.
+\textit{Reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what do remote peers think about another remote peer. However, this value is calculated by the local peer with respect, how much it trusts each peer, that provided the recommendation.
 When the local peer $i$ encounters remote peer $j$ for the first time and it does not have any data about its trustworthiness, $i$ can request recommendations on peer $j$ from $i$'s most trusted peers.
 We denote a set of remote peers, that provided the recommendations as $T_{i}$.
 
+\subsubsection{Requesting a Recommendation}
+The recommendation system build into Fides can not be used in every scenario.
+Because of the sensitive nature of the environment, the trust model was designed for, there are cases when it is dangerous to ask for the recommendations.
+That is mainly the case, when there are \textit{not enough} peers that are \textit{trusted enough}.\todo{describe in detail}
+
+\subsubsection{Recommendation Response}
 A single recommendation response from peer $z \in T_{i}$ about giving recommendation to peer $i$ about peer $j$ contains following data.
 \begin{itemize}
     \item $cb_{z,j}$, $ib_{z,j}$ - summary of $z$'s interactions with $j$, competence belief and integrity belief
@@ -121,7 +127,8 @@ A single recommendation response from peer $z \in T_{i}$ about giving recommenda
 
 \todo{Do we need to explain why did we added all these properties to a single recommendation? Original paper does that, but I'm not sure if we need to do that or not.}
 
-When the local peer receives all recommendations, it computes reputation value $r_{i,j}$  as a weighted expected local experience ($ecb_{i,j}$, $eib_{i,j}$ - estimates about competence and integrity) from the remote peers with their remote experience ($er_{i,j}$ - estimate about reputation of said peer).
+\subsubsection{Computing Reputation}
+When the local peer receives all recommendations, it computes reputation value $r_{i,j}$ as a weighted expected local experience ($ecb_{i,j}$, $eib_{i,j}$ - estimates about competence and integrity) from the remote peers with their remote experience ($er_{i,j}$ - estimate about reputation of said peer).
 
 \begin{equation}
 \label{eq:reputation-value}
@@ -140,19 +147,20 @@ We calculate $\mu_{sh}$ as follows.
 Again, we are weighting local experience to remote experience. However, in this case it is local for remote peers that provided the recommendations.
 
 \subsection{Remote Local Experience}
+\label{subsec:remote-local-experience}
 \todo{This name is weird}
 Similarly as when we compute service trust in \ref{eq:service-trust}, we need to get competence and integrity belief.
 However, while creating reputation value in \ref{eq:reputation-value} where the values are coming from the remote peers, we are trying to estimate those values received from the network.
-For that reason, we call them \textit{expected competence belief} - $ecb_{i,j}$ and \textit{expected integrity belief} - $eib_{i,j}$.
+For that reason, we call them \textit{estimated competence belief} - $ecb_{i,j}$ and \textit{estimated integrity belief} - $eib_{i,j}$.
 
-\subsubsection{Expected Competence Belief}
+\subsubsection{Estimated Competence Belief}
 $ecb_{i,j}$ is estimation about competence belief made by $i$ about $j$. 
 This value is computed from the received recommendations in combination with $rt_{i,z}$ - a \textit{recommendation trust} that $i$ has about $z$.
 Similarly as for service trust, we have a normalization coefficient $\beta_{ecb}$ that moves the resulting data to correct interval.
 It holds that $0 \leq ecb_{i,j} \leq 1$.
 
 \begin{equation}
-\label{eq:expected-competence-belief}
+\label{eq:estimated-competence-belief}
 \begin{split}
     ecb_{i,j} &= \frac{1}{\beta_{ecb}} \sum_{z \in T_{i}} \left(rt_{i, z} \cdot sh_{z, j} \cdot cb_{z, j}\right) \\
     \beta_{ecb} &= \sum_{z \in T_{i}} \left(rt_{i, z} \cdot sh_{z, j}\right)
@@ -162,16 +170,29 @@ It holds that $0 \leq ecb_{i,j} \leq 1$.
 \noindent
 Recommendation trust $rt_{i, z}$ is described in detail in section \ref{subsec:recommendation-trust-metric}.
 
-\subsubsection{Expected Integrity Belief}
+\subsubsection{Estimated Integrity Belief}
 Following the $ecb_{i,j}$, $eib_{i,j}$ is estimation about the integrity belief made by $i$ about $j$.
 The equation is almost similar, but we use $ib_{z,j}$ instead of $eb_{z,j}$.
 This means that normalization coefficient $\beta_{eib} = \beta_{ecb}$.
 
 \begin{equation}
-\label{eq:expected-integrity-belief}
+\label{eq:estimated-integrity-belief}
 \begin{split}
     eib_{i,j} &= \frac{1}{\beta_{eib}} \sum_{z \in T_{i}} \left(rt_{i, z} \cdot sh_{z, j} \cdot ib_{z, j}\right) \\
     \beta_{eib} &= \sum_{z \in T_{i}} \left(rt_{i, z} \cdot sh_{z, j}\right)
+\end{split}
+\end{equation}
+
+\subsection{Remote Remote Experience}
+Going back to equation \ref{eq:reputation-value}, we use \textit{estimated reputation value} - $er_{i,j}$.
+This value represents information that was created by the peers, that are remote even for remote peer $j$. 
+Essentially making it an information that came from the \textit{second ring of trust} - from an acquaintances of an acquaintance.
+
+\begin{equation}
+\label{eq:estimated-reputation}
+\begin{split}
+    er_{i,j} &= \frac{1}{\beta_{er}} \sum_{z \in T_{i}} \left(rt_{i, z} \cdot \eta_{z, j} \cdot r_{z, j}\right) \\
+    \beta_{er} &= \sum_{z \in T_{i}} \left(rt_{i, z} \cdot \eta{z, j}\right)
 \end{split}
 \end{equation}
 
@@ -227,7 +248,10 @@ In other words, we compare each recommendation, with the aggregated values - $er
 \end{equation}
 \todo{This seems to be too wide, make it smaller}
 
-Then we calculate weight of the recommendation as follows.
+We calculate weight of recommendation $rw^{x}_{i,z}$ as a weighted sum of proportion of size of thee service history between $z$ and $j$ with maximal service history size. And number of peers that provided the initial reputations $\eta_{z,j}$ divided by maximal number of possible recommending peers.
 \begin{equation}
-    rw^{x}_{i,z} = 
+    rw^{x}_{i,z} = \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}} \cdot \frac{sh_{z, j}}{sh_{max}} + \left(1 - \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}}\right) \cdot \frac{\eta_{z,j}}{\eta_{max}}
 \end{equation}
+
+Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsec:evaluating-an-interaction}. It is a non-increasing function of number of recommendation or time. 
+For the recommendations, Fides implements it exactly the same as for the service interactions, thus $rf^{x}_{i, z} = \frac{x}{rh_{i, z}}, 1 \leq x \leq rh_{i,z}$.

@@ -1,0 +1,30 @@
+\newenvironment{abstractpage}
+  {\cleardoublepage\thispagestyle{empty}}
+  {\vfill\cleardoublepage}
+\newenvironment{abstract}[1]
+  {\bigskip
+   \begin{center}\bfseries#1\end{center}\small\leftskip=0.5cm\rightskip=0.5cm}
+  {\par\bigskip}
+
+\providecommand{\keywords}[2]{\footnotesize\textbf{\textit{#1:}} #2}
+
+\begin{abstractpage}
+\begin{abstract}{Abstract}
+    TBD \todo{add eng abstract}
+    
+\end{abstract}
+
+\keywords{Keywords}{TBD1, TBD2} \todo{add eng kws}
+
+\vspace*{\fill}
+
+\begin{abstract}{Abstrakt}
+    TBD \todo{add cz absrakt}
+    
+\end{abstract}
+\keywords{Klíčová slova}{TBD1, TBD2} \todo{add cz kws}
+
+\end{abstractpage}
+\thispagestyle{empty}
+
+\cleardoublepage
