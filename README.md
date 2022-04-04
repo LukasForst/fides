@@ -2,7 +2,7 @@
 
 Global Trust Model for P2P Intrusion Prevention System (IDS/IPS). Named
 after [Fides](https://en.wikipedia.org/wiki/Fides_(deity)) - goddess of trust and good faith. The repository is a mono
-repo for my diploma thesis on CTU. You can find generated PDF [here](assets/thesis.pdf).
+repo for my diploma thesis on CTU.
 
 ## Repository
 
@@ -11,7 +11,6 @@ repo for my diploma thesis on CTU. You can find generated PDF [here](assets/thes
 * [slips](slips) is the Slips module that uses Fides
 * [tests](tests) are the unit tests that verify that Fides works
 * [thesis](thesis) is my master's thesis that describes model and why was what implemented
-* [assets](assets) various blobs
 
 ## How to
 

@@ -1,4 +1,5 @@
-\subsection{Network Intelligence Aggregation}
+\section{Network Intelligence Aggregation}
+\label{sec:network-intelligence-aggregation}
 Fides is a trust model designed for global peer-to-peer network that is created by instances of Slips.
 It is designed to support Slips in detecting malicious actors on the network and enables threat intelligence sharing between peers of Slips instances.
 Because Slips was designed to be as modular as possible, Fides is effectively running as a module which provides aggregated threat intelligence to Slips. 
@@ -26,4 +27,4 @@ Again, we use service trust to compute this for each remote peer and normalize i
 
 \noindent 
 Aggregated score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) is then sent to Slips.
-Depending on the selected interaction evaluation strategy (described in \ref{subsec:interaction-evaluation}), these values can be further used to evaluate each interaction with the remote peers.
+Depending on the selected interaction evaluation strategy (described in \ref{sec:interaction-evaluation-strategies}), these values can be further used to evaluate each interaction with the remote peers.

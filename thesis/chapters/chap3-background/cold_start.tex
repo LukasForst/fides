@@ -1,13 +1,13 @@
-\subsection{Cold Start Problem}
-\label{subsec:cold-start-problem}
+\section{Cold Start Problem}
+\label{sec:cold-start-problem}
 Dynamic and global environment such as global peer-to-peer network, used by Fides, is open to anyone and any peer can freely join and leave. Because of that, the local peer will encounter many peers that were not seen before. As there was no previous encounter with the peer, the trust model does not have any information about their reliability nor how much can trust them. 
 New peers need to be able to trust from the local peer in order to be useful part of the network. However, the local peer needs to be able to discover malicious actors that are trying to gain its trust to misuse it. 
 
 We call this \textit{Cold Start Problem} - how does the new peer gain initial trust from the network. There are multiple ways how to approach this issue, we identified following potential solutions. 
 Fides has reference implementation for all of the following approaches and combines them according to provided configuration with aim to achieve best results for cold starts with malicious peers and behavior in mind.
 
-\subsubsection{Static Initial Trust}
-\label{subsubsec:static-initial-trust}
+\subsection{Static Initial Trust}
+\label{subsec:static-initial-trust}
 In this approach, whenever trust model encounters new peer, it assigns static value as an initial trust. What the value is depends on the specific implementation of the trust model.
 
 For example, in \textbf{Dovecot} trust model, every peer starts with the trust of $1$ (highest possible) and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning and only during the time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peers.
@@ -19,8 +19,8 @@ On the other hand, using low initial trust and no mechanism how to gain more tru
 
 Static initial trust is supported by Fides as form of fallback, when no other cold start technique is used. Administrator provides configuration which contains initial reputation for each new peer.
 
-\subsubsection{Pre-Trusted Peers}
-\label{subsubsec:pre-trusted-peers}
+\subsection{Pre-Trusted Peers}
+\label{subsec:pre-trusted-peers}
 In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership of some group, the trust model can utilize this knowledge and assign higher or lower trust.
 
 The network layer, designed for Slips and Fides, supports this\cite{nl} and provides a cryptographically-secure way how to identify single peer in the network and its membership in an organization.
@@ -28,7 +28,7 @@ This allows administrators to \textit{pre-trust} peers or the whole organization
 
 The Fides configuration allows administrators to specify static initial reputation for the specific peer or for all peers from the specific organization. 
 This means that whenever new peer joins the network and it is pre-trusted, it gains initial reputation specified in the configuration.
-During the time, it interacts with the local peer and provides threat intelligence, the data are evaluated and trust model decides how much it trusts them (assigns service trust) based on the reputation and the quality of the data. In detail is this process described in \ref{subsec:interaction-evaluation}.
+During the time, it interacts with the local peer and provides threat intelligence, the data are evaluated and trust model decides how much it trusts them (assigns service trust) based on the reputation and the quality of the data. In detail is this process described in \ref{sec:interaction-evaluation-strategies}.
 
 Another option, the administrator can use, is to enforce the service trust for the peer for the time being. This effectively means that trust model will not evaluate any data received from the pre-trusted peer and directly assigns them service trust from the configuration. This configuration for the Fides is called \textit{enforceTrust}.
 
@@ -36,8 +36,8 @@ Option to pre-trust peers solves the cold start problem for specific peers and o
 Which organization or which peer to trust or not is entirely on the administrator of the trust model. The inspiration for whom to trust provides, for example, Tor and their directory authorities\cite{torauth}. \todo{Probably do not have it here, but it is great example, this refers to "super trusted we-know-you-and-have-had-many-beers-with-you Tor volunteers"}
 However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
 
-\subsubsection{Recommendations}
-\label{subsubsec:recommendations}
+\subsection{Recommendations}
+\label{subsec:recommendations}
 As the local peer might have multiple remote peers, that it \textit{trusts enough}, it could be able to utilize this relationship and ask remote peers \textit{what do they think about newcomer}. 
 In other words, whenever local peer encounters peer that wasn't seen before, it can ask for recommendation on this peer from the local peer's most trusted remote peers.
 
@@ -51,5 +51,5 @@ Moreover, the local peer should request recommendations only if it has \textit{e
 
 \vspace{7mm}
 
-Fides employs recommendation systems based on SORT \cite{sort} and combines it with the pre-trusted peers (\ref{subsubsec:pre-trusted-peers}) as well as with the static initial trust (\ref{subsubsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
+Fides employs recommendation systems based on SORT \cite{sort} and combines it with the pre-trusted peers (\ref{subsec:pre-trusted-peers}) as well as with the static initial trust (\ref{subsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
 The algorithm used for the recommendation system is explained in detail in section \ref{sec:computational-model}.

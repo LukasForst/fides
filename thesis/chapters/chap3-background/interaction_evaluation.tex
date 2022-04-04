@@ -1,12 +1,11 @@
-\subsection{Interaction Evaluations}
-\label{subsec:interaction-evaluation}
+\section{Interaction Evaluation Strategies}
+\label{sec:interaction-evaluation-strategies}
 In order to determine what remote peers are providing valuable data and what peers are are not, the local peer needs to be able to evaluate each interaction it had with the remote peer.
 In general, there are two options how to approach this - either by designing evaluation that is protocol aware (meaning, that it understands the protocol and the data that are two peers sharing with each other), or by having an evaluation function that does not need to understand the protocol and can be used for any data.
 
-We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in section \ref{sec:simulations-and-evaluations}.
+We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in chapter \ref{chap:experiments}. 
+We will use notation from table (\ref{table:interaction-eval})  when referring to peers and their interactions.\todo{maybe do not use S and C when referring to score and confidence as we use "s" for satisfaction}
 
-% TODO: maybe do not use S and C when referring to score and confidence as we use "s" for satisfaction
-We will use notation from table (\ref{table:interaction-eval})  when referring to peers and their interactions.
 \begin{table}[h!]
 \centering
 \begin{tabular}{ c | m{20em} }
@@ -32,9 +31,8 @@ We will use notation from table (\ref{table:interaction-eval})  when referring t
 \label{table:interaction-eval}
 \end{table}
 
-
-\subsubsection{Evaluate all interactions with the same value}
-\label{subsubsec:same-eval-for-all-interactions}
+\subsection{Evaluate all interactions with the same value}
+\label{subsec:same-eval-for-all-interactions}
 The strategy, that does not need to understand underlying data, their semantics nor their structure.
 It is a naive approach when the trust model uses the same satisfaction value for all data it received. It does not check, if the data make sense (for example when all other peers but one are reporting that the IP address is malicious) and assigns all peers same satisfaction value $s^{k}_{i, j}$. 
 The idea behind this algorithm is that when the peers are interacting for a longer time or have more interactions, they're more trustworthy.
@@ -44,8 +42,8 @@ This approach is for example used by the botnet \textbf{Sality} or by the \textb
 The disadvantage of this approach is, that we do not penalize remote peers when they provide wrong data, because the evaluation method does not care nor understand the underlying data.
 Because of that and in a case when the adversary gains the service trust of the model by following the protocol for longer time, it may significantly influence the aggregated score as the adversary has higher trust then other remote peers. If this happens, there is no way to automatically downgrade adversary's service trust.
 
-\subsubsection{Use aggregated network intelligence for evaluation}
-\label{subsub:distance-based-eval}
+\subsection{Use aggregated network intelligence for evaluation}
+\label{subsec:distance-based-eval}
 Because Fides is designed for the sharing and aggregating threat intelligence and understands the protocol that is being used, we can utilize this and penalize peers that are providing local peer with incorrect data.
 The interaction evaluation is performed at the end of the threat intelligence sharing process, at that point, Fides already aggregated data and decided what is the aggregated network score and confidence. 
 Thus, we can utilize aggregated values and use it as a base line. Then we compare it against every each remote peer's threat intelligence we received. This evaluation strategy is implemented in the Fides a as a $DistanceBasedTIEvaluation$.
@@ -65,13 +63,13 @@ Where $S^{k}_{T}$ is final score aggregated across the reports from the peers, $
 
 The problem in this evaluation algorithm are the situations when the aggregated confidence $C^{k}_{T}$ is close to $0$. In this case the algorithm will penalize all peers for providing any threat intelligence as the final $s^{k}_{i, j}$ is close to $0$. Another issue with this approach is that when a single honest peer has a unique information about an IP address or domain, which is significantly different then what other peers have, it is automatically penalized for not sharing the same opinion as the other peers. However, if the peer is trusted enough, it has higher impact on the aggregated value and it is not penalized too much.
 
-\subsubsection{Use network intelligence only if the confidence is high enough}
-\label{subsubsec:network-intelligence-conf-high-enough}
-In order to compensate for the low confidence $C^{k}_{T}$ and penalizing all peers in algorithm explained in \ref{subsub:distance-based-eval}, this evaluation strategy considers $C^{k}_{T}$ value and employs  $DistanceBasedTIEvaluation$ only when the  $C^{k}_{T}$ is \textit{"high enough"}. In this case \textit{"high enough"} means higher then configured value by the Slips administrator - ${CT}$.
+\subsection{Use network intelligence only if the confidence is high enough}
+\label{subsec:network-intelligence-conf-high-enough}
+In order to compensate for the low confidence $C^{k}_{T}$ and penalizing all peers in algorithm explained in \ref{subsec:distance-based-eval}, this evaluation strategy considers $C^{k}_{T}$ value and employs  $DistanceBasedTIEvaluation$ only when the  $C^{k}_{T}$ is \textit{"high enough"}. In this case \textit{"high enough"} means higher then configured value by the Slips administrator - ${CT}$.
 In a case when  $C^{k}_{T} < {CT}$, the algorithm fall backs to using $EvenTIEvaluation$, because it is not possible to distinguish between \textit{"good"} and \textit{"bad"} network intelligence due to low confidence of the decision. 
 This strategy is implemented in Fides under the name $ThresholdTIEvaluation$.
+What should be the correct value for $CT$ from configuration is subject to evaluation in the simulations in chapter \ref{chap:experiments}.
 
-% TODO: I'm not sure if we really need this schema
 \begin{algorithm}
 \caption{$ThresholdTIEvaluation$}\label{alg:threshold-ti-evaluation}
 \begin{algorithmic}[1]
@@ -84,11 +82,9 @@ This strategy is implemented in Fides under the name $ThresholdTIEvaluation$.
 \end{algorithmic}
 \end{algorithm}
 
-\noindent What should be the correct value for $CT$ from configuration is subject to evaluation in the simulations in section \ref{sec:simulations-and-evaluations}.
-
-\subsubsection{Use local threat intelligence to evaluate network intelligence}
-\label{subsub:use-local-threat-to-evaluate}
-This approach uses similar equation for computing satisfaction value outlined in \ref{subsub:distance-based-eval}. However, the input is different - instead of comparing remote peer's ($j$ ) threat intelligence ($S^{k}_{j, T}$, $C^{k}_{j, T}$) to aggregated intelligence ($S^{k}_{T}$, $C^{k}_{T}$), we compare it to the threat intelligence of the local ($i$) Slips instance - ($S^{k}_{i, T}$, $C^{k}_{i, T}$). Thus the evaluation is following:
+\subsection{Use local threat intelligence to evaluate network intelligence}
+\label{subsec:use-local-threat-to-evaluate}
+This approach uses similar equation for computing satisfaction value outlined in \ref{subsec:distance-based-eval}. However, the input is different - instead of comparing remote peer's ($j$ ) threat intelligence ($S^{k}_{j, T}$, $C^{k}_{j, T}$) to aggregated intelligence ($S^{k}_{T}$, $C^{k}_{T}$), we compare it to the threat intelligence of the local ($i$) Slips instance - ($S^{k}_{i, T}$, $C^{k}_{i, T}$). Thus the evaluation is following:
 
 \begin{equation}
 s^{k}_{i, j} = \left(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{i, T}
@@ -97,8 +93,8 @@ s^{k}_{i, j} = \left(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{
 This approach is useful when local peer has enough information about the target, but it wants to verify the behavior of the remote peers.
 To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
 
-\subsubsection{Weight local opinion with aggregated one}
-Another implemented strategy combines \ref{subsub:distance-based-eval} and \ref{subsub:use-local-threat-to-evaluate} and mixes them using weight $w$, provided from the configuration.
+\subsection{Weight local opinion with aggregated one}
+Another implemented strategy combines \ref{subsec:distance-based-eval} and \ref{subsec:use-local-threat-to-evaluate} and mixes them using weight $w$, provided from the configuration.
 This is good approach when the the Slips or the network has a lot of data on the target. It evaluates interactions with what local instance thinks and what the network opinion is.
 What the correct mixture is is subject to simulations and configuration from the administrator.
 
@@ -112,35 +108,34 @@ What the correct mixture is is subject to simulations and configuration from the
 \noindent
 In Fides implemented as the $WeightedDistanceToLocalTIEvaluation$.
 
-\subsubsection{Utilize all available data in evaluation}
+\subsection{Utilize all available data in evaluation}
 The goal of this strategy is to evaluate the received data with as much confidence as possible while having fully automatic process without the administrator's configuration.
 In order to do that, we combine all previous strategies into one, where we utilize all available information into a single $s^{k}_{i, j}$ value.
 
-We introduce new variables here - $p_{0}, p_{1}, p_{2}$ - which are essentially weights of the particular strategies. These weights are based on the confidence, that the strategy has in its own decision.
+We introduce new variables here - $w_{0}, w_{1}, w_{2}$ - which are essentially weights of the particular strategies. These weights are based on the confidence, that the strategy has in its own decision.
 Note, that there is a hierarchy and order matters. 
-In our case we decided to prefer decisions coming from strategy \ref{subsub:distance-based-eval}, then we add data from the \ref{subsub:use-local-threat-to-evaluate} and if the final decision still does not have confidence of $1$, we add static value configured by the administrator (noted as $S_{C}$). 
-The last part - $S_{C}$ - simulates static strategy described in \ref{subsubsec:same-eval-for-all-interactions} and is set by the Slips administrator.
-% TODO should we use min or the detailed version?
+In our case we decided to prefer decisions coming from strategy \ref{subsec:distance-based-eval}, then we add data from the \ref{subsec:use-local-threat-to-evaluate} and if the final decision still does not have confidence of $1$, we add static value configured by the administrator (noted as $S_{C}$). 
+The last part - $S_{C}$ - simulates static strategy described in \ref{subsec:same-eval-for-all-interactions} and is set by the Slips administrator.\todo{should we use min or the detailed version?}
 
 \begin{equation}
 \label{equation:strategies-weights}
 \begin{split}
-    p_{0} &= {C}^{k}_{T} \\
-    p_{1} &= \frac{1 - {C}^{k}_{T} + {C}^{k}_{i, T} - |1 - {C}^{k}_{T} - {C}^{k}_{i, T}|}{2} \\
-    p_{1} &= min(1 - {C}^{k}_{T}, {C}^{k}_{i, T}) \\
-    p_{2} &= 1 - p_{0} - p_{1}
+    w_{0} &= {C}^{k}_{T} \\
+    w_{1} &= \frac{1 - {C}^{k}_{T} + {C}^{k}_{i, T} - |1 - {C}^{k}_{T} - {C}^{k}_{i, T}|}{2} \\
+    w_{1} &= min(1 - {C}^{k}_{T}, {C}^{k}_{i, T}) \\
+    w_{2} &= 1 - w_{0} - w_{1}
 \end{split}
 \end{equation}
-The weights $p_{0}, p_{1}, p_{2}$ in \ref{equation:strategies-weights}, are designed to gather as much confidence as possible. $p_{0}$ is confidence of the aggregated network data, essentially saying how much is the network sure about the given score. 
+The weights $w_{0}, w_{1}, w_{2}$ in \ref{equation:strategies-weights}, are designed to gather as much confidence as possible. $p_{0}$ is confidence of the aggregated network data, essentially saying how much is the network sure about the given score. 
 $p_{1}$ is the confidence coming from the local IPS and the $p_{2}$ is the remaining confidence to $1$.
 
-When we have the weights, we can compute final $s^{k}_{i, j}$ where we use strategies - $p_{0} \cdot \ref{subsub:distance-based-eval}$, $p_{1} \cdot \ref{subsub:use-local-threat-to-evaluate}$ and $p_{2} \cdot \ref{subsubsec:same-eval-for-all-interactions}$. 
+When we have the weights, we can compute final $s^{k}_{i, j}$ where we use strategies - $w_{0} \cdot \ref{subsec:distance-based-eval}$, $w_{1} \cdot \ref{subsec:use-local-threat-to-evaluate}$ and $w_{2} \cdot \ref{subsec:same-eval-for-all-interactions}$. 
 \begin{equation}
 \begin{split}
     s^{k}_{i, j} &= \\
-    &p_{0} \cdot \left[\left(1 - \frac{|{S}^{k}_{T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{T}\right] + \\
-    &p_{1} \cdot \left[\left(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{i, T}\right] + \\
-    &p_{2} \cdot S_{C}
+    &w_{0} \cdot \left[\left(1 - \frac{|{S}^{k}_{T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{T}\right] + \\
+    &w_{1} \cdot \left[\left(1 - \frac{|{S}^{k}_{i, T} - S^{k}_{j, T}|}{2} \cdot C^{k}_{j, T}\right) \cdot C^{k}_{i, T}\right] + \\
+    &w_{2} \cdot S_{C}
 \end{split}
 \end{equation}
 

@@ -1,6 +1,9 @@
-\documentclass{article}
+\documentclass[a4paper, 11pt, twoside, openright]{book}
 
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
 \usepackage{amsmath} % advanced math
 \usepackage[hidelinks]{hyperref} % hide ugly boxes around links + add urls support
 \usepackage{indentfirst} % intend first paragraph
@@ -9,58 +12,84 @@
 \usepackage{array} % better alignments of tables
 \usepackage{todonotes} % fancy todos
 
-\usepackage{biblatex}
-\addbibresource{biblio.bib} % bibliography
+% set paths
+\graphicspath{{assets/}}
 
+% Setting penalty for breaking line or page after[before] first[last] line of
+% paragraph
+\clubpenalty=10000
+\widowpenalty=10000
 
-\title{Fides, Trust Model for Highly Adversarial Global Peer-To-Peer Networks of Intrusion Prevention Systems}
-\author{Bc. Lukáš Forst}
-\date{2022}
+% line formatting
+\linespread{1.3}
+
+% this fixes warning during compilation and makes head bigger
+\setlength{\headheight}{13.6pt}
+
+% Bibliography setting
+\usepackage[backend=biber, style=numeric, sorting=ynt]{biblatex}
+\addbibresource{biblio.bib}
+
+% turn off page numbering for this part
+\pagenumbering{gobble}
 
 \begin{document}
 
-\maketitle
+%% initial pages
+\input{titlepage}
+% Assignment
+\includegraphics[width=0.7\paperwidth]{assets/assignment.pdf}
+\input{declaration}
+\input{acknowledgment}
+\input{abstract}
 
-The name of the trust model - Fides. URL - \href{https://github.com/LukasForst/fides}{Github}.
-Named after \href{https://en.wikipedia.org/wiki/Fides_(deity)}{Fides} - goddess of trust and good faith.
+% first start roman page numbering
+\pagestyle{plain}
+\frontmatter 
 
-So far this document is just set of random paragraphs and notes for the future.
+% table of contents 
+\tableofcontents
+\cleardoublepage
 
-\section{Possible One Liners}
-\begin{itemize}
-\item An algorithm for the peer-to-peer network of IPS agents that evaluates agents’ behavior and data to assign them a trust value - essentially saying how much the local agent can trust another remote IPS.
-\item A trust model for the peer-to-peer network of IPS agents that evaluates agents’ behavior.
-\item A trust model for the global peer-to-peer network of IPS agents in highly adversarial environment.
-\item Fides, Trust Model for Highly Adversarial Global Peer-To-Peer Networks of Intrusion Prevention Systems.
-\item Fides, Trust Model for Global Peer-To-Peer Networks of Intrusion Prevention Systems.
-\end{itemize}
+% list of figures
+%  TODO: enable this if necessary
+% \begingroup
+% \let\cleardoublepage\relax
+% \listoffigures
+% \clearpage
+% \endgroup
 
-\section{Problems we are solving}
-\begin{enumerate}
-\item How do we determine who and how much to trust in global peer-to-peer network, where peers can join and quickly leave and there is a possibility that all connected peers are adversarial.
-\item Given that peers can join and leave any time, we will have problem with cold start. We need to come up with a way how can newcomers safely gain initial trust fast.
-\item The main (but not only) purpose of the project is to be able to share threat intelligence over the network. How do we aggregate said threat intelligence into a single aggregated network opinion?
-\item As a Slips administrator, I want to be able to share data only with (or trust incoming data only from) specific peers or specific organizations.
-\end{enumerate}
+% % list of tables
+% \begingroup
+% \let\clearpage\relax
+% \let\cleardoublepage\relax
+% \listoftables
+% \endgroup
+% \cleardoublepage
+
+ % From now on Arabic page numbering
+\mainmatter
+
+% Set header and footer styles
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+\fancyfoot[CE,CO]{\thepage}
 
 
+\input{chapters/chap1-introduction/chapter}
+\input{chapters/chap2-related-work/chapter}
+\input{chapters/chap3-background/chapter}
+\input{chapters/chap4-architecture/chapter}
+\input{chapters/chap5-experiments/chapter}
+\input{chapters/chap6-results/chapter}
+\input{chapters/chap7-implementation/chapter}
+\input{chapters/chap8-conclusion/chapter}
 
-\include{text/terminology}
 
-\include{text/interaction_evaluation}
-
-\include{text/ti_aggregation}
-
-\include{text/recommendations}
-
-\include{text/computational_model}
-
-\include{text/simulations}
-
-\include{text/equations}
-
-\medskip
-
-\printbibliography
+% Add bibliography content
+\pagebreak
+\section*{Bibliography}
+\printbibliography[heading=none]
 
 \end{document}

@@ -1,0 +1,23 @@
+\chapter{Introduction}
+
+The name of the trust model - Fides. URL - \href{https://github.com/LukasForst/fides}{Github}.
+Named after \href{https://en.wikipedia.org/wiki/Fides_(deity)}{Fides} - goddess of trust and good faith.
+
+So far this document is just set of random paragraphs and notes for the future.
+
+\section{Possible One Liners}
+\begin{itemize}
+\item An algorithm for the peer-to-peer network of IPS agents that evaluates agents’ behavior and data to assign them a trust value - essentially saying how much the local agent can trust another remote IPS.
+\item A trust model for the peer-to-peer network of IPS agents that evaluates agents’ behavior.
+\item A trust model for the global peer-to-peer network of IPS agents in highly adversarial environment.
+\item Fides, Trust Model for Highly Adversarial Global Peer-To-Peer Networks of Intrusion Prevention Systems.
+\item Fides, Trust Model for Global Peer-To-Peer Networks of Intrusion Prevention Systems.
+\end{itemize}
+
+\section{Problems we are solving}
+\begin{enumerate}
+\item How do we determine who and how much to trust in global peer-to-peer network, where peers can join and quickly leave and there is a possibility that all connected peers are adversarial.
+\item Given that peers can join and leave any time, we will have problem with cold start. We need to come up with a way how can newcomers safely gain initial trust fast.
+\item The main (but not only) purpose of the project is to be able to share threat intelligence over the network. How do we aggregate said threat intelligence into a single aggregated network opinion?
+\item As a Slips administrator, I want to be able to share data only with (or trust incoming data only from) specific peers or specific organizations.
+\end{enumerate}
