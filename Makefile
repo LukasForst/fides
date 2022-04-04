@@ -42,4 +42,4 @@ install-latex-distro:
 	brew install basictex;
 
 install-tex-packages:
-	tlmgr install algorithms algorithmicx biblatex;
+	tlmgr install algorithms algorithmicx biblatex todonotes;
