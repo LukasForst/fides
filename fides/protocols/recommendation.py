@@ -2,7 +2,6 @@ import math
 from typing import List, Optional
 
 from fides.evaluation.recommendation.process import process_new_recommendations
-from fides.evaluation.recommendation.selection import select_trustworthy_peers_for_recommendations
 from fides.evaluation.service.interaction import Weight, SatisfactionLevels
 from fides.messaging.model import PeerRecommendationResponse
 from fides.messaging.network_bridge import NetworkBridge
@@ -158,11 +157,7 @@ class RecommendationProtocol(Protocol):
                 f"Not enough trusted peers! Candidates: {len(candidates)}, requirement: {require_trusted_peer_count}.")
             return []
 
-        # and finally use SORT selection algorithm to pick the correct list of recipients
-        if self.__rec_conf.peers_max_count > len(candidates):
-            return select_trustworthy_peers_for_recommendations(
-                data={p.peer_id: p.recommendation_trust for p in candidates},
-                max_peers=self.__rec_conf.peers_max_count
-            )
-        else:
-            return [p.peer_id for p in candidates]
+        # now sort them
+        candidates.sort(key=lambda c: c.service_trust, reverse=True)
+        # and take only top __rec_conf.peers_max_count peers to ask for recommendations
+        return [p.peer_id for p in candidates][:self.__rec_conf.peers_max_count]
