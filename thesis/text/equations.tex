@@ -1,29 +1,8 @@
 These are some equations we will need in order to describe the SORT algorithm.
 
-$$
-f_{i j}^{k}=\frac{k}{s h_{i j}}, \quad 1 \leq k \leq s h_{i j} .
-$$
-
-
-$$
-c b_{i j}=\frac{1}{\beta_{c b}} \sum_{k=1}^{s h_{i j}}\left(s_{i j}^{k} \cdot w_{i j}^{k} \cdot f_{i j}^{k}\right) .
-$$
-
-
-$$
-i b_{i j}=\sqrt{\frac{1}{s h_{i j}} \sum_{k=1}^{s h_{i j}}\left(s_{i j}^{k} \cdot w_{i j}^{\mu} \cdot f_{i j}^{\mu}-c b_{i j}\right)^{2}}
-$$
 
 $$
 f_{i j}^{\mu}=\frac{1}{s h_{i j}} \sum_{k=1}^{s h_{i j}} f_{i j}^{k}=\frac{s h_{i j}+1}{2 s h_{i j}} \approx \frac{1}{2} .
-$$
-
-$$
-s t_{i j}=c b_{i j}-i b_{i j} / 2 .
-$$
-
-$$
-s t_{i j}=\frac{s h_{i j}}{s h_{\max }}\left(c b_{i j}-i b_{i j} / 2\right)+\left(1-\frac{s h_{i j}}{s h_{\max }}\right) r_{i j} .
 $$
 
 $$
