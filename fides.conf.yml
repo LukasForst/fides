@@ -68,7 +68,7 @@ trust:
     useOnlyPreconfigured: False
     # require minimal number of trusted connected peers before running recommendations
     # valid only if trust.recommendations.useOnlyPreconfigured == False
-    requiredTrustedPeersCount: 0
+    requiredTrustedPeersCount: 1
     # minimal trust for trusted peer
     # valid only if trust.recommendations.useOnlyPreconfigured == False
     trustedPeerThreshold: 0.1

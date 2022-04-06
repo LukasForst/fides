@@ -25,12 +25,20 @@ class TrustDatabase:
         """Returns list of peers that are directly connected to the Slips."""
         raise NotImplemented()
 
+    def get_peers_info(self, peer_ids: List[PeerId]) -> List[PeerInfo]:
+        """Returns list of peer infos for given ids."""
+        raise NotImplemented()
+
     def get_peers_with_organisations(self, organisations: List[OrganisationId]) -> List[PeerInfo]:
         """Returns list of peers that have one of given organisations."""
         raise NotImplemented()
 
     def get_peers_with_geq_recommendation_trust(self, minimal_recommendation_trust: float) -> List[PeerInfo]:
         """Returns peers that have >= recommendation_trust then the minimal."""
+        raise NotImplemented()
+
+    def get_peers_with_geq_service_trust(self, minimal_service_trust: float) -> List[PeerInfo]:
+        """Returns peers that have >= service_trust then the minimal."""
         raise NotImplemented()
 
     def store_peer_trust_data(self, trust_data: PeerTrustData):

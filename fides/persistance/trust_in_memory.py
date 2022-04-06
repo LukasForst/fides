@@ -49,6 +49,12 @@ class InMemoryTrustDatabase(TrustDatabase):
             peer_id = peer.id
         return self.__trust_matrix.get(peer_id, None)
 
+    def get_peers_info(self, peer_ids: List[PeerId]) -> List[PeerInfo]:
+        return [self.__trust_matrix.get(p).info for p in peer_ids]
+
+    def get_peers_with_geq_service_trust(self, minimal_service_trust: float) -> List[PeerInfo]:
+        return [p.info for p in self.__trust_matrix.values() if p.service_trust >= minimal_service_trust]
+
     def cache_network_opinion(self, ti: SlipsThreatIntelligence):
         """Caches aggregated opinion on given target."""
         self.__network_opinions[ti.target] = now(), ti

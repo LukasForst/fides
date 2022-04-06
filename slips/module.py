@@ -9,11 +9,11 @@ from fides.messaging.network_bridge import NetworkBridge
 from fides.model.configuration import load_configuration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.protocols.alert import AlertProtocol
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.peer_list import PeerListUpdateProtocol
 from fides.protocols.recommendation import RecommendationProtocol
 from fides.protocols.threat_intelligence import ThreatIntelligenceProtocol
-from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import LoggerPrintCallbacks, Logger
 from slips.messaging.queue import RedisQueue, RedisSimplexQueue
 from slips.originals.abstracts import Module
@@ -69,7 +69,7 @@ class SlipsFidesModule(Module, Process):
         bridge = NetworkBridge(network_fides_queue)
 
         recommendations = RecommendationProtocol(self.__trust_model_config, trust_db, bridge)
-        trust = TrustProtocol(trust_db, self.__trust_model_config, recommendations)
+        trust = InitialTrustProtocol(trust_db, self.__trust_model_config, recommendations)
         peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
         opinion = OpinionAggregator(self.__trust_model_config, ti_db, TIAggregation())
 

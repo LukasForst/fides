@@ -10,11 +10,11 @@ from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
 from fides.persistance.trust_in_memory import InMemoryTrustDatabase
 from fides.protocols.alert import AlertProtocol
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.peer_list import PeerListUpdateProtocol
 from fides.protocols.recommendation import RecommendationProtocol
 from fides.protocols.threat_intelligence import ThreatIntelligenceProtocol
-from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import LoggerPrintCallbacks, Logger
 
 if __name__ == '__main__':
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
 
     recommendations = RecommendationProtocol(config, trust_db, bridge, )
-    trust = TrustProtocol(trust_db, config, recommendations)
+    trust = InitialTrustProtocol(trust_db, config, recommendations)
     peer_list = PeerListUpdateProtocol(trust_db, bridge, recommendations, trust)
     opinion = OpinionAggregator(config, ti_db, TIAggregation())
 

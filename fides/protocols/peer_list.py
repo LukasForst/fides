@@ -3,8 +3,8 @@ from typing import List
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.peer import PeerInfo
 from fides.persistance.trust import TrustDatabase
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.recommendation import RecommendationProtocol
-from fides.protocols.trust_protocol import TrustProtocol
 
 
 class PeerListUpdateProtocol:
@@ -14,7 +14,7 @@ class PeerListUpdateProtocol:
                  trust_db: TrustDatabase,
                  bridge: NetworkBridge,
                  recommendation_protocol: RecommendationProtocol,
-                 trust_protocol: TrustProtocol
+                 trust_protocol: InitialTrustProtocol
                  ):
         self.__trust_db = trust_db
         self.__bridge = bridge

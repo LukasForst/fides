@@ -11,9 +11,9 @@ from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
 from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
 from fides.persistance.trust import TrustDatabase
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.protocol import Protocol
-from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import Logger
 
 logger = Logger(__name__)
@@ -28,7 +28,7 @@ class ThreatIntelligenceProtocol(Protocol):
                  bridge: NetworkBridge,
                  configuration: TrustModelConfiguration,
                  aggregator: OpinionAggregator,
-                 trust_protocol: TrustProtocol,
+                 trust_protocol: InitialTrustProtocol,
                  ti_evaluation_strategy: TIEvaluation,
                  network_opinion_callback: Callable[[SlipsThreatIntelligence], None]
                  ):

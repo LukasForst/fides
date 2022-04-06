@@ -13,11 +13,11 @@ from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
 from fides.persistance.trust_in_memory import InMemoryTrustDatabase
 from fides.protocols.alert import AlertProtocol
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.peer_list import PeerListUpdateProtocol
 from fides.protocols.recommendation import RecommendationProtocol
 from fides.protocols.threat_intelligence import ThreatIntelligenceProtocol
-from fides.protocols.trust_protocol import TrustProtocol
 from fides.utils.logger import Logger
 from tests.load_config import find_config
 from tests.messaging.queue import TestQueue
@@ -33,7 +33,7 @@ class Fides:
     queue: TestQueue
     bridge: NetworkBridge
     recommendations: RecommendationProtocol
-    trust: TrustProtocol
+    trust: InitialTrustProtocol
     peer_list: PeerListUpdateProtocol
     dovecot: TIAggregation
     opinion: OpinionAggregator
@@ -62,7 +62,7 @@ def get_fides(**kwargs) -> Fides:
     network_opinion_callback = kwargs.get('network_opinion_callback', default_network_opinion_callback)
 
     recommendations = kwargs.get('recommendations', RecommendationProtocol(config, trust_db, bridge))
-    trust = kwargs.get('trust', TrustProtocol(trust_db, config, recommendations))
+    trust = kwargs.get('trust', InitialTrustProtocol(trust_db, config, recommendations))
     peer_list = kwargs.get('peer_list', PeerListUpdateProtocol(trust_db, bridge, recommendations, trust))
     dovecot = kwargs.get('dovecot', TIAggregation())
     opinion = kwargs.get('opinion', OpinionAggregator(config, ti_db, dovecot))

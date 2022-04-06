@@ -10,7 +10,7 @@ from fides.utils.logger import Logger
 logger = Logger(__name__)
 
 
-class TrustProtocol:
+class InitialTrustProtocol:
     def __init__(self,
                  trust_db: TrustDatabase,
                  configuration: TrustModelConfiguration,

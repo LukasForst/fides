@@ -8,9 +8,9 @@ from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
 from fides.persistance.trust import TrustDatabase
+from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.protocol import Protocol
-from fides.protocols.trust_protocol import TrustProtocol
 
 
 class AlertProtocol(Protocol):
@@ -19,7 +19,7 @@ class AlertProtocol(Protocol):
     def __init__(self,
                  trust_db: TrustDatabase,
                  bridge: NetworkBridge,
-                 trust_protocol: TrustProtocol,
+                 trust_protocol: InitialTrustProtocol,
                  configuration: TrustModelConfiguration,
                  aggregator: OpinionAggregator,
                  alert_callback: Callable[[SlipsThreatIntelligence], None]

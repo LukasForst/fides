@@ -115,7 +115,7 @@ class RecommendationProtocol(Protocol):
                recommendation.initial_reputation_provided_by_count == 0
 
     def __get_recommendation_request_recipients(self, connected_peers: List[PeerInfo]) -> List[PeerId]:
-        recommenders = []
+        recommenders: List[PeerInfo] = []
         require_trusted_peer_count = self.__rec_conf.required_trusted_peers_count
         trusted_peer_threshold = self.__rec_conf.trusted_peer_threshold
 
@@ -126,7 +126,7 @@ class RecommendationProtocol(Protocol):
             preconfigured_peers = set(p.id for p in self._configuration.trusted_peers)
             preconfigured_organisations = set(p.id for p in self._configuration.trusted_organisations)
 
-            if recommenders:
+            if len(recommenders) > 0:
                 # if there are already some recommenders it means that only_connected filter is enabled
                 # in that case we need to filter those peers and see if they either are on preconfigured
                 # list or if they have any organisation
@@ -136,23 +136,23 @@ class RecommendationProtocol(Protocol):
             else:
                 # if there are no recommenders, only_preconfigured is disabled, so we select all preconfigured
                 # peers and all peers from database that have the organisation
-                recommenders = list(preconfigured_peers) \
-                               + [p.id for p in
-                                  self.__trust_db.get_peers_with_organisations(list(preconfigured_organisations))]
+                recommenders = self.__trust_db.get_peers_info(list(preconfigured_peers)) \
+                               + self.__trust_db.get_peers_with_organisations(list(preconfigured_organisations))
             # if we have only_preconfigured, we do not need to care about minimal trust because we're safe enough
             require_trusted_peer_count = -math.inf
-            trusted_peer_threshold = -math.inf
-
-        if not recommenders:
-            # if we still don't have any recommenders, we need to fetch some from the database
-            recommenders = [p.id for p in
-                            self.__trust_db.get_peers_with_geq_recommendation_trust(trusted_peer_threshold)]
+        elif not self.__rec_conf.only_connected:
+            # in this case there's no restriction, and we can freely select any peers
+            # select peers that hev at least trusted_peer_threshold recommendation trust
+            recommenders = self.__trust_db.get_peers_with_geq_recommendation_trust(trusted_peer_threshold)
+            # if there's not enough peers like that, select some more with this service trust
+            if len(recommenders) <= self.__rec_conf.peers_max_count:
+                # TODO: [+] maybe add higher trusted_peer_threshold for this one
+                recommenders += self.__trust_db.get_peers_with_geq_service_trust(trusted_peer_threshold)
 
         # now we need to get all trust data and sort them by recommendation trust
-        candidates = [p for p in self.__trust_db.get_peers_trust_data(recommenders).values()
-                      if p.recommendation_trust > trusted_peer_threshold]
+        candidates = list(self.__trust_db.get_peers_trust_data(recommenders).values())
         # check if we can proceed
-        if not candidates or len(candidates) < require_trusted_peer_count:
+        if len(candidates) == 0 or len(candidates) < require_trusted_peer_count:
             logger.debug(
                 f"Not enough trusted peers! Candidates: {len(candidates)}, requirement: {require_trusted_peer_count}.")
             return []
