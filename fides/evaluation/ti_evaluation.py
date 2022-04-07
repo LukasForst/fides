@@ -201,7 +201,7 @@ class MaxConfidenceTIEvaluation(TIEvaluation):
         # now we need to check if we even have some threat intelligence data
         local_ti = self.__local.get_local_ti(aggregated_ti.target, **kwargs)
         # weight of the local evaluation
-        local_weight = max(1 - distance_weight, local_ti.confidence) if local_ti else 0
+        local_weight = min(1 - distance_weight, local_ti.confidence) if local_ti else 0
         local_data = self.__local.evaluate(aggregated_ti, responses, trust_matrix, **kwargs) \
             if local_weight > 0 \
             else zero_dict
