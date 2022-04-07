@@ -121,7 +121,6 @@ The last part - $S_{C}$ - simulates static strategy described in \ref{subsec:sam
 \label{equation:strategies-weights}
 \begin{split}
     w_{0} &= {C}^{k}_{T} \\
-    w_{1} &= \frac{1 - {C}^{k}_{T} + {C}^{k}_{i, T} - |1 - {C}^{k}_{T} - {C}^{k}_{i, T}|}{2} \\
     w_{1} &= min(1 - {C}^{k}_{T}, {C}^{k}_{i, T}) \\
     w_{2} &= 1 - w_{0} - w_{1}
 \end{split}
