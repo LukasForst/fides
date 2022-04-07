@@ -1,7 +1,7 @@
 \section{Cold Start Problem}
 \label{sec:cold-start-problem}
 Dynamic and global environment such as global peer-to-peer network, used by Fides, is open to anyone and any peer can freely join and leave. Because of that, the local peer will encounter many peers that were not seen before. As there was no previous encounter with the peer, the trust model does not have any information about their reliability nor how much can trust them. 
-New peers need to be able to trust from the local peer in order to be useful part of the network. However, the local peer needs to be able to discover malicious actors that are trying to gain its trust to misuse it. 
+New peers need to be able to trust from the local peer in order to be useful part of the network. However, the local peer needs to be able to discover malicious actors that are trying to gain its trust to misuse it. \todo{This is motivation what's up, we can move to intro.}
 
 We call this \textit{Cold Start Problem} - how does the new peer gain initial trust from the network. There are multiple ways how to approach this issue, we identified following potential solutions. 
 Fides has reference implementation for all of the following approaches and combines them according to provided configuration with aim to achieve best results for cold starts with malicious peers and behavior in mind.

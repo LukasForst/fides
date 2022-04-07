@@ -116,7 +116,25 @@ We denote a set of remote peers, that provided the recommendations as $T_{i}$.
 \subsubsection{Requesting a Recommendation}
 The recommendation system build into Fides can not be used in every scenario.
 Because of the sensitive nature of the environment, the trust model was designed for, there are cases when it is dangerous to ask for the recommendations.
-That is mainly the case, when there are \textit{not enough} peers that are \textit{trusted enough}.\todo{describe in detail}
+That is mainly the case, when there are \textit{not enough} peers that are \textit{trusted enough}.
+
+SORT \cite{sort} requests recommendations every time it encounters a new peer. Set of recommending peers is created by taking all known peers and selecting the ones, that have higher then average service trust.
+However, those can also be peers with trust as low as $0.001$. In a sensitive environment, which peer-to-peer network of IPS definitely is, we do not want to get recommendations from peers, that have low trust at all.
+Moreover, given the nature of Slips, we decided to combine recommendation system based on SORT with static initial trust \ref{subsec:static-initial-trust} and with pre-trusted peers \ref{subsec:pre-trusted-peers}. 
+This approach gives us more robust basis for trust sensitive environment and it helps us to mitigate cold start problem \ref{sec:cold-start-problem}.\todo{This is again too text heavy, should we leave that here, or move that somewhere else?}
+
+\begin{algorithm}
+\caption{Reqest Recommendation}\label{alg:threshold-ti-evaluation}
+\begin{algorithmic}[1]
+\State ${CT} \gets configuration$ \Comment{configuration provided by the administrator}
+\If{$C^{k}_{T} < {CT}$}
+	\State $s^{k}_{i, j} \gets EvenTIEvaluation()$
+\Else
+    \State $s^{k}_{i, j} \gets DistanceBasedTIEvaluation()$
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
 
 \subsubsection{Recommendation Response}
 A single recommendation response from peer $z \in T_{i}$ about giving recommendation to peer $i$ about peer $j$ contains following data.
