@@ -123,18 +123,9 @@ However, those can also be peers with trust as low as $0.001$. In a sensitive en
 Moreover, given the nature of Slips, we decided to combine recommendation system based on SORT with static initial trust \ref{subsec:static-initial-trust} and with pre-trusted peers \ref{subsec:pre-trusted-peers}. 
 This approach gives us more robust basis for trust sensitive environment and it helps us to mitigate cold start problem \ref{sec:cold-start-problem}.\todo{This is again too text heavy, should we leave that here, or move that somewhere else?}
 
-\begin{algorithm}
-\caption{Reqest Recommendation}\label{alg:threshold-ti-evaluation}
-\begin{algorithmic}[1]
-\State ${CT} \gets configuration$ \Comment{configuration provided by the administrator}
-\If{$C^{k}_{T} < {CT}$}
-	\State $s^{k}_{i, j} \gets EvenTIEvaluation()$
-\Else
-    \State $s^{k}_{i, j} \gets DistanceBasedTIEvaluation()$
-\EndIf
-\end{algorithmic}
-\end{algorithm}
-
+If the peer is part of pre-trusted organization or it is pre-trusted itself, it inherits the configured reputation - $r_{i, j}$ from the configuration.
+In this case, Fides does not engage recommendation protocol at all, because the peer already has reputation $r_{i,j}$ assigned from the configuration and it was \textit{recommended} by the administrator.
+Moreover, the administrator can choose if this value is \textit{frozen}, or not. \textit{Frozen} configuration means, that the peer $j$ has in eyes of $i$ \textit{static service trust} $st_{i, j}$ - it will never change and whatever data peer $j$ sends to $i$ will not influence the $st_{i,j}$.
 
 \subsubsection{Recommendation Response}
 A single recommendation response from peer $z \in T_{i}$ about giving recommendation to peer $i$ about peer $j$ contains following data.
