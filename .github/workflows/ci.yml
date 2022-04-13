@@ -25,7 +25,7 @@ jobs:
         shell: bash -l {0}
         run: pytest tests
 
-  generate-pdf:
+  generate-and-release-pdf:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,3 +41,13 @@ jobs:
         with:
           name: PDF
           path: thesis/main.pdf
+
+      - name: Get Release Name
+        run: echo "RELEASE_NAME=$(date +'%Y-%m-%dT%H:%M')" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          name: ${{ env.RELEASE_NAME }}
+          files: thesis/main.pdf
