@@ -32,13 +32,12 @@ We use notation $\mu_{s}$ for mean threat intelligence score and $\sigma_{s}$ fo
 Same as for score, we use $\mu_{c}$ for mean confidence and $\sigma_{c}$ for the standard deviation of the confidence. 
 
 Fides also in some cases employs recommendation protocol, so in the simulations, the peers might be asked to provide recommendation about other peers.
-They will follow their behavioral strategy, when providing the data.
+They will follow their behavioral strategy, when providing the data. 
 
-Recall that a single recommendation consist of following data:
-\begin{itemize}
-    \item $cb_{k,j}$ - competence belief which approximates average behavior, we will be 
-\end{itemize}
+Recall recommendation description from section \ref{subsec:recommendations}. A single recommendation response contains $cb_{k,j}$, $ib_{k,j}$, $sh_{k,j}$, $r_{k,j}$ and $\eta_{k,j}$. 
+We will be sampling those from the normal distribution as well with the corresponding pairs of $(\mu_{cb}, \sigma_{cb})$, $(\mu_{ib}, \sigma_{ib})$, $(\mu_{sh}, \sigma_{sh})$, $(\mu_{r}, \sigma_{r})$ and $(\mu_{\eta}, \sigma_{\eta})$.
 
+Considering threat intelligence and recommendation sampling, a single peer behavior is defined by following data:
 
 \begin{equation}
 \begin{split}
