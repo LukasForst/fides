@@ -2,10 +2,16 @@ name: fides
 channels:
   - conda-forge
 dependencies:
+  # coming from Slips
   - python=3.8
   - pip=22.0.3
+  # needed for the Fides
   - dacite=1.6.0
   - pyyaml=6.0
+  # needed for the tests
   - pytest=7.0.1
+  # needed for the simulations
+  - numpy=1.21.2
   - pip:
+      # coming from Slips
       - redis==3.5.3
