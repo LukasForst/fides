@@ -6,5 +6,47 @@ We designed a single and comprehensive experiment that simulates a real world us
 
 \section{Simulation Parameters}
 
+\begin{itemize}
+    \item number of other peers in the network, $0 <= 50?$
+    \item percentage of peers in the network, that are pre-trusted (so we won't run recommendation for them and they won't be knowingly lying)
+    \item for each of the peers, we will have their behavioral strategy 
+    \begin{itemize}
+        \item \textit{confident correct} peer - an \textbf{honest peer} that provides correct data (according to the baseline - if target is malicious, it provides TI that says it is malicious) and it is confident about its decisions
+        \item \textit{uncertain} peer - an \textbf{honest peer} that can essentially provide random TI data but with low confidence in them
+        \item and that
+    \end{itemize}
+    \item and this
+\end{itemize}
 
-\subsection{smth2}
+\section{Sampling Threat Intelligence}
+Threat intelligence, that is being shared on the peer-to-peer network and is aggregated by Fides, is generated inside Slips by various modules.
+Each module provide score on its own and Slips aggregates these evaluation into a single value. 
+This means, that threat intelligence is computed as a sum of independent random variables and that tends to follow normal distribution. 
+For that reason, we sample threat intelligence values from the normal distribution.
+
+As peers have different behavior, we will sample threat intelligence provided by them every time when they are asked for it.
+We will characterize the peer's behavior by the threat intelligence it provides, with respect to the baseline, the ground truth of if the target is being or malicious.
+
+As described in the previous chapters, threat intelligence consist of \textit{score} and \textit{confidence} in that score.
+We use notation $\mu_{s}$ for mean threat intelligence score and $\sigma_{s}$ for the standard deviation of the score. 
+Same as for score, we use $\mu_{c}$ for mean confidence and $\sigma_{c}$ for the standard deviation of the confidence. 
+
+\section{Peer's Behavioral Patterns}
+\label{sec:peers-behavioral-patterns}
+For a sake of the experiments, every peer will follow one of the chosen behavior. 
+We identified multiple different behavioral patterns for the being as well as for the malicious peers.
+
+\subsubsection{Confident Correct Peer}
+An honest peer that provides correct data according to the baseline. Meaning, that if the target (domain/IP address that we have threat intelligence for) is being, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is being. 
+Moreover, it will provide the data with high confidence.
+
+\begin{equation}
+\begin{split}
+    \mu_{s} = 
+\end{split}
+\end{equation}
+
+The very same thing applies for situation when this peer is asked to provide the recommendation for any other peer. 
+The provided recommendation will reflect the real behavior of said peer and it will indicate high confidence in the recommendation.
+
+This peer has the \textit{ideal} behavior as its data are useful and 
