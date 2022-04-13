@@ -125,7 +125,12 @@ This approach gives us more robust basis for trust sensitive environment and it 
 
 If the peer is part of pre-trusted organization or it is pre-trusted itself, it inherits the configured reputation - $r_{i, j}$ from the configuration.
 In this case, Fides does not engage recommendation protocol at all, because the peer already has reputation $r_{i,j}$ assigned from the configuration and it was \textit{recommended} by the administrator.
-Moreover, the administrator can choose if this value is \textit{frozen}, or not. \textit{Frozen} configuration means, that the peer $j$ has in eyes of $i$ \textit{static service trust} $st_{i, j}$ - it will never change and whatever data peer $j$ sends to $i$ will not influence the $st_{i,j}$.
+Moreover, the administrator can choose if this value is \textit{frozen}, or not. 
+\textit{Frozen Service Trust} configuration means, that the peer $j$ has in eyes of $i$ \textit{static service trust} $st_{i, j}$ - it will never change and whatever data peer $j$ sends to $i$ will not influence the $st_{i,j}$.
+On the other hand, when this configuration is not selected, the peer's service trust is going to change during the time when it communicates with the local instance according to the data and interactions it provides.
+
+In a case when the peer is not pre-trusted, Fides evaluates if has \textit{enough} well trusted peers that it can trust to provide the correct recommendation. How many is \textit{"enough"} is subject to simulations in chapter \ref{chap:experiments}. This value as well as number of maximal peers used for recommendation, is configurable.
+In addition, administrator can enforce that for the recommendation protocol, only the pre-trusted peers or the peers from pre-trusted organizations are used.
 
 \subsubsection{Recommendation Response}
 A single recommendation response from peer $z \in T_{i}$ about giving recommendation to peer $i$ about peer $j$ contains following data.
