@@ -9,13 +9,27 @@ We designed a single and comprehensive experiment that simulates a real world us
 
 \section{Environment Simulation}
 \label{sec:environment-simulation}
-We will be simulation a global peer-to-peer environment where the peers have one of the behaviors described in \ref{sec:peers-behavioral-patterns}.
+The time in the simulations is measured in \textit{clicks}. 
+The local instance of Fides performs a single action and receives responses from other peers in network in exactly \textit{one click}. 
+For example this is the series of events that happen a \textit{single click} - Fides asks network for threat intelligence, receives the responses, aggregates network opinion and evaluates the interactions with peers.
+Another series of evens happening in a \textit{single click} is the actions of  recommendation protocol: new peer joins the network, Fides asks for the recommendation on new peer, collects responses, computes reputation and evaluates the received recommendations.
+What is the relation of real time and \textit{clicks} depends solely on the network layer, mostly on speed of messages convergence described in depth in \cite{nl}.
+
+In order to simulate the environment, we have multiple parameters that corresponds with the expectations of how does the peer-to-peer network look like.
+We start with \textbf{number of peers in network} - that simulates the size of the network and how many different peers can appear during the whole simulation.
+The network anatomy is another parameter for the simulation, where define what \textbf{percentage of peers} are using \textbf{what strategy} that were described in section \ref{sec:peers-behavioral-patterns}. 
+In other words, how many peers in the network are adversarial and how many of them are being.
+Another parameter is \textbf{number of targets} (IP addresses and DNS domains) that will used when the Fides will be requesting the network threat intelligence.
+For each target, we know the label (malicious and being) and we will be sampling threat intelligence that came from the local Slips instance. 
+The local threat intelligence will be sampled from parameters of one of the strategies described in \ref{sec:peers-behavioral-patterns} - confident correct, uncertain or confident incorrect - which is yet another parameters that describes how does the local Slips behave.
+
+For each peer $j \in P$ we need to 
 
 Simulation itself have following parameters
 \begin{itemize}
     \item number of peers in the network - $1..25$
     \item \% of peers that are pre-trusted and thus have higher starting service trust AND can not be malicious $0..100\%$
-    \item for each type of strategy (type of peers) \% of them in the network
+    \item for each type of strategy (type of peers) and \% of them in the network
     \item number of targets that the local peer will be asking about and their $1..10$, labels (for example 3 peers where there are two being and one malicious)
     \item period of time when the peers will be only gaining trust (malicious peers do not lie) - $0..50$
     \item number of peers that join later during the simulation
@@ -25,16 +39,10 @@ Each peer will have following parameters
 \begin{itemize}
     \item type of strategy (that includes if the peer is malicious or not
     \item is part of pre-trusted organization or not
-    \item when the peer joined the network
+    \item joining time, when the peer joined the network (this engages the recommendation system)
 \end{itemize}
 
 For malicious peer 
 \begin{itemize}
     \item \% of targets that the peer is going to lie about
-\end{itemize}
-
-For peers joining later in the process.
-\begin{itemize}
-    \item type of the joining peer (its strategy)
-    \item when it appears
 \end{itemize}
