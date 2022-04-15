@@ -1,0 +1,93 @@
+\section{Peer's Behavioral Patterns}
+\label{sec:peers-behavioral-patterns}
+For a sake of the experiments, every peer will follow one of the chosen behavior.
+We identified multiple different behavioral patterns for the being as well as for the malicious peers.
+Every behavior is different and is defined by the $(\mu, \sigma)$ for every data we sample and by the intent the peer have in the network.
+Most of the behavior depends on the baseline, which is the ground truth for any target in the system - if it is being or malicious.
+We note baseline score as $S_{B} \in \{-1, 1\}$ - where $S_{B} = -1$, the target is malicious and $S_{B} = 1$ means that target is being.
+
+
+\subsubsection{Confident Correct Peer}
+\label{subsubsec:confident-correct-peer}
+An honest peer that provides correct data according to the baseline. 
+Meaning, that if the target (domain/IP address that we have threat intelligence for) is being, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is being. 
+Moreover, the peer will provide the data with high confidence.
+
+The very same thing applies for situation when this peer is asked to provide the recommendation for any other peer. 
+The provided recommendation will reflect the real behavior of said peer and it will indicate high confidence in the recommendation.\todo{describe in what situations it provide what recommendations}
+This peer has the \textit{ideal} behavior as its data are useful and correct.
+The table \ref{tab:confident-correct} describes data used for sampling the threat intelligence this peer provides.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{c|c|c|c}
+        type & notation & $\mu$ & $\sigma$ \\
+        \hline
+        score & $\mu^{cc}_{s}$ & $S_{B} \cdot 0.8$ & $0.2$ \\
+        confidence & $\mu^{cc}_{c}$ &  $0.8$ & $0.2$ \\
+    \end{tabular}
+    \caption{Confident Correct Behavior}
+    \label{tab:confident-correct}
+\end{table}
+
+\subsubsection{Uncertain Peer}
+\label{subsubsec:uncertain-peer}
+This behavior simulates peers that do not have not have enough information to provide reasonably good data, but they are being and honest with their behavior.
+The peer can provide essentially any score but with very low confidence in said score.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{c|c|c|c}
+        type & notation & $\mu$ & $\sigma$ \\
+        \hline
+        score & $\mu^{up}_{s}$ & $0.0$ & $0.8$ \\
+        confidence & $\mu^{up}_{c}$ &  $0.3$ & $0.2$ \\
+    \end{tabular}
+    \caption{Uncertain Peer Behavior}
+    \label{tab:uncertain-peer}
+\end{table}
+
+\subsubsection{Confident Incorrect}
+\label{subsubsec:confident-incorrect-peer}
+The peer with this behavior is confident about their data and the threat intelligence, but their threat intelligence is wrong.
+However, this peer is still being and it is making an honest mistakes.
+This strategy simulates peers that were not attacked by a malicious device and they consider it being, because they do not have any information indicating malicious intent.
+Thus, whenever the peer is asked to provide threat intelligence, it responds with the score that is opposite of the baseline and with the high confidence value.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{c|c|c|c}
+        type & notation & $\mu$ & $\sigma$ \\
+        \hline
+        score & $\mu^{ci}_{s}$ & $-S_{B} \cdot 0.8$ & $0.2$ \\
+        confidence & $\mu^{ci}_{c}$ &  $0.8$ & $0.2$ \\
+    \end{tabular}
+    \caption{Confident Incorrect Behavior}
+    \label{tab:confident-incorrect}
+\end{table}
+
+
+\subsubsection{Malicious Peer}
+\label{subsubsec:malicious-peer}
+The malicious peer that is going to provide wrong threat intelligence intentionally to achieve their goal of influencing the trust decisions of the local peer. 
+The sampling data are the same as for the \textit{confident incorrect} (\ref{tab:confident-incorrect}) behavior, but difference is that the malicious peer is providing misleading data intentionally.
+
+This behavior simulates a knowledgeable adversaries that are able to follow the Fides's protocol and their goal is to influence decisions of the local trust model.
+The adversaries can be either trying to \textit{bad-mouth} or to provide \textit{unfair praises}.
+In our case, it does not matter why they do that, but rather the fact, that they do that intentionally and that they are providing the opposite of the baseline score with the high confidence.
+
+We decide to design an attacker, that is trying to hide in the data and it is not providing score $\{-1, 1\}$ with confidence of $1$ all the time, but rather uses distribution that is close to these values.
+The reason is that if the model sees that there is a peer that provides $\{-1, 1\}$ with high confidence all the time, it would be very easy to detect and penalize this behavior.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{c|c|c|c}
+        type & notation & $\mu$ & $\sigma$ \\
+        \hline
+        score & $\mu^{m}_{s}$ & $-S_{B} \cdot 0.9$ & $0.1$ \\
+        confidence & $\mu^{m}_{c}$ &  $0.9$ & $0.1$ \\
+    \end{tabular}
+    \caption{Malicious Behavior}
+    \label{tab:malicious-peer}
+\end{table}
+
