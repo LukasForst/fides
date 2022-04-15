@@ -37,14 +37,16 @@ They will follow their behavioral strategy, when providing the data.
 Recall recommendation description from section \ref{subsec:recommendations}. A single recommendation response contains $cb_{k,j}$, $ib_{k,j}$, $sh_{k,j}$, $r_{k,j}$ and $\eta_{k,j}$. 
 We will be sampling those from the normal distribution as well with the corresponding pairs of $(\mu_{cb}, \sigma_{cb})$, $(\mu_{ib}, \sigma_{ib})$, $(\mu_{sh}, \sigma_{sh})$, $(\mu_{r}, \sigma_{r})$ and $(\mu_{\eta}, \sigma_{\eta})$.
 
-Considering threat intelligence and recommendation sampling, a single peer behavior is defined by following data:
-
-\begin{equation}
-\begin{split}
-    &\mu_{s}, \sigma_{s} \\
-    &\mu_{c}, \sigma_{c}
-\end{split}
-\end{equation}
+Considering threat intelligence and recommendation sampling, the final description of the behavior is following
+\begin{table}[]
+    \centering
+    \begin{tabular}{c|c}
+         &  \\
+         & 
+    \end{tabular}
+    \caption{Caption}
+    \label{tab:my_label}
+\end{table}
 
 \section{Peer's Behavioral Patterns}
 \label{sec:peers-behavioral-patterns}
@@ -54,12 +56,6 @@ We identified multiple different behavioral patterns for the being as well as fo
 \subsubsection{Confident Correct Peer}
 An honest peer that provides correct data according to the baseline. Meaning, that if the target (domain/IP address that we have threat intelligence for) is being, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is being. 
 Moreover, it will provide the data with high confidence.
-
-\begin{equation}
-\begin{split}
-    \mu_{s} = 
-\end{split}
-\end{equation}
 
 The very same thing applies for situation when this peer is asked to provide the recommendation for any other peer. 
 The provided recommendation will reflect the real behavior of said peer and it will indicate high confidence in the recommendation.
