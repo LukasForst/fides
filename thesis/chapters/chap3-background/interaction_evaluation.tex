@@ -94,6 +94,7 @@ This approach is useful when local peer has enough information about the target,
 To determine whether they are sending data that are somewhat correct. This strategy is implemented in Fides with name $LocalCompareTIEvaluation$.
 
 \subsection{Weight local opinion with aggregated one}
+\label{subsec:weight-local-opinion-with-aggregated-one}
 Another implemented strategy combines \ref{subsec:distance-based-eval} and \ref{subsec:use-local-threat-to-evaluate} and mixes them using weight $w$, provided from the configuration.
 This is good approach when the the Slips or the network has a lot of data on the target. It evaluates interactions with what local instance thinks and what the network opinion is.
 What the correct mixture is is subject to simulations and configuration from the administrator.

@@ -3,6 +3,27 @@
 As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about targets being malicious or being.
 Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputations} if the recommendation protocol is enabled. We classified the following attack vectors as relevant for our trust model.
 
+\subsection{Influencing Aggregated Score \& Confidence}
+\label{subsec:influencing-aggregated-score-confidence}
+
+
 \subsection{Influencing Service Trust}
 \label{subsec:influencing-service-trust}
-In this case, the aim of the attacker is to influence service trust of the local peer in itself. In other words, it is
+The goal of an attacker
+
+Thanks to the design of the trust model described in detail in section \ref{sec:computational-model}, no peer is able to influence local service trust in any other peer once the peer was first seen by the Fides.
+The only time, when Fides allows remote peers to directly influence the local decisions on any remote peer is when Fides asks for the recommendations. 
+The recommendation protocol is engaged only in some cases (when the network is \textit{trusted enough}) and only for the first time the new remote peer is seen.
+
+However, the malicious peer can indirectly influence the service trust for any other remote peer in cases, when one of interaction evaluation strategies - \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} or \ref{subsec:weight-local-opinion-with-aggregated-one} is used.
+In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data then the being peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in being peers.
+This is expected, as an interaction evaluation strategies \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} and \ref{subsec:weight-local-opinion-with-aggregated-one} use aggregated network opinion to evaluate the interactions and thus if the \textit{wrong} opinion is in majority (considering service trust of each peer), it is taken in account even though it is \textit{wrong}.
+
+For that reason, the intermediate goal of any attacker to gain the service trust of the local peer in order to have \textit{any} influence over the decisions the Fides makes.
+We explore this behavior in the experiments in section \ref{sec:environment-simulation}, when we let malicious peers to gain the service trust at the beginning of the simulation.
+
+
+\subsection{Other Common Attacks on P2P Trust Models}
+\label{subsec:other-common-attacks}
+
+The outlined attack vectors are the ones, that can influence the decisions Fides makes.
