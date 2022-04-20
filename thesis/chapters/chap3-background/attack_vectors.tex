@@ -35,4 +35,48 @@ In other words, if the peer's initial reputation was \textit{incorrect} (from th
 
 \section{Taxonomy of Attacks}
 \label{sec:taxonomy-of-attacks}
-We were inspired by the thorough threat model analysis in Dovecot \cite{dita} paper and based our own analysis on the same original paper from Koutrouli, Tsalgatidou \cite{KOUTROULI201247}.
+We were inspired by the thorough threat model analysis in Dovecot \cite{dita}  and based our own analysis on the same original paper from Koutrouli, Tsalgatidou \cite{KOUTROULI201247} which describes the taxonomy of different attack methods on reputation systems in peer-to-peer networks.
+They classify the reputation attacks in the following categories.
+
+\subsection{Unfair Recommendations}
+\label{subsec:unfair-recommendations}
+This category describes behavior when peer provides incorrect data.
+The peer does not need to be necessarily malicious in order to do that, it can also have not enough data to make correct decisions or maybe it is missing some important information.
+In case of Fides, this types of attacks can be against service trust as well as reputation system.
+Moreover, the malicious peers can collude together to amplify effect on the final computations of the trust model.
+
+The intent of the malicious peers in this case is to lower someones service trust/reputation (\textit{badmouthing attack}) or on the other hand, to make somebody's service trust/reputation higher (\textit{unfair praises}).
+In a case of service trust, this is not possible directly, but rather with colluding with multiple high trusted peers as described in detail in section \ref{subsec:influencing-service-trust}.
+In a case of reputation, this is possible if the malicious peer is selected as a recommender.
+Fides mitigates both of these problems by asking a numerous peers on the opinion (in case of service trust) and by asking only pre-selected and high trusted peers in case of recommendations.
+Of course it is not possible to eliminate the possibility of malicious peer being asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral pattern.
+In simulations we then evaluate what network topology is needed in order for the Fides, not to be easily manipulated in believing even to the malicious peers.
+
+\textit{Inaccurate recommendations} is a type of \textit{unfair recommendations} when an honest peer provide wrong data but due to lack of complete information.
+This can happen for example because they were not attacked by adversary (yet), and they consider them to be being, because they have no reason to see it otherwise.
+Other example can be peer that does not have latest threat intelligence data from the black lists or other remote resources.
+These peers are included in the experiments as well, we call that \textit{Confident Incorrect} (\ref{subsubsec:confident-incorrect-peer}) behavioral pattern.
+
+The Koutrouli and Tsalgatidou \cite{KOUTROULI201247} also mention \textit{Random opinions} where the peer is essentially providing random data.
+We simulate this in our experiments as well, because there will be peers, in the network, that simply don't have enough information to make good and confident decision about some target.
+This is the \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
+
+Because of the nature of the Fides, which aggregates all network opinions it receives, the worst case scenario is the situation where the attackers collude together, because it amplifies their effect on the final aggregated score \& confidence.
+However, our trust model uses service trust during computing the final score with confidence so in order for attackers to influence this decision, their total service trust must be higher then the service trust of the being peers.
+This makes it harder for the adversary to overturn the decisions in their favor, because it forces them to gain the service trust for all their peers.
+In simulations, we have malicious peers that collude (and lie about same targets) as well as peers that do not collude and lie about different targets.
+
+\subsection{Inconsistent Behavior}
+\label{subsec:inconsistent-behavior}
+In aforementioned section \ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence trust model's decisions.
+This leads to malicious peers that will have different behavior when they try to gain the service trust and when they provide misleading data to achieve their goals.
+This behavior is an equivalent of the \textit{Traitors} from \cite{KOUTROULI201247}.
+Fides tries to mitigate this problem with some of the interaction evaluations strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as \ref{subsec:distance-based-eval}).
+Thanks to these strategies, even peers that gained service trust at the beginning can be eventually identified as malicious and their service trust will be lowered whenever they provide threat intelligence data that are different from the aggregated ones.
+
+However, even the honest peers can have inconsistent behavior, mainly when they don not have enough information about IP/domains.
+In experiments, we simulate this behavior for honest peers with \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
+For malicious peers we have a period, during which they provide correct and consistent data, allowing them to gain the service trust. 
+
+\subsection{Identity Management Related Attacks}
+\label{subsec:identity-management-attacks}
