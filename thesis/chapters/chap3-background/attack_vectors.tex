@@ -1,19 +1,17 @@
 \section{Possible Attack Vectors}
 \label{sec:attack-vectors}
 As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about targets being malicious or being.
-Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputations} if the recommendation protocol is enabled. We classified the following attack vectors as relevant for our trust model.
+Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputations} if the recommendation protocol is enabled. 
 
-\subsection{Influencing Aggregated Score \& Confidence}
-\label{subsec:influencing-aggregated-score-confidence}
-
+The final result of work, the trust model is doing, is aggregated score and confidence.
+Any attacker wants to ultimately influence these aggregated values.
+However, for that to happen, the attacker need to gain sufficient service trust as that is used while computing the aggregated opinion (see section \ref{sec:network-intelligence-aggregation}).
 
 \subsection{Influencing Service Trust}
 \label{subsec:influencing-service-trust}
-The goal of an attacker
-
 Thanks to the design of the trust model described in detail in section \ref{sec:computational-model}, no peer is able to influence local service trust in any other peer once the peer was first seen by the Fides.
 The only time, when Fides allows remote peers to directly influence the local decisions on any remote peer is when Fides asks for the recommendations. 
-The recommendation protocol is engaged only in some cases (when the network is \textit{trusted enough}) and only for the first time the new remote peer is seen.
+The recommendation protocol is engaged only in some cases (when the network is \textit{trusted enough}) and only for the first time the new remote peer is seen. We describe this more in detail in the section \ref{subsec:influencing-peers-reputation} below.
 
 However, the malicious peer can indirectly influence the service trust for any other remote peer in cases, when one of interaction evaluation strategies - \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} or \ref{subsec:weight-local-opinion-with-aggregated-one} is used.
 In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data then the being peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in being peers.
@@ -21,6 +19,19 @@ This is expected, as an interaction evaluation strategies \ref{subsec:distance-b
 
 For that reason, the intermediate goal of any attacker to gain the service trust of the local peer in order to have \textit{any} influence over the decisions the Fides makes.
 We explore this behavior in the experiments in section \ref{sec:environment-simulation}, when we let malicious peers to gain the service trust at the beginning of the simulation.
+
+\subsection{Influencing Peers Reputation}
+\label{subsec:influencing-peers-reputation}
+
+
+Even though the reputation of a peer can be skewed by the attacker, it is still able to gain \textit{correct} service trust by following the protocol and providing useful data.
+Recall equation \ref{eq:service-trust} for service trust - the more experience local peer has with remote peer, the more it ignores the initial received recommendations.
+This means that the service trust will tend to converge to \textit{correct} values that not necessarily depends on the initial recommendations and eventually will loose that information completely.
+In other words, if the peer's initial reputation was \textit{incorrect} (from the ground truth point of view), it will only take the peer longer to gain \textit{correct} service trust, but eventually, it will end up with the same value as with the correct reputation value.
+
+
+\subsection{Relevant Attack Vectors}
+\label{subsec:relevant-attack-vectors}
 
 
 \subsection{Other Common Attacks on P2P Trust Models}
