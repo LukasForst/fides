@@ -1,8 +1,9 @@
 \section{Computational Model of Fides}
 \label{sec:computational-model}
 This section describes how does Fides come up with a single most important value $st_{i,j}$ service trust. Service trust describes how much can local peer $i$ trust remote peer $j$.
-Used algorithm, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence. 
-The modifications are based on the interaction evaluation strategies proposed in \ref{sec:interaction-evaluation-strategies} and algorithms to solve cold start problem described in \ref{sec:cold-start-problem}. The table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
+Used algorithm, or in other words the trust model itself, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence. 
+The modifications are based on the interaction evaluation strategies proposed in \ref{sec:interaction-evaluation-strategies} and algorithms to solve cold start problem described in \ref{sec:cold-start-problem}. 
+The table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
 
 \begin{table}[ht]
 \centering

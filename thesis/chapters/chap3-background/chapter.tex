@@ -1,6 +1,18 @@
 \chapter{Background}
-Here want to start with a little motivation and about ideas on top of which we built the whole thing. 
-We also want to describe the terminology we're using.
+\label{ch:background}
+In this chapter, we will describe how we approached problems of trust in global peer-to-peer environment in section \ref{sec:computational-model},how can we evaluate single interaction between two peers in section \ref{sec:interaction-evaluation-strategies}, how we mitigate cold start problem \ref{sec:cold-start-problem} and finally, how do we aggregate network threat intelligence into a single network opinion in section \ref{sec:network-intelligence-aggregation}.
+
+Our trust model, Fides, operates in four phases, first it receives data, then it aggregates the data, evaluates the interactions with each peer and as a last step it updates the service trust for the next interaction.
+See figure \ref{fig:trust-model-life-cycle}, where is this process visualized.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/service_trust_diagram.png}
+    \caption{Trust Model Life Cycle}
+    \label{fig:trust-model-life-cycle}
+\end{figure}
+
+In the following sections we will be using following terminology and words when talking about the trust model.
 
 \begin{itemize}
 \item \textbf{Fides} - name of the trust model, performs all trust related computations
