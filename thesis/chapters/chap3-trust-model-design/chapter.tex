@@ -1,5 +1,5 @@
-\chapter{Background}
-\label{ch:background}
+\chapter{Trust Model Design}
+\label{ch:trust-model-design}
 In this chapter, we will describe how we approached problems of trust in global peer-to-peer environment in section \ref{sec:computational-model},how can we evaluate single interaction between two peers in section \ref{sec:interaction-evaluation-strategies}, how we mitigate cold start problem \ref{sec:cold-start-problem} and finally, how do we aggregate network threat intelligence into a single network opinion in section \ref{sec:network-intelligence-aggregation}.
 
 Our trust model, Fides, operates in four phases, first it receives data, then it aggregates the data, evaluates the interactions with each peer and as a last step it updates the service trust for the next interaction.
@@ -22,12 +22,12 @@ In the following sections we will be using following terminology and words when 
 \item \textbf{local peer} - local instance of Slips that is connected to the global peer-to-peer network and runs instance of Fides
 \end{itemize}
 
-\include{chapters/chap3-background/computational_model}
+\include{chapters/chap3-trust-model-design/computational_model}
 
-\include{chapters/chap3-background/interaction_evaluation}
+\include{chapters/chap3-trust-model-design/interaction_evaluation}
 
-\include{chapters/chap3-background/cold_start}
+\include{chapters/chap3-trust-model-design/cold_start}
 
-\include{chapters/chap3-background/ti_aggregation}
+\include{chapters/chap3-trust-model-design/ti_aggregation}
 
-\include{chapters/chap3-background/attack_vectors}
+\include{chapters/chap3-trust-model-design/attack_vectors}
