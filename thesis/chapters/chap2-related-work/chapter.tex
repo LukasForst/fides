@@ -1,25 +1,9 @@
-\chapter{Related Work and Background}
-\label{ch:related-work-background}
+\chapter{Previous Work and Background}
+\label{ch:previous-work-background}
+In this chapter we outline security tools that are used to secure any type of network and describe what is the threat intelligence.
+Then we describe basic concepts of peer-to-peer networks and how is are the trust relations modeled in them.
+Modeling trust in peer-to-peer networks is not a new concept, thus we describe previous work on this topic and explain why we designed new trust model for sharing threat intelligence in peer-to-peer networks of Intrusion Prevention Systems.
 
-Here we will describe what the previous work is - Dita's Dovecot, Eigen Trust, Sality, SORT etc.
-Here we want to outline what the Slips is in few words.
+\input{chapters/chap2-related-work/basics}
 
-\begin{itemize}
-    \item \href{https://share.goodnotes.com/s/60IVzs1mgmuPWF54Us5eKA}{A Novel Approach to Evaluate Trustworthiness and Uncertainty of Trust Relationships in Peer-to-Peer Computing} 
-    \item \href{https://share.goodnotes.com/s/7AFjiqAqJSCF1en3vt4vjS}{An Exaustive Survey of Trust Models in P2P Network}
-    \item \href{https://share.goodnotes.com/s/EziqqW185BzxHxNrZ6d1MQ}{An integrated trust and reputation model for open multi-agent systems}
-    \item \href{https://share.goodnotes.com/s/MRfXxmu2Lz51IqK7JODn1N}{Computational trust and reputation models for open multi-agent systems: a review}
-    \item \href{https://share.goodnotes.com/s/tafBG1KUZCuYT2E7a3ucc9}{Design of Intrusion Sensitivity-Based Trust Management Model for Collaborative Intrusion Detection Networks}
-    \item \href{https://share.goodnotes.com/s/YQuoXUbYADa15Hwe90sXCM}{ PeerTrust: Supporting Reputation-Based Trust for Peer-to-Peer Electronic Communities}
-    \item \href{https://share.goodnotes.com/s/hRHxSYlk6wU4BEn6u9Jcyu}{SADAN: Scalable Adversary Detection in Autonomous Networks}
-    \item \href{https://share.goodnotes.com/s/bXWUbVFi5qBiAdBmJ4yYAx}{SORT: A Self-ORganizing Trust Model for Peer-to-Peer Systems}
-\end{itemize}
-
-
-\section{Peer-to-peer Networks}
-\label{sec:peer-to-peer-networks}
-Peer-to-peer network is a distributed network of computers without direct hierarchy where nodes (peers) communicate with each other directly, without using centralized server, or any authority.\cite{schollmeier}.
-Unlike more standard client-server networks, where the server is designed to provide data and client consumes them, in peer-to-peer networks all peers are even in terms of permissions and what services do they provide.
-Moreover, the peers are free to join and leave the network any time, which makes the networks dynamic and it does not provide much guarantees about data availability.
-
-
+\input{chapters/chap2-related-work/trust_models}
