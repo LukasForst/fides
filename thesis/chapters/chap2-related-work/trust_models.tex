@@ -1,9 +1,36 @@
-\section{Trust Models in Peer-to-Peer Networks}
-\label{sec:trust-models-in-p2p}
+\section{Trust in Peer-to-Peer Networks}
+\label{sec:trust-in-p2p}
+
+There are plenty of existing approaches how to model trust in peer-to-peer networks as well as many existing trust models.
+Unfortunately, most of them were designed specifically with the file sharing in mind, as that is the most common use-case for the peer-to-peer networks.
+However, there are multiple trust models that are generic enough (such as SORT described in section \ref{subsec:sort}) or were designed specifically for sharing threat intelligence (Dovecot described in section \ref{subsec:dovecot}).
+
+\subsection{Problems of Trust}
+\label{subsec:problems-of-trust}
+In the peer-to-peer networks, where there is no central authority, that can enforce rules and provide assessment whether the peers are honest or not, can be problematic to find out how much can the peers trust each other.
+Because anybody can freely join and leave, a knowledgeable adversary can misuse network for its own benefit by providing wrong data to the rest of the peers in the network.
+For that reason, the peers need to be able to tell, how much they can trust each other. 
+
+An algorithm, that models such trust relationships and is able to assign the trust value to each peer, or to describe, how much can be what peer trusted, is called \textit{trust model}.
+An analysis of existing trust models was performed by Shree and Basha in \cite{shree2014exhaustive}. 
+We took this analysis in account when we were initially researching for existing implementation of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
+
+\subsection{Practical Byzantine Fault Tolerance}
+\label{subsec:pbft}
+Practical Byzantine Fault Tolerance algorithm (or \textit{PBFT}) is a replication algorithm that is able to tolerate Byzantine faults\footnote{A condition where a system component failed or started acting maliciously.} in asynchronous systems \cite{castro1999practical}.
+The algorithm 
+
+\subsection{SORT}
+\label{subsec:sort}
+
+\subsection{Dovecot}
+\label{subsec:dovecot}
+
+\subsection{Related Trust Models}
+\label{subsec:related-trust-models}
 
 \begin{itemize}
     \item \href{https://share.goodnotes.com/s/60IVzs1mgmuPWF54Us5eKA}{A Novel Approach to Evaluate Trustworthiness and Uncertainty of Trust Relationships in Peer-to-Peer Computing} 
-    \item \href{https://share.goodnotes.com/s/7AFjiqAqJSCF1en3vt4vjS}{An Exaustive Survey of Trust Models in P2P Network}
     \item \href{https://share.goodnotes.com/s/EziqqW185BzxHxNrZ6d1MQ}{An integrated trust and reputation model for open multi-agent systems}
     \item \href{https://share.goodnotes.com/s/MRfXxmu2Lz51IqK7JODn1N}{Computational trust and reputation models for open multi-agent systems: a review}
     \item \href{https://share.goodnotes.com/s/tafBG1KUZCuYT2E7a3ucc9}{Design of Intrusion Sensitivity-Based Trust Management Model for Collaborative Intrusion Detection Networks}
