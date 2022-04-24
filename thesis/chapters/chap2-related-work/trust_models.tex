@@ -15,16 +15,36 @@ An algorithm, that models such trust relationships and is able to assign the tru
 An analysis of existing trust models was performed by Shree and Basha in \cite{shree2014exhaustive}. 
 We took this analysis in account when we were initially researching for existing implementation of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
 
-\subsection{Practical Byzantine Fault Tolerance}
-\label{subsec:pbft}
-Practical Byzantine Fault Tolerance algorithm (or \textit{PBFT}) is a replication algorithm that is able to tolerate Byzantine faults\footnote{A condition where a system component failed or started acting maliciously.} in asynchronous systems \cite{castro1999practical}.
-The algorithm 
+\subsection{Dovecot}
+\label{subsec:dovecot}
+Dovecot is a trust model developed by Dita Hollmannová in \cite{dita}.
+This trust model was specifically designed for Slips in order to share threat intelligence int the \textit{local} peer-to-peer networks.
+Dovecot is counting interactions between the peers and the more interaction peers have, they have higher base for the trust.
+This part is based on the Sality botnet \cite{falliere2011sality}, where botnet peers were storing \textit{goodcount} that counted number of interactions between each other.
+The idea behind this is simple, yet very effective, the more peers talk between each other, the more are they trusted.
+
+Final peer trust is computed using \textit{goodcount} and also Slips's threat intelligence about the peer. 
+This is possible thanks to the limitation of the local peer-to-peer network, where Slips knows every IP address and can obtain full overview of the device on the network.
+
+Unlike other trust models where new peers start with no trust, Dovecot trusts new peers by default. 
+However, the authors mention in the future work, that this property should be explored more in detail so in the future versions of Dovecot, this might change.
 
 \subsection{SORT}
 \label{subsec:sort}
+Self-ORganizing Trust model (SORT) that aims to decrease malicious activity in a P2P system by establishing trust relations among peers in their proximity \cite{sort}.
+Even though the SORT's authors evaluated the algorithm on the file sharing peer-to-peer networks, the algorithm is generic enough to be reused for different environments.
+In SORT, the peers are assumed to be untrustworthy, until they prove otherwise - by providing \textit{good} service to the local peer. 
+For example, in file sharing networks, this might be providing an access to required file, or in our case, providing threat intelligence about some target.
+Each interaction between peers is evaluated and ads up to a trust that peers have between them. 
+Authors of the SORT did not design the evaluation function as that one is different for each use case. 
+For example, in file sharing, it can be speed of the upload/download, so peers will prefer nodes with the faster internet connection.
 
-\subsection{Dovecot}
-\label{subsec:dovecot}
+Unlike other trust models (for example Eigentrust \cite{kamvar2003eigentrust}), SORT does not need a priori information about the network nor any pre-trusted peers to be able to operate effectively in the network.
+Peers do not try to collect trust information from all peers.
+Each peer develops its own local view of trust about the peers interacted in the past \cite{sort}.
+
+Even though the peers do not collect trust information from other peers, there is a recommendation system in place, when any peer can ask for the recommendation about other peer.
+Because of the nature of the peer-to-peer network, this allows trust model to gain faster knowledge about new peers, that can join and leave any time.
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
@@ -38,3 +58,9 @@ The algorithm
     \item \href{https://share.goodnotes.com/s/hRHxSYlk6wU4BEn6u9Jcyu}{SADAN: Scalable Adversary Detection in Autonomous Networks}
     \item \href{https://share.goodnotes.com/s/bXWUbVFi5qBiAdBmJ4yYAx}{SORT: A Self-ORganizing Trust Model for Peer-to-Peer Systems}
 \end{itemize}
+lorem ipsum
+\vspace{1cm}
+
+\noindent
+After careful analysis, we decided to create new trust model - Fides - that is based on the SORT algorithm with various modifications and fine-tuning.
+We describe how does the Fides work in the following chapter \ref{ch:trust-model-design}.
