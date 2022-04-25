@@ -32,8 +32,8 @@ However, the authors mention in the future work that this property should be exp
 \subsection{SORT}
 \label{subsec:sort}
 Self-ORganizing Trust model (SORT) that aims to decrease malicious activity in a P2P system by establishing trust relations among peers in their proximity \cite{sort}.
-Even though the SORT's authors evaluated the algorithm on the file sharing peer-to-peer networks, the algorithm is generic enough to be reused for different environments.
-In SORT, the peers are assumed to be untrustworthy, until they prove otherwise - by providing \textit{good} service to the local peer. 
+Even though SORT's authors evaluated the algorithm on the file sharing peer-to-peer networks, the algorithm is generic enough to be reused for different environments.
+In SORT, peers are assumed to be untrustworthy until they prove otherwise by providing \textit{good} service to the local peer. 
 For example, in file sharing networks, this might be providing an access to required file, or in our case, providing threat intelligence about some target.
 Each interaction between peers is evaluated and ads up to a trust that peers have between them. 
 Authors of the SORT did not design the evaluation function as that one is different for each use case. 
@@ -43,14 +43,14 @@ Unlike other trust models (for example Eigentrust \cite{kamvar2003eigentrust}), 
 Peers do not try to collect trust information from all peers.
 Each peer develops its own local view of trust about the peers interacted in the past \cite{sort}.
 
-Even though the peers do not collect trust information from other peers, there is a recommendation system in place, when any peer can ask for the recommendation about other peer.
-Because of the nature of the peer-to-peer network, this allows trust model to gain faster knowledge about new peers, that can join and leave any time.
+Even though peers do not collect trust information from other peers, there is a recommendation system in place, when any peer can ask for the recommendation about other peer.
+Because of the nature of the peer-to-peer network, this allows the trust model to gain faster knowledge about new peers, that can join and leave any time.
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
 In \cite{1562680} He, Niu and Hu propose gathering peers and modeling their trust relationships as \textit{clouds} and propose \textit{extended-cloud-model-based trust model}.
 Huynh, Jennings and Shadbolt propose FIRE trust and reputation model in \cite{huynh2006integrated} which was designed for open multi agent systems.
-A \cite{li2014design}, Li, Meng and Kwok employ machine learning based trust model for collaboration of IDS instances.
+In \cite{li2014design}, Li, Meng and Kwok employ machine learning based trust model for collaboration of IDS instances.
 Xiong and Liu then propose in \cite{xiong2004peertrust} PeerTrust, which uses transaction-based feedback system to determine the reputation and trust of the peers.
 Sadan proposed in \cite{abera2019sadan} is another trust model that uses committees and computational challenges to identify malicious peers in the network.
 Sadan uses hardware chips - Trusted Platform Module, to verify the running software which allows other peers to verify trustworthiness of the peer.
