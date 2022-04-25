@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List, Dict
 
 from fides.messaging.model import NetworkMessage, PeerIntelligenceResponse
 from fides.model.aliases import Target, Score
@@ -23,7 +23,7 @@ class TimeEnvironment:
                  fides: Fides,
                  fides_stream: List[NetworkMessage],
                  other_peers: List[Peer],
-                 targets: List[Tuple[Target, Score]]
+                 targets: Dict[Target, Score]
                  ) -> None:
         self._fides = fides
         self._fides_stream = fides_stream
@@ -41,7 +41,7 @@ class TimeEnvironment:
         # each epoch we need to refresh peer list to get new peers that joined
         self._refresh_peer_list(epoch)
 
-        for target, baseline in self._targets:
+        for target, baseline in self._targets.items():
             self._run_for_target(epoch, target, baseline)
 
     def _refresh_peer_list(self, epoch: Click):

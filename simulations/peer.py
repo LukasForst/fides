@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import numpy as np
 
-from fides.model.aliases import Target
+from fides.model.aliases import Target, Score
 from fides.model.peer import PeerInfo
-from fides.model.threat_intelligence import ThreatIntelligence
+from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
+from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
 from simulations.utils import Click
 
 
@@ -33,6 +34,27 @@ class SampleBehavior:
         elif generated > 1:
             return 1
         return generated
+
+
+class LocalSlipsTIDb(ThreatIntelligenceDatabase):
+
+    def __init__(self,
+                 target_baseline: Dict[Target, Score] = None,
+                 behavior: SampleBehavior = SampleBehavior(score_mean=0.9,
+                                                           score_deviation=0.1,
+                                                           confidence_mean=0.9,
+                                                           confidence_deviation=0.1),
+                 ):
+        self._behavior = behavior
+        self._target_baseline = target_baseline if target_baseline else {}
+
+    def get_for(self, target: Target) -> Optional[SlipsThreatIntelligence]:
+        baseline = self._target_baseline[target]
+        if baseline is not None:
+            score = self._behavior.sample_score()
+            confidence = self._behavior.sample_confidence()
+            return SlipsThreatIntelligence(score=score, confidence=confidence, target=target)
+        return None
 
 
 class PeerBehavior(Enum):
