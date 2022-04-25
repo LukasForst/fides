@@ -12,6 +12,7 @@ dependencies:
   - pytest=7.0.1
   # needed for the simulations
   - numpy=1.21.2
+  - matplotlib=3.5.1
   - pip:
       # coming from Slips
       - redis==3.5.3

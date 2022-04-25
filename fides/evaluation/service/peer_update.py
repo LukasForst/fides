@@ -28,7 +28,7 @@ def update_service_data_for_peer(
      and service_history
     """
 
-    fading_factor = __compute_fading_factor(new_history)
+    fading_factor = __compute_fading_factor(configuration, new_history)
     competence_belief = __compute_competence_belief(new_history, fading_factor)
     integrity_belief = __compute_integrity_belief(new_history, fading_factor, competence_belief)
     integrity_discount = compute_discount_factor()
@@ -52,20 +52,26 @@ def update_service_data_for_peer(
     return updated_trust
 
 
-def __compute_fading_factor(service_history: ServiceHistory) -> List[float]:
+def __compute_fading_factor(configuration: TrustModelConfiguration, service_history: ServiceHistory) -> List[float]:
     """
     Computes fading factor for each record in service history.
 
     In model's notation f^k_ij where "k" is index in service history.
 
+    :param configuration: trust models configuration
     :param service_history: history for which should be fading factor generated
     :return: ordered list of fading factors, index of fading factor matches record in ServiceHistory
     """
     # TODO: [?] this might be time based in the future
     # f^k_ij = k / sh_ij
     # where 1 <= k <= sh_ij
-    history_size = len(service_history)
-    return [i / history_size for i, _ in enumerate(service_history, start=1)]
+
+    # Linear forgetting
+    # history_size = len(service_history)
+    # return [i / history_size for i, _ in enumerate(service_history, start=1)]
+
+    # Do not forget anything
+    return [1] * len(service_history)
 
 
 def __compute_competence_belief(service_history: ServiceHistory, fading_factor: List[float]) -> float:
@@ -107,4 +113,5 @@ def __compute_integrity_belief(service_history: ServiceHistory,
                for service
                in service_history])
 
-    return sqrt(sat / history_size)
+    ib = sqrt(sat / history_size)
+    return ib

@@ -68,7 +68,7 @@ class MessageHandler:
             # noinspection PyArgumentList
             return func(message.data)
         except Exception as ex:
-            logger.error(f"Error when executing handler for message: {message.type}.", message)
+            logger.error(f"Error when executing handler for message: {message.type}.", ex)
             if self.__on_error:
                 return self.__on_error(message, ex)
 

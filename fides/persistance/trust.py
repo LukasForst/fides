@@ -56,7 +56,8 @@ class TrustDatabase:
 
     def get_peers_trust_data(self, peer_ids: List[Union[PeerId, PeerInfo]]) -> TrustMatrix:
         """Return trust data for each peer from peer_ids."""
-        return {peer_id: self.get_peer_trust_data(peer_id) for peer_id in peer_ids}
+        data = [self.get_peer_trust_data(peer_id) for peer_id in peer_ids]
+        return {peer.peer_id: peer for peer in data if peer}
 
     def cache_network_opinion(self, ti: SlipsThreatIntelligence):
         """Caches aggregated opinion on given target."""

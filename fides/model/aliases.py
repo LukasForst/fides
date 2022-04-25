@@ -22,3 +22,9 @@ entity.confidentiality_level >= data.confidentiality_level
 
 thus level 0 means accessible for everybody 
 """
+
+Score = float
+"""Score for the target, -1 <= score <= 1"""
+
+Confidence = float
+"""Confidence in score, 0 <= confidence <= 1"""

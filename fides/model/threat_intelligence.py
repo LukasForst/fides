@@ -1,20 +1,20 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from fides.model.aliases import Target, ConfidentialityLevel
+from fides.model.aliases import Target, ConfidentialityLevel, Score, Confidence
 
 
 @dataclass
 class ThreatIntelligence:
     """Representation of peer's opinion on a subject (IP address or domain)."""
 
-    score: float
+    score: Score
     """How much is subject malicious or being.
     
     -1 <= score <= 1
     """
 
-    confidence: float
+    confidence: Confidence
     """How much does peer trust, that score is correct.
     
     0 <= confidence <= 1

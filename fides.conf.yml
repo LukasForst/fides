@@ -53,10 +53,10 @@ trust:
   # service trust evaluation
   service:
     # initial reputation that is assigned for every peer when there's new encounter
-    initialReputation: 0
+    initialReputation: 0.5
 
     # maximal size of Service History, sh_max
-    historyMaxSize: 10
+    historyMaxSize: 100
 
   # settings for recommendations
   recommendations:
@@ -118,12 +118,12 @@ trust:
   # see fides.evaluation.ti_evaluation.py for options
   # options: ['even', 'distance', 'localDistance', 'threshold', 'maxConfidence', 'weightedDistance']
   tiStrategies:
-    used: 'maxConfidence'
+    used: 'threshold'
     # these are configuration for the strategies, content will be passed as a **kwargs to the instance
     # even strategy uses the same satisfaction value for every interaction
     even:
       # value used as a default satisfaction for all peers
-      satisfaction: 0.1
+      satisfaction: 1
     # distance measures distance between aggregated network intelligence and each intelligence from the peers
     distance:
     # localDistance measures distance between each peer's intelligence to local threat intelligence by Slips
@@ -139,7 +139,7 @@ trust:
     # otherwise it uses 'higher' - 'even' and 'distance' strategies work best with this
     threshold:
       # minimal confidence level
-      threshold: 0.5
+      threshold: 0.7
       # this strategy is used when the aggregated confidence is lower than the threshold
       lower: 'even'
       # and this one when it is higher

@@ -26,7 +26,7 @@ def update_recommendation_data_for_peer(
     :param new_history: history to be used as base for recommendation computation
     :return: new object peer trust data with updated recommendation_trust and recommendation_history
     """
-    fading_factor = __compute_fading_factor(new_history)
+    fading_factor = __compute_fading_factor(configuration, new_history)
     competence_belief = __compute_competence_belief(new_history, fading_factor)
     integrity_belief = __compute_integrity_belief(new_history, fading_factor, competence_belief)
     integrity_discount = compute_discount_factor()
@@ -48,20 +48,26 @@ def update_recommendation_data_for_peer(
     return updated_trust
 
 
-def __compute_fading_factor(recommendation_history: RecommendationHistory) -> List[float]:
+def __compute_fading_factor(configuration: TrustModelConfiguration,
+                            recommendation_history: RecommendationHistory) -> List[float]:
     """
     Computes fading factor for each record in recommendation history.
 
     In model's notation rf^z_ik where "z" is index in recommendation history.
 
+    :param configuration: trust models configuration
     :param recommendation_history: history for which should be fading factor generated
     :return: ordered list of fading factors, index of fading factor matches record in RecommendationHistory
     """
     # TODO: [?] this might be time based in the future
     # f^k_ij = k / sh_ij
     # where 1 <= k <= sh_ij
-    history_size = len(recommendation_history)
-    return [i / history_size for i, _ in enumerate(recommendation_history, start=1)]
+    # Linear forgetting
+    # history_size = len(recommendation_history)
+    # return [i / history_size for i, _ in enumerate(recommendation_history, start=1)]
+
+    # Do not forget anything
+    return [1] * len(recommendation_history)
 
 
 def __compute_competence_belief(recommendation_history: RecommendationHistory, fading_factor: List[float]) -> float:
