@@ -1,4 +1,5 @@
 import json
+import logging
 from dataclasses import asdict
 from typing import List
 
@@ -7,16 +8,18 @@ from fides.model.alert import Alert
 from fides.model.aliases import Target, PeerId
 from fides.model.peer import PeerInfo
 
+logger = logging.getLogger(__name__)
+
 
 def serialize(m: NetworkMessage) -> str:
-    return json.dumps(asdict(m))
+    data = json.dumps(asdict(m))
+    logger.debug(f"Serialized message: {data}")
+    return data
 
 
 def nl2tl_peers_list(
-        peers=None
+        peers: List[PeerInfo]
 ) -> NetworkMessage:
-    if peers is None:
-        peers = [PeerInfo(id='peer#1', organisations=[]), PeerInfo(id='peer#2', organisations=[])]
     return NetworkMessage(
         version=1,
         type='nl2tl_peers_list',

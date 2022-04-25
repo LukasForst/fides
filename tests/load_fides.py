@@ -1,6 +1,6 @@
 import json
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Dict
 
 from dacite import from_dict
 
@@ -8,6 +8,7 @@ from fides.evaluation.ti_aggregation import TIAggregation
 from fides.messaging.message_handler import MessageHandler
 from fides.messaging.model import NetworkMessage
 from fides.messaging.network_bridge import NetworkBridge
+from fides.model.aliases import Target
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
@@ -35,7 +36,7 @@ class Fides:
     recommendations: RecommendationProtocol
     trust: InitialTrustProtocol
     peer_list: PeerListUpdateProtocol
-    dovecot: TIAggregation
+    ti_aggregation: TIAggregation
     opinion: OpinionAggregator
     intelligence: ThreatIntelligenceProtocol
     alert: AlertProtocol
@@ -49,6 +50,7 @@ def get_fides(**kwargs) -> Fides:
     """Creates instance of Fides with all dependencies."""
 
     config = kwargs.get('config', find_config())
+
     trust_db = kwargs.get('trust_db', InMemoryTrustDatabase(config))
     ti_db = kwargs.get('ti_db', InMemoryThreatIntelligenceDatabase())
 
@@ -113,14 +115,23 @@ def get_fides(**kwargs) -> Fides:
     )
 
 
-def get_fides_stream() -> (Fides, List[NetworkMessage]):
+def get_fides_stream(**kwargs) -> (Fides, List[NetworkMessage], Dict[Target, SlipsThreatIntelligence]):
     """Returns fides and list of messages that will be updated when new message comes."""
-    f = get_fides()
     messages: List[NetworkMessage] = []
+    # noinspection PyTypeChecker
+    network_opinions: Dict[Target, SlipsThreatIntelligence] = {}
+
+    def on_network_opinion(ti: SlipsThreatIntelligence):
+        network_opinions[ti.target] = ti
+
+    if kwargs.get('network_opinion_callback') is None:
+        kwargs['network_opinion_callback'] = on_network_opinion
+
+    f = get_fides(**kwargs)
 
     def on_message(m: str):
         messages.append(from_dict(data_class=NetworkMessage, data=json.loads(m)))
 
     f.queue.on_send_called = on_message
     f.listen()
-    return f, messages
+    return f, messages, network_opinions
