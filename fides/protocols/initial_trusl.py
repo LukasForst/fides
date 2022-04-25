@@ -63,7 +63,7 @@ class InitialTrustProtocol:
                                             satisfaction=SatisfactionLevels.Ok,
                                             weight=Weight.FIRST_ENCOUNTER
                                             )
-        logger.debug(f"New trust for peer:", trust)
+        logger.debug(f"New trust for peer: {trust.peer_id}", trust)
 
         # determine if it is necessary to get recommendations from the network
         # get recommendations if peer does not have any trusted organisation, or it is not pre-trusted

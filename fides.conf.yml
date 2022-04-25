@@ -71,11 +71,11 @@ trust:
     requiredTrustedPeersCount: 1
     # minimal trust for trusted peer
     # valid only if trust.recommendations.useOnlyPreconfigured == False
-    trustedPeerThreshold: 0.1
+    trustedPeerThreshold: 0.8
     # maximal count of peers that are asked to give recommendations on a peer, η_max
-    peersMaxCount: 10
+    peersMaxCount: 100
     # maximal size of Recommendation History, rh_max
-    historyMaxSize: 10
+    historyMaxSize: 100
 
   # alert protocol
   alert:

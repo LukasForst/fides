@@ -13,7 +13,7 @@ from tests.messaging.messages import serialize, nl2tl_intelligence_request, nl2t
 class TestValidMessages(TestCase):
 
     def test_nl2tl_peers_list(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
         new_peers = [PeerInfo(id='peer#1', organisations=[]), PeerInfo(id='peer#2', organisations=[])]
         f.queue.send_message(serialize(nl2tl_peers_list(new_peers)))
 
@@ -27,7 +27,7 @@ class TestValidMessages(TestCase):
         )
 
     def test_nl2tl_recommendation_request(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
         request_id, subject, peer = '1234', 'peer#1', PeerInfo('peer#asking', [])
         f.queue.send_message(serialize(nl2tl_recommendation_request(request_id, subject, peer)))
 
@@ -35,7 +35,7 @@ class TestValidMessages(TestCase):
         self.assertEquals('tl2nl_recommendation_response', messages[0].type)
 
     def test_nl2tl_recommendation_response(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
         # create peer in DB because this peer is responding to our request,
         # so we definitely know it
         sender = PeerInfo('sender#1', [])
@@ -59,7 +59,7 @@ class TestValidMessages(TestCase):
         self.assertEquals(2, len([m for m in messages if m.type == 'tl2nl_peers_reliability']))
 
     def test_nl2tl_alert(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
 
         sender = PeerInfo('sender#1', [])
         alert = Alert(target='target.com', score=0.1, confidence=0.2)
@@ -70,7 +70,7 @@ class TestValidMessages(TestCase):
         self.assertEquals('tl2nl_peers_reliability', messages[0].type)
 
     def test_nl2tl_intelligence_request(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
 
         f.queue.send_message(
             serialize(nl2tl_intelligence_request('123', 'example.com', PeerInfo(id='peer#1', organisations=[])))
@@ -81,7 +81,7 @@ class TestValidMessages(TestCase):
         self.assertEquals(1, len([m for m in messages if m.type == 'tl2nl_peers_reliability']))
 
     def test_nl2tl_intelligence_response(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
         # create peer in DB because this peer is responding to our request,
         # so we definitely know it
         sender1 = PeerInfo('sender#1', [])
@@ -107,7 +107,7 @@ class TestValidMessages(TestCase):
         self.assertEquals('tl2nl_peers_reliability', messages[0].type)
 
     def test_nl2tl_intelligence_response_with_valid_ip_data(self):
-        f, messages = get_fides_stream()
+        f, messages, _ = get_fides_stream()
         sender1 = PeerInfo('sender#1', [])
         f.trust.determine_and_store_initial_trust(sender1, get_recommendations=False)
 
