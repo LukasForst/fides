@@ -2,32 +2,32 @@
 \label{sec:trust-in-p2p}
 
 There are plenty of existing approaches how to model trust in peer-to-peer networks as well as many existing trust models.
-Unfortunately, most of them were designed specifically with the file sharing in mind, as that is the most common use-case for the peer-to-peer networks.
+Unfortunately, most of them were designed specifically with the file sharing in mind, as that is the most common use-case for peer-to-peer networks.
 However, there are multiple trust models that are generic enough (such as SORT described in section \ref{subsec:sort}) or were designed specifically for sharing threat intelligence (Dovecot described in section \ref{subsec:dovecot}).
 
 \subsection{Problems of Trust}
 \label{subsec:problems-of-trust}
-In the peer-to-peer networks, where there is no central authority, that can enforce rules and provide assessment whether the peers are honest or not, can be problematic to find out how much can the peers trust each other.
+In peer-to-peer networks, where there is no central authority that can enforce rules and provide assessment whether the peers are honest or not, it can be problematic to find out how much can the peers trust each other.
 Because anybody can freely join and leave, a knowledgeable adversary can misuse network for its own benefit by providing wrong data to the rest of the peers in the network.
-For that reason, the peers need to be able to tell, how much they can trust each other. 
+For that reason, the peers need to be able to tell how much they can trust each other. 
 
-An algorithm, that models such trust relationships and is able to assign the trust value to each peer, or to describe, how much can be what peer trusted, is called \textit{trust model}.
-An analysis of existing trust models was performed by Shree and Basha in \cite{shree2014exhaustive}. 
-We took this analysis in account when we were initially researching for existing implementation of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
+An algorithm, that models such trust relationships and is able to assign the trust value to each peer is called \textit{trust model}.
+An analysis of existing trust models was performed by Shree and Basha in \cite{shree2014exhaustive} and by Pinyol, Isaac and Sabater-Mir, Jordi in \cite{pinyol2013computational}. 
+We took both analyses in account when researching for existing implementations of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
 
 \subsection{Dovecot}
 \label{subsec:dovecot}
 Dovecot is a trust model developed by Dita Hollmannová in \cite{dita}.
-This trust model was specifically designed for Slips in order to share threat intelligence int the \textit{local} peer-to-peer networks.
+This trust model was specifically designed for Slips in order to share threat intelligence in the \textit{local} peer-to-peer networks.
 Dovecot is counting interactions between the peers and the more interaction peers have, they have higher base for the trust.
 This part is based on the Sality botnet \cite{falliere2011sality}, where botnet peers were storing \textit{goodcount} that counted number of interactions between each other.
-The idea behind this is simple, yet very effective, the more peers talk between each other, the more are they trusted.
+The idea behind this is simple yet very effective, the more peers talk between each other, the more are they trusted.
 
 Final peer trust is computed using \textit{goodcount} and also Slips's threat intelligence about the peer. 
 This is possible thanks to the limitation of the local peer-to-peer network, where Slips knows every IP address and can obtain full overview of the device on the network.
 
 Unlike other trust models where new peers start with no trust, Dovecot trusts new peers by default. 
-However, the authors mention in the future work, that this property should be explored more in detail so in the future versions of Dovecot, this might change.
+However, the authors mention in the future work that this property should be explored more in detail so this may change in future versions of Dovecot.
 
 \subsection{SORT}
 \label{subsec:sort}
@@ -48,19 +48,17 @@ Because of the nature of the peer-to-peer network, this allows trust model to ga
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
+In \cite{1562680} He, Niu and Hu propose gathering peers and modeling their trust relationships as \textit{clouds} and propose \textit{extended-cloud-model-based trust model}.
+Huynh, Jennings and Shadbolt propose FIRE trust and reputation model in \cite{huynh2006integrated} which was designed for open multi agent systems.
+A \cite{li2014design}, Li, Meng and Kwok employ machine learning based trust model for collaboration of IDS instances.
+Xiong and Liu then propose in \cite{xiong2004peertrust} PeerTrust, which uses transaction-based feedback system to determine the reputation and trust of the peers.
+Sadan proposed in \cite{abera2019sadan} is another trust model that uses committees and computational challenges to identify malicious peers in the network.
+Sadan uses hardware chips - Trusted Platform Module, to verify the running software which allows other peers to verify trustworthiness of the peer.
 
-\begin{itemize}
-    \item \href{https://share.goodnotes.com/s/60IVzs1mgmuPWF54Us5eKA}{A Novel Approach to Evaluate Trustworthiness and Uncertainty of Trust Relationships in Peer-to-Peer Computing} 
-    \item \href{https://share.goodnotes.com/s/EziqqW185BzxHxNrZ6d1MQ}{An integrated trust and reputation model for open multi-agent systems}
-    \item \href{https://share.goodnotes.com/s/MRfXxmu2Lz51IqK7JODn1N}{Computational trust and reputation models for open multi-agent systems: a review}
-    \item \href{https://share.goodnotes.com/s/tafBG1KUZCuYT2E7a3ucc9}{Design of Intrusion Sensitivity-Based Trust Management Model for Collaborative Intrusion Detection Networks}
-    \item \href{https://share.goodnotes.com/s/YQuoXUbYADa15Hwe90sXCM}{ PeerTrust: Supporting Reputation-Based Trust for Peer-to-Peer Electronic Communities}
-    \item \href{https://share.goodnotes.com/s/hRHxSYlk6wU4BEn6u9Jcyu}{SADAN: Scalable Adversary Detection in Autonomous Networks}
-    \item \href{https://share.goodnotes.com/s/bXWUbVFi5qBiAdBmJ4yYAx}{SORT: A Self-ORganizing Trust Model for Peer-to-Peer Systems}
-\end{itemize}
-lorem ipsum
 \vspace{1cm}
 
 \noindent
 After careful analysis, we decided to create new trust model - Fides - that is based on the SORT algorithm with various modifications and fine-tuning.
 We describe how does the Fides work in the following chapter \ref{ch:trust-model-design}.
+We choose SORT, because it is easily extensible and robust. 
+Moreover, valuation provided by the authors in \cite{sort} promised interesting results.
