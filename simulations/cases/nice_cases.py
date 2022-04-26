@@ -7,7 +7,7 @@ from fides.model.peer import PeerInfo
 from simulations.peer import LocalSlipsTIDb, ConfidentCorrectPeer, MaliciousPeer, UncertainPeer, ConfidentIncorrectPeer, \
     SampleBehavior
 from simulations.time_environment import TimeEnvironment
-from simulations.utils import build_config, FidesSetup, Click, PreTrustedPeer
+from simulations.utils import build_config, FidesSetup, Click
 from tests.load_fides import get_fides_stream
 
 logger = logging.getLogger(__name__)
@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 def plot_correct_malicious_local_compare():
     targets = {"google.com": 1}
-    ti_db = LocalSlipsTIDb(target_baseline=targets, behavior=SampleBehavior(score_mean=0.9,
+    ti_db = LocalSlipsTIDb(target_baseline=targets, behavior=SampleBehavior(score_mean=0.8,
                                                                             score_deviation=0.2,
-                                                                            confidence_mean=0.5,
+                                                                            confidence_mean=0.8,
                                                                             confidence_deviation=0.2))
 
     config = build_config(FidesSetup(
         default_reputation=0,
-        pretrusted_peers=[PreTrustedPeer("PRE-TRUSTED", 0.9)],
+        pretrusted_peers=[],
         # evaluation_strategy=LocalCompareTIEvaluation(),
         evaluation_strategy=MaxConfidenceTIEvaluation(),
         # evaluation_strategy=DistanceBasedTIEvaluation(),
@@ -32,7 +32,7 @@ def plot_correct_malicious_local_compare():
     fides, stream, ti = get_fides_stream(config=config, ti_db=ti_db)
 
     other_peers = [
-        ConfidentCorrectPeer(PeerInfo("PRE-TRUSTED", [])),
+        # ConfidentCorrectPeer(PeerInfo("PRE-TRUSTED", [])),
         ConfidentCorrectPeer(PeerInfo("CORRECT", [])),
         UncertainPeer(PeerInfo("UNCERTAIN", [])),
         ConfidentIncorrectPeer(PeerInfo("INCORRECT", [])),
@@ -44,7 +44,7 @@ def plot_correct_malicious_local_compare():
 
     def update_trust_history(click: Click):
         peer_trust_history[click] = {}
-        peer_trust_history[click]["PRE-TRUSTED"] = fides.trust_db.get_peer_trust_data("PRE-TRUSTED").service_trust
+        # peer_trust_history[click]["PRE-TRUSTED"] = fides.trust_db.get_peer_trust_data("PRE-TRUSTED").service_trust
         peer_trust_history[click]["CORRECT"] = fides.trust_db.get_peer_trust_data("CORRECT").service_trust
         peer_trust_history[click]["MALICIOUS"] = fides.trust_db.get_peer_trust_data("MALICIOUS").service_trust
         peer_trust_history[click]["UNCERTAIN"] = fides.trust_db.get_peer_trust_data("UNCERTAIN").service_trust
@@ -52,7 +52,7 @@ def plot_correct_malicious_local_compare():
         peer_trust_history[click]["s-google.com"] = ti_db.get_for("google.com").score
         peer_trust_history[click]["c-google.com"] = ti_db.get_for("google.com").confidence
 
-    env.run(fides.config.service_history_max_size * 10, epoch_callback=update_trust_history)
+    env.run(fides.config.service_history_max_size * 2, epoch_callback=update_trust_history)
 
     peer1 = fides.trust_db.get_peer_trust_data(other_peers[0].peer_info)
     peer2 = fides.trust_db.get_peer_trust_data(other_peers[1].peer_info)
@@ -60,7 +60,7 @@ def plot_correct_malicious_local_compare():
     logger.info(f"Simulation done - {peer1}, {peer2}, {ti}")
 
     scale = list(peer_trust_history.keys())
-    pretrustedt_progress = [click_data["PRE-TRUSTED"] for click_data in peer_trust_history.values()]
+    # pretrustedt_progress = [click_data["PRE-TRUSTED"] for click_data in peer_trust_history.values()]
     correct_progress = [click_data["CORRECT"] for click_data in peer_trust_history.values()]
     malicious_progress = [click_data["MALICIOUS"] for click_data in peer_trust_history.values()]
     uncertain_progress = [click_data["UNCERTAIN"] for click_data in peer_trust_history.values()]
@@ -68,7 +68,7 @@ def plot_correct_malicious_local_compare():
     target_score = [click_data["s-google.com"] for click_data in peer_trust_history.values()]
     target_confidence = [click_data["c-google.com"] for click_data in peer_trust_history.values()]
 
-    plt.plot(scale, pretrustedt_progress, label='Pre-trusted Peer')
+    # plt.plot(scale, pretrustedt_progress, label='Pre-trusted Peer')
     plt.plot(scale, correct_progress, label='Correct Peer')
     plt.plot(scale, malicious_progress, label='Malicious Peer')
     plt.plot(scale, uncertain_progress, label='Uncertain Peer')
@@ -78,7 +78,7 @@ def plot_correct_malicious_local_compare():
 
     plt.xlabel('Clicks')
     plt.ylabel('Service Trust')
-    plt.title(f'{type(config.ti_interaction_evaluation_strategy).__name__} with all types of peers and 1 pretrusted')
+    plt.title(f'{type(config.ti_interaction_evaluation_strategy).__name__} strategy')
     plt.legend()
     plt.show()
 
