@@ -18,10 +18,10 @@ class OpinionAggregator:
     def __init__(self,
                  configuration: TrustModelConfiguration,
                  ti_db: ThreatIntelligenceDatabase,
-                 dovecot: TIAggregation):
+                 ti_aggregation: TIAggregation):
         self.__configuration = configuration
         self.__ti_db = ti_db
-        self.__dovecot = dovecot
+        self.__ti_aggregation = ti_aggregation
 
     def evaluate_alert(self, peer_trust: PeerTrustData, alert: Alert) -> SlipsThreatIntelligence:
         """Evaluates given data about alert and produces aggregated intelligence for Slips."""
@@ -39,6 +39,5 @@ class OpinionAggregator:
         reports = [PeerReport(report_ti=ti.intelligence,
                               reporter_trust=trust_matrix[peer_id]
                               ) for peer_id, ti in data.items()]
-        # use Dovecot to aggregate opinion from the reports
-        ti = self.__dovecot.assemble_peer_opinion(reports)
+        ti = self.__ti_aggregation.assemble_peer_opinion(data=reports)
         return SlipsThreatIntelligence(score=ti.score, confidence=ti.confidence, target=target)

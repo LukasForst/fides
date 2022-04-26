@@ -6,10 +6,12 @@ from fides.evaluation.discount_factor import compute_discount_factor
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.service_history import ServiceHistory
+from fides.utils import bound
 
 
 # noinspection DuplicatedCode
 # TODO: [+] try to abstract this
+
 def update_service_data_for_peer(
         configuration: TrustModelConfiguration,
         peer: PeerTrustData,
@@ -41,6 +43,9 @@ def update_service_data_for_peer(
     service_trust_reputation = (1 - history_factor) * peer.reputation
     # and now add both parts together
     service_trust = service_trust_own_experience + service_trust_reputation
+    # TODO: [?] verify why do we need that
+    # (case when the data do not follow normal distribution and ib is higher then mean)
+    service_trust = bound(service_trust, 0, 1)
 
     updated_trust = dataclasses.replace(peer,
                                         service_trust=service_trust,

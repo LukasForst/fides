@@ -3,6 +3,7 @@ from typing import List, Union
 
 import yaml
 
+from fides.evaluation.ti_aggregation import TIAggregationStrategy, TIAggregation
 from fides.evaluation.ti_evaluation import TIEvaluation, EvaluationStrategy
 from fides.model.aliases import OrganisationId, PeerId
 from fides.utils.logger import Logger
@@ -123,8 +124,11 @@ class TrustModelConfiguration:
     network_opinion_cache_valid_seconds: int
     """How many minutes is network opinion considered valid."""
 
-    ti_interaction_evaluation_strategy: TIEvaluation
-    """Evaluation str"""
+    interaction_evaluation_strategy: TIEvaluation
+    """Evaluation strategy."""
+
+    ti_aggregation_strategy: TIAggregation
+    """Threat Intelligence aggregation strategy."""
 
 
 def load_configuration(file_path: str) -> TrustModelConfiguration:
@@ -170,12 +174,13 @@ def __parse_config(data: dict) -> TrustModelConfiguration:
                                              confidentiality_level=e['confidentialityLevel'])
                                for e in data['trust']['organisations']],
         network_opinion_cache_valid_seconds=data['trust']['networkOpinionCacheValidSeconds'],
-        ti_interaction_evaluation_strategy=__parse_evaluation_strategy(data)
+        interaction_evaluation_strategy=__parse_evaluation_strategy(data),
+        ti_aggregation_strategy=TIAggregationStrategy[data['trust']['tiAggregationStrategy']]()
     )
 
 
 def __parse_evaluation_strategy(data: dict) -> TIEvaluation:
-    strategies = data['trust']['tiStrategies']
+    strategies = data['trust']['interactionEvaluationStrategies']
 
     def get_strategy_for_key(key: str) -> TIEvaluation:
         kwargs = strategies[key]

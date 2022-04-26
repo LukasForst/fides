@@ -18,34 +18,38 @@ class PeerReport:
 
 class TIAggregation:
 
-    @staticmethod
-    def assemble_peer_opinion(data: List[PeerReport]) -> ThreatIntelligence:
+    def assemble_peer_opinion(self, data: List[PeerReport]) -> ThreatIntelligence:
         """
         Assemble reports given by all peers and compute the overall network opinion.
 
         :param data: a list of peers and their reports, in the format given by TrustDB.get_opinion_on_ip()
         :return: final score and final confidence
         """
-        # TODO select a single aggregation function
-        return TIAggregation._assemble_peer_opinion_average(data)
-        # return TIAggregation._assemble_peer_opinion_weighted(data)
-        # return TIAggregation._assemble_peer_opinion_stdev(data)
+        raise NotImplemented('')
 
-    @staticmethod
-    def _assemble_peer_opinion_average(data: List[PeerReport]) -> ThreatIntelligence:
+
+class AverageConfidenceTIAggregation(TIAggregation):
+
+    def assemble_peer_opinion(self, data: List[PeerReport]) -> ThreatIntelligence:
+        """
+        Uses average when computing final confidence.
+        """
         reports_ti = [d.report_ti for d in data]
         reporters_trust = [d.reporter_trust.service_trust for d in data]
 
         normalize_net_trust_sum = sum(reporters_trust)
-        weighted_reporters = [trust / normalize_net_trust_sum for trust in reporters_trust]
+        weighted_reporters = [trust / normalize_net_trust_sum for trust in reporters_trust] \
+            if normalize_net_trust_sum > 0 else [0] * len(reporters_trust)
 
         combined_score = sum(r.score * w for r, w, in zip(reports_ti, weighted_reporters))
         combined_confidence = sum(r.confidence * w for r, w, in zip(reports_ti, reporters_trust)) / len(reporters_trust)
 
         return ThreatIntelligence(score=combined_score, confidence=combined_confidence)
 
-    @staticmethod
-    def _assemble_peer_opinion_weighted(data: List[PeerReport]) -> ThreatIntelligence:
+
+class WeightedAverageConfidenceTIAggregation(TIAggregation):
+
+    def assemble_peer_opinion(self, data: List[PeerReport]) -> ThreatIntelligence:
         reports_ti = [d.report_ti for d in data]
         reporters_trust = [d.reporter_trust.service_trust for d in data]
 
@@ -57,8 +61,10 @@ class TIAggregation:
 
         return ThreatIntelligence(score=combined_score, confidence=combined_confidence)
 
-    @staticmethod
-    def _assemble_peer_opinion_stdev(data: List[PeerReport]) -> ThreatIntelligence:
+
+class StdevFromScoreTIAggregation(TIAggregation):
+
+    def assemble_peer_opinion(self, data: List[PeerReport]) -> ThreatIntelligence:
         reports_ti = [d.report_ti for d in data]
         reporters_trust = [d.reporter_trust.service_trust for d in data]
 
@@ -70,3 +76,10 @@ class TIAggregation:
         combined_confidence = 1 - np.std(merged_score)
 
         return ThreatIntelligence(score=combined_score, confidence=combined_confidence)
+
+
+TIAggregationStrategy = {
+    'average': AverageConfidenceTIAggregation,
+    'weightedAverage': WeightedAverageConfidenceTIAggregation,
+    'stdevFromScore': StdevFromScoreTIAggregation,
+}

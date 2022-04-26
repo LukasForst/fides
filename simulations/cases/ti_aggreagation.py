@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from fides.evaluation.ti_aggregation import TIAggregation, PeerReport
+from fides.evaluation.ti_aggregation import PeerReport, AverageConfidenceTIAggregation
 from fides.model.aliases import PeerId
 from fides.model.peer import PeerInfo
 from fides.model.peer_trust_data import PeerTrustData
@@ -43,7 +43,7 @@ def get_data():
                 reporter_trust=_peer_trust("#2", service_trust=trust)
             )
         ]
-        aggregated = TIAggregation.assemble_peer_opinion(reports)
+        aggregated = AverageConfidenceTIAggregation().assemble_peer_opinion(reports)
         data.append({'t': trust, 'c': confidence, 'as': aggregated.score, 'ac': aggregated.confidence})
     return data
 

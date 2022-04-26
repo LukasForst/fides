@@ -8,7 +8,17 @@ from fides.model.aliases import Target, Score
 from fides.model.peer import PeerInfo
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
 from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
+from fides.utils import bound
 from simulations.utils import Click
+
+
+class PeerBehavior(Enum):
+    # being behaviors
+    CONFIDENT_CORRECT = 'CONFIDENT_CORRECT',
+    UNCERTAIN_PEER = 'UNCERTAIN_PEER',
+    CONFIDENT_INCORRECT = 'CONFIDENT_INCORRECT',
+    # malicious behavior
+    MALICIOUS_PEER = 'MALICIOUS_PEER'
 
 
 @dataclass
@@ -21,19 +31,31 @@ class SampleBehavior:
 
     def sample_score(self, mean_shift: float = 1.0) -> float:
         generated = np.random.normal(mean_shift * self.score_mean, self.score_deviation)
-        if generated < -1:
-            return -1
-        elif generated > 1:
-            return 1
-        return generated
+        return bound(generated, -1, 1)
 
     def sample_confidence(self) -> float:
         generated = np.random.normal(self.confidence_mean, self.confidence_deviation)
-        if generated < 0:
-            return 0
-        elif generated > 1:
-            return 1
-        return generated
+        return bound(generated, 0, 1)
+
+
+behavioral_map = {
+    PeerBehavior.CONFIDENT_CORRECT: SampleBehavior(score_mean=0.9,
+                                                   score_deviation=0.1,
+                                                   confidence_mean=0.9,
+                                                   confidence_deviation=0.1),
+    PeerBehavior.UNCERTAIN_PEER: SampleBehavior(score_mean=0.0,
+                                                score_deviation=0.8,
+                                                confidence_mean=0.3,
+                                                confidence_deviation=0.2),
+    PeerBehavior.CONFIDENT_INCORRECT: SampleBehavior(score_mean=0.8,
+                                                     score_deviation=0.2,
+                                                     confidence_mean=0.8,
+                                                     confidence_deviation=0.2),
+    PeerBehavior.MALICIOUS_PEER: SampleBehavior(score_mean=0.9,
+                                                score_deviation=0.1,
+                                                confidence_mean=0.9,
+                                                confidence_deviation=0.1),
+}
 
 
 class LocalSlipsTIDb(ThreatIntelligenceDatabase):
@@ -51,19 +73,10 @@ class LocalSlipsTIDb(ThreatIntelligenceDatabase):
     def get_for(self, target: Target) -> Optional[SlipsThreatIntelligence]:
         baseline = self._target_baseline[target]
         if baseline is not None:
-            score = self._behavior.sample_score()
+            score = self._behavior.sample_score(baseline)
             confidence = self._behavior.sample_confidence()
             return SlipsThreatIntelligence(score=score, confidence=confidence, target=target)
         return None
-
-
-class PeerBehavior(Enum):
-    # being behaviors
-    CONFIDENT_CORRECT = 'CONFIDENT_CORRECT',
-    UNCERTAIN_PEER = 'UNCERTAIN_PEER',
-    CONFIDENT_INCORRECT = 'CONFIDENT_INCORRECT',
-    # malicious behavior
-    MALICIOUS_PEER = 'MALICIOUS_PEER'
 
 
 class Peer:
@@ -91,10 +104,7 @@ class ConfidentCorrectPeer(Peer):
     def __init__(self,
                  peer_info: PeerInfo,
                  network_joining_epoch: Click = 0,
-                 sample_base: SampleBehavior = SampleBehavior(score_mean=0.9,
-                                                              score_deviation=0.1,
-                                                              confidence_mean=0.9,
-                                                              confidence_deviation=0.1)
+                 sample_base: SampleBehavior = behavioral_map[PeerBehavior.CONFIDENT_CORRECT]
                  ):
         super().__init__(peer_info, network_joining_epoch, PeerBehavior.CONFIDENT_CORRECT, sample_base)
 
@@ -108,10 +118,7 @@ class UncertainPeer(Peer):
     def __init__(self,
                  peer_info: PeerInfo,
                  network_joining_epoch: Click = 0,
-                 sample_base: SampleBehavior = SampleBehavior(score_mean=0.0,
-                                                              score_deviation=0.8,
-                                                              confidence_mean=0.3,
-                                                              confidence_deviation=0.2)
+                 sample_base: SampleBehavior = behavioral_map[PeerBehavior.UNCERTAIN_PEER]
                  ):
         super().__init__(peer_info, network_joining_epoch, PeerBehavior.UNCERTAIN_PEER, sample_base)
 
@@ -125,10 +132,7 @@ class ConfidentIncorrectPeer(Peer):
     def __init__(self,
                  peer_info: PeerInfo,
                  network_joining_epoch: Click = 0,
-                 sample_base: SampleBehavior = SampleBehavior(score_mean=0.8,
-                                                              score_deviation=0.2,
-                                                              confidence_mean=0.8,
-                                                              confidence_deviation=0.2)
+                 sample_base: SampleBehavior = behavioral_map[PeerBehavior.CONFIDENT_INCORRECT]
                  ):
         super().__init__(peer_info, network_joining_epoch, PeerBehavior.CONFIDENT_INCORRECT, sample_base)
 
@@ -144,11 +148,7 @@ class MaliciousPeer(Peer):
                  network_joining_epoch: Click,
                  lying_about_targets: List[Target],
                  epoch_starts_lying: Click,
-                 sample_base: SampleBehavior = SampleBehavior(score_mean=0.9,
-                                                              score_deviation=0.1,
-                                                              confidence_mean=0.9,
-                                                              confidence_deviation=0.1)
-
+                 sample_base: SampleBehavior = behavioral_map[PeerBehavior.MALICIOUS_PEER]
                  ):
         self._lying_about_targets = lying_about_targets
         self._epoch_starts_lying = epoch_starts_lying
