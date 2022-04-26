@@ -3,7 +3,8 @@ from typing import List, Dict
 
 import matplotlib.pyplot as plt
 
-from fides.evaluation.ti_evaluation import LocalCompareTIEvaluation
+from fides.evaluation.ti_aggregation import WeightedAverageConfidenceTIAggregation
+from fides.evaluation.ti_evaluation import DistanceBasedTIEvaluation
 from fides.model.aliases import Target, Score, PeerId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
@@ -51,7 +52,7 @@ def plot_correct_malicious_local_compare():
     targets = generate_targets(being=1, malicious=1)
     other_peers = generate_peers(
         distribution={
-            PeerBehavior.CONFIDENT_CORRECT: 1,
+            PeerBehavior.CONFIDENT_CORRECT: 2,
             PeerBehavior.UNCERTAIN_PEER: 0,
             PeerBehavior.CONFIDENT_INCORRECT: 0,
             PeerBehavior.MALICIOUS_PEER: 1,
@@ -60,22 +61,25 @@ def plot_correct_malicious_local_compare():
         malicious_start_lie_at=50
     )
 
-    local_slips_acts_as = PeerBehavior.CONFIDENT_CORRECT
+    local_slips_acts_as = PeerBehavior.UNCERTAIN_PEER
     ti_db = LocalSlipsTIDb(
         target_baseline=targets,
         behavior=behavioral_map[local_slips_acts_as]
     )
     pretrusted_peers = 0
     config = build_config(FidesSetup(
-        default_reputation=0.5,
+        default_reputation=0.0,
         pretrusted_peers=[PreTrustedPeer(p.peer_info.id, 0.95)
                           for p in other_peers if p.label == PeerBehavior.CONFIDENT_CORRECT
                           ][:pretrusted_peers],
-        evaluation_strategy=LocalCompareTIEvaluation(),
+        # evaluation_strategy=LocalCompareTIEvaluation(),
         # evaluation_strategy=MaxConfidenceTIEvaluation(),
-        # evaluation_strategy=DistanceBasedTIEvaluation(),
+        evaluation_strategy=DistanceBasedTIEvaluation(),
         # evaluation_strategy=ThresholdTIEvaluation(threshold=0.5),
         # evaluation_strategy=EvenTIEvaluation(),
+        # ti_aggregation_strategy=AverageConfidenceTIAggregation(),
+        ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
+        # ti_aggregation_strategy=StdevFromScoreTIAggregation(),
         service_history_max_size=100
     ))
 
@@ -89,7 +93,10 @@ def plot_correct_malicious_local_compare():
     time_scale = list(peer_trust_history.keys())
 
     fig, axs = plt.subplots(3, 1, figsize=(10, 15))
-    fig.suptitle(f'{type(config.interaction_evaluation_strategy).__name__} strategy')
+    fig.suptitle(
+        f'{type(config.interaction_evaluation_strategy).__name__} &'
+        f'{type(config.ti_aggregation_strategy).__name__}'
+    )
 
     service_trust_plt = axs[0]
     service_trust_plt.set_title('Service Trust')
@@ -104,7 +111,6 @@ def plot_correct_malicious_local_compare():
                                label=peer.peer_info.id)
 
     service_trust_plt.legend(loc=(1.04, 0), borderaxespad=0)
-    plt.subplots_adjust(right=0.7)
 
     score_plt = axs[1]
     score_plt.set_title('Target Score')
@@ -126,9 +132,10 @@ def plot_correct_malicious_local_compare():
         score_plt.plot(time_scale, [c[target].score for c in target_progress], label=target)
         confidence_plt.plot(time_scale, [c[target].confidence for c in target_progress], label=target)
 
-    score_plt.legend()
-    confidence_plt.legend()
+    score_plt.legend(loc=(1.04, 0), borderaxespad=0)
+    confidence_plt.legend(loc=(1.04, 0), borderaxespad=0)
 
+    plt.subplots_adjust(right=0.7)
     plt.show()
 
 

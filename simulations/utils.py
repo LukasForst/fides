@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from fides.evaluation.ti_aggregation import TIAggregation
 from fides.evaluation.ti_evaluation import TIEvaluation
 from fides.model.aliases import PeerId
 from fides.model.configuration import TrustedEntity, TrustModelConfiguration, RecommendationsConfiguration
@@ -28,6 +29,7 @@ class FidesSetup:
     default_reputation: float
     pretrusted_peers: List[PreTrustedPeer]
     evaluation_strategy: TIEvaluation
+    ti_aggregation_strategy: TIAggregation
 
     recommendations_setup: Optional[RecommendationsSetup] = None
     service_history_max_size: int = 100
@@ -44,8 +46,10 @@ def build_config(setup: FidesSetup) -> TrustModelConfiguration:
             enabled=setup.recommendations_setup is not None,
             only_connected=False,
             only_preconfigured=setup.recommendations_setup.only_pretrusted if setup.recommendations_setup else False,
-            required_trusted_peers_count=setup.recommendations_setup.required_trusted_peers_count if setup.recommendations_setup else 0,
-            trusted_peer_threshold=setup.recommendations_setup.trusted_peer_threshold if setup.recommendations_setup else 0,
+            required_trusted_peers_count=setup.recommendations_setup.required_trusted_peers_count
+            if setup.recommendations_setup else 0,
+            trusted_peer_threshold=setup.recommendations_setup.trusted_peer_threshold
+            if setup.recommendations_setup else 0,
             peers_max_count=100000,
             history_max_size=setup.service_history_max_size
         ),
@@ -54,5 +58,6 @@ def build_config(setup: FidesSetup) -> TrustModelConfiguration:
                        for p in setup.pretrusted_peers],
         trusted_organisations=[],
         network_opinion_cache_valid_seconds=100000,
-        ti_interaction_evaluation_strategy=setup.evaluation_strategy
+        interaction_evaluation_strategy=setup.evaluation_strategy,
+        ti_aggregation_strategy=setup.ti_aggregation_strategy
     )
