@@ -2,6 +2,7 @@ import logging
 
 import matplotlib.pyplot as plt
 
+from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation
 from fides.model.peer import PeerInfo
 from simulations.peer import LocalSlipsTIDb, ConfidentCorrectPeer, MaliciousPeer, UncertainPeer, ConfidentIncorrectPeer, \
@@ -27,7 +28,10 @@ def plot_correct_malicious_local_compare():
         evaluation_strategy=MaxConfidenceTIEvaluation(),
         # evaluation_strategy=DistanceBasedTIEvaluation(),
         # evaluation_strategy=ThresholdTIEvaluation(),
-        service_history_max_size=100
+        service_history_max_size=100,
+        ti_aggregation_strategy=AverageConfidenceTIAggregation(),
+        # ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
+        # ti_aggregation_strategy=StdevFromScoreTIAggregation()
     ))
     fides, stream, ti = get_fides_stream(config=config, ti_db=ti_db)
 
