@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict
+from typing import List, Dict, Callable, Optional
 
 from fides.messaging.model import NetworkMessage, PeerIntelligenceResponse
 from fides.model.aliases import Target, Score
@@ -30,10 +30,13 @@ class TimeEnvironment:
         self._other_peers = other_peers
         self._targets = targets
 
-    def run(self, simulation_clicks: Click):
+    def run(self, simulation_clicks: Click, epoch_callback: Optional[Callable[[Click], None]] = None):
         for epoch in range(simulation_clicks):
             logger.debug(f"Running epoch {epoch}")
             self._run_epoch(epoch)
+            logger.debug(f"Epoch {epoch} done")
+            if epoch_callback:
+                epoch_callback(epoch)
 
         logger.info("Simulation done!")
 

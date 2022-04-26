@@ -5,9 +5,9 @@ from unittest import TestCase
 from fides.evaluation.ti_evaluation import ThresholdTIEvaluation, TIEvaluation, LocalCompareTIEvaluation
 from fides.model.peer import PeerInfo
 from simulations.peer import ConfidentCorrectPeer, SampleBehavior, PeerBehavior, LocalSlipsTIDb, ConfidentIncorrectPeer, \
-    UncertainPeer
+    UncertainPeer, MaliciousPeer
 from simulations.time_environment import TimeEnvironment
-from simulations.utils import build_config, FidesSetup, PreTrustedPeer
+from simulations.utils import build_config, FidesSetup, PreTrustedPeer, Click
 from tests.load_fides import get_fides_stream
 
 logger = logging.getLogger(__name__)
@@ -95,5 +95,38 @@ class TestBasicSimulationWithOneTypeOfPeer(TestCase):
         peer2 = fides.trust_db.get_peer_trust_data(other_peers[1].peer_info)
         peer3 = fides.trust_db.get_peer_trust_data(other_peers[2].peer_info)
         peer4 = fides.trust_db.get_peer_trust_data(other_peers[3].peer_info)
+
+        logger.info(f"Simulation done - {peer1}, {peer2}, {ti}")
+
+    def test_see_difference_honest_malicious(self):
+        targets = {"google.com": 1}
+        ti_db = LocalSlipsTIDb(target_baseline=targets)
+
+        config = build_config(FidesSetup(
+            default_reputation=0,
+            pretrusted_peers=[],
+            evaluation_strategy=LocalCompareTIEvaluation(),
+            service_history_max_size=100
+        ))
+        fides, stream, ti = get_fides_stream(config=config, ti_db=ti_db)
+
+        other_peers = [
+            ConfidentCorrectPeer(PeerInfo("CORRECT", [])),
+            MaliciousPeer(PeerInfo("MALICIOUS", []), 0, list(targets.keys()), epoch_starts_lying=50),
+        ]
+        env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
+
+        peer_trust_history = {}
+
+        def update_trust_history(click: Click):
+            peer_trust_history[click] = {}
+            peer_trust_history[click]["CORRECT"] = fides.trust_db.get_peer_trust_data("CORRECT").service_trust
+            peer_trust_history[click]["MALICIOUS"] = fides.trust_db.get_peer_trust_data("MALICIOUS").service_trust
+            peer_trust_history[click]["google.com"] = ti_db.get_for("google.com").score
+
+        env.run(fides.config.service_history_max_size, epoch_callback=update_trust_history)
+
+        peer1 = fides.trust_db.get_peer_trust_data(other_peers[0].peer_info)
+        peer2 = fides.trust_db.get_peer_trust_data(other_peers[1].peer_info)
 
         logger.info(f"Simulation done - {peer1}, {peer2}, {ti}")
