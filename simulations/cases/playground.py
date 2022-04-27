@@ -1,4 +1,3 @@
-import random
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
@@ -14,19 +13,18 @@ logger = Logger(__name__)
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
-    peers_count = [6, 10]
-    pre_trusted_peers = [0, 0.25, 0.50]
+    peers_count = [8]
+    pre_trusted_peers = [0, 0.50]
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
     peers_distribution = [
         # CC,  UP,  CI,  MA
-        [0.5, 0.0, 0.0, 0.5],
-        [0.5, 0.3, 0.1, 0.1]
+        [0.25, 0.25, 0.25, 0.25]
     ]
 
     targets = [2]
     malicious_targets = [0.50]
     malicious_peers_lie_abouts = [0.50, 1.0]
-    gaining_trust_periods = [0, 50]
+    gaining_trust_periods = [50]
 
     simulation_lengths = [200]
     service_history_sizes = [100]
@@ -99,6 +97,7 @@ def execute_configuration(configuration: SimulationConfiguration):
 
 if __name__ == '__main__':
     sims = sample_simulation_definitions()
-    random.shuffle(sims)
-    for simulation in sims[:5]:
-        execute_configuration(simulation)
+    logger.info(f"Number of simulations: {len(sims)}")
+    # random.shuffle(sims)
+    # for simulation in sims[:5]:
+    #     execute_configuration(simulation)

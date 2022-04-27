@@ -1,4 +1,3 @@
-import logging
 import random
 from typing import List, Dict, Tuple
 
@@ -6,6 +5,7 @@ from fides.model.aliases import Target, Score, PeerId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
+from fides.utils.logger import Logger
 from simulations.generators import generate_targets, generate_peers
 from simulations.peer import LocalSlipsTIDb, PeerBehavior, Peer, behavioral_map
 from simulations.setup import SimulationConfiguration
@@ -13,7 +13,7 @@ from simulations.time_environment import TimeEnvironment
 from simulations.utils import build_config, FidesSetup, Click, PreTrustedPeer
 from tests.load_fides import get_fides_stream
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[

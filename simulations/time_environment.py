@@ -1,14 +1,14 @@
-import logging
 from typing import List, Dict, Callable, Optional
 
 from fides.messaging.model import NetworkMessage, PeerIntelligenceResponse
 from fides.model.aliases import Target, Score
+from fides.utils.logger import Logger
 from simulations.peer import Peer
 from simulations.utils import Click
 from tests.load_fides import Fides
 from tests.messaging.messages import nl2tl_intelligence_response, serialize, nl2tl_peers_list
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 class TimeEnvironment:

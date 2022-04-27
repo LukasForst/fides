@@ -1,16 +1,16 @@
-import logging
 from unittest import TestCase
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import ThresholdTIEvaluation, LocalCompareTIEvaluation
 from fides.model.peer import PeerInfo
+from fides.utils.logger import Logger
 from simulations.peer import ConfidentCorrectPeer, SampleBehavior, LocalSlipsTIDb, ConfidentIncorrectPeer, \
     UncertainPeer, MaliciousPeer
 from simulations.time_environment import TimeEnvironment
 from simulations.utils import build_config, FidesSetup, PreTrustedPeer, Click
 from tests.load_fides import get_fides_stream
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 class TestBasicSimulationWithOneTypeOfPeer(TestCase):

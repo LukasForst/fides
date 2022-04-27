@@ -1,5 +1,4 @@
 import json
-import logging
 from dataclasses import asdict
 from typing import List
 
@@ -7,8 +6,9 @@ from fides.messaging.model import NetworkMessage, PeerRecommendationResponse, Pe
 from fides.model.alert import Alert
 from fides.model.aliases import Target, PeerId
 from fides.model.peer import PeerInfo
+from fides.utils.logger import Logger
 
-logger = logging.getLogger(__name__)
+logger = Logger(__name__)
 
 
 def serialize(m: NetworkMessage) -> str:
