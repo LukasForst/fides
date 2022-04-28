@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
@@ -13,17 +14,17 @@ logger = Logger(__name__)
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
-    peers_count = [8]
-    pre_trusted_peers = [0, 0.50]
+    peers_count = [10]
+    pre_trusted_peers = [0.2]
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
     peers_distribution = [
         # CC,  UP,  CI,  MA
-        [0.25, 0.25, 0.25, 0.25]
+        [0.4, 0.2, 0.0, 0.4]
     ]
 
     targets = [2]
-    malicious_targets = [0.50]
-    malicious_peers_lie_abouts = [0.50, 1.0]
+    malicious_targets = [0.5]
+    malicious_peers_lie_abouts = [1.0]
     gaining_trust_periods = [50]
 
     simulation_lengths = [200]
@@ -39,8 +40,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         # StdevFromScoreTIAggregation()
     ]
     initial_reputations = [0.0, 0.5, 0.95]
-    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT,
-                            PeerBehavior.UNCERTAIN_PEER]
+    local_slips_acts_ass = [PeerBehavior.UNCERTAIN_PEER]
 
     simulations = []
     for peer_count in peers_count:
@@ -89,8 +89,11 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 def execute_configuration(configuration: SimulationConfiguration):
     config, peer_trust_history, targets_history = generate_and_run(configuration)
 
-    title = f'{type(config.interaction_evaluation_strategy).__name__}\n' + \
-            f'{type(config.ti_aggregation_strategy).__name__}'
+    title = f'Interaction Evaluation: {type(config.interaction_evaluation_strategy).__name__}\n' + \
+            f'TI Aggregation: {type(config.ti_aggregation_strategy).__name__}\n' + \
+            f'Local Slips is {configuration.local_slips_acts_as.name}\n' + \
+            f'There\'re {configuration.pre_trusted_peers_count} pre-trusted peers\n' + \
+            f'Peers had initial reputation of {configuration.initial_reputation}'
 
     plot_simulation_result(title, peer_trust_history, targets_history)
 
@@ -98,6 +101,9 @@ def execute_configuration(configuration: SimulationConfiguration):
 if __name__ == '__main__':
     sims = sample_simulation_definitions()
     logger.info(f"Number of simulations: {len(sims)}")
-    # random.shuffle(sims)
-    # for simulation in sims[:5]:
-    #     execute_configuration(simulation)
+    # sims = [s for s in sims if s.initial_reputation == 0.5]
+    # logger.info(f"Number of filtered simulations: {len(sims)}")
+
+    random.shuffle(sims)
+    for simulation in sims:
+        execute_configuration(simulation)
