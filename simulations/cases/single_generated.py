@@ -37,7 +37,7 @@ def run():
         # ti_aggregation_strategy=StdevFromScoreTIAggregation(),
         new_peers_join_between=(2, (10, 50)),
         recommendation_setup=RecommendationsConfiguration(
-            enabled=True,
+            enabled=False,
             only_connected=False,
             only_preconfigured=True,
             required_trusted_peers_count=1,

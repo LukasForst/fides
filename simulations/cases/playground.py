@@ -42,6 +42,13 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     initial_reputations = [0.0, 0.5, 0.95]
     local_slips_acts_ass = [PeerBehavior.UNCERTAIN_PEER]
 
+    ns = len(peers_count) * len(peers_distribution) * len(pre_trusted_peers) * len(targets) * \
+         len(malicious_targets) * len(malicious_peers_lie_abouts) * \
+         len(gaining_trust_periods) * len(simulation_lengths) * len(service_history_sizes) * \
+         len(evaluation_strategies) * len(ti_aggregation_strategies) * \
+         len(initial_reputations) * len(local_slips_acts_ass)
+    logger.info(f'Number of simulations: {ns}')
+
     simulations = []
     for peer_count in peers_count:
         for distribution in peers_distribution:
