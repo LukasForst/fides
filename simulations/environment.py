@@ -1,5 +1,7 @@
 import random
-from typing import List, Dict, Tuple
+import uuid
+from dataclasses import dataclass
+from typing import List, Dict
 
 from fides.model.aliases import Target, Score, PeerId
 from fides.model.configuration import TrustModelConfiguration
@@ -16,9 +18,16 @@ from tests.load_fides import get_fides_stream
 logger = Logger(__name__)
 
 
-def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[
-    TrustModelConfiguration, Dict[Click, Dict[PeerId, float]], Dict[Click, Dict[Target, SlipsThreatIntelligence]]
-]:
+@dataclass
+class SimulationResult:
+    simulation_id: str
+    simulation_config: SimulationConfiguration
+    peer_trust_history: Dict[Click, Dict[PeerId, float]]
+    targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]
+    targets_labels: Dict[Target, Score]
+
+
+def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationResult:
     targets = generate_targets(being=simulation_config.benign_targets, malicious=simulation_config.malicious_targets)
     malicious_lie_about = list(targets.keys())
     random.shuffle(malicious_lie_about)
@@ -63,7 +72,7 @@ def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[
         other_peers=other_peers,
         simulation_time=simulation_config.simulation_length
     )
-    return config, peer_trust_history, targets_history
+    return SimulationResult(str(uuid.uuid4()), simulation_config, peer_trust_history, targets_history, targets)
 
 
 def run_simulation(

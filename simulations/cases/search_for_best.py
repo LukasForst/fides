@@ -1,8 +1,7 @@
-import random
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
-    WeightedAverageConfidenceTIAggregation
+    WeightedAverageConfidenceTIAggregation, StdevFromScoreTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
 from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
@@ -13,20 +12,49 @@ from simulations.visualisation import plot_simulation_result
 logger = Logger(__name__)
 
 
+def sample_peers_distribution() -> List[List[float]]:
+    sample = {
+        'cc': [0.25, 0.5, 0.75],
+        'up': [0.25, 0.5, 0.75],
+        'ci': [0.25, 0.5, 0.75],
+        'ma': [0.25, 0.5, 0.75],
+    }
+    data = []
+    for cc in sample['cc']:
+        row = [cc]
+        for up in sample['up']:
+            row.append(up if sum(row) + up <= 1 else 0)
+            for ci in sample['ci']:
+                row.append(ci if sum(row) + ci <= 1 else 0)
+                for ma in sample['ma']:
+                    if sum(row) == 1:
+                        row.append(0)
+                    elif sum(row) + ma == 1:
+                        row.append(ma)
+                    elif sum(row) + ma < 1:
+                        continue
+                    elif sum(row) + ma > 1:
+                        continue
+
+                    data.append(row)
+                    row = row[:-1]
+                row = row[:-1]
+            row = row[:-1]
+    return data
+
+
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [10]
-    pre_trusted_peers = [0.0]
+    pre_trusted_peers = [0.0, 0.25, 0.5]
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
-    peers_distribution = [
-        # CC,  UP,  CI,  MA
-        [0.7, 0.2, 0.1, 0.0],
-        [0.2, 0.2, 0.1, 0.5]
-    ]
+
+    # CC,  UP,  CI,  MA
+    peers_distribution = sample_peers_distribution()
 
     targets = [2]
     malicious_targets = [0.5]
     malicious_peers_lie_abouts = [1.0]
-    gaining_trust_periods = [100]
+    gaining_trust_periods = [50]
 
     simulation_lengths = [200]
     service_history_sizes = [100]
@@ -38,10 +66,10 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
         WeightedAverageConfidenceTIAggregation(),
-        # StdevFromScoreTIAggregation()
+        StdevFromScoreTIAggregation()
     ]
     initial_reputations = [0.0, 0.5, 0.95]
-    local_slips_acts_ass = [PeerBehavior.UNCERTAIN_PEER]
+    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT, PeerBehavior.UNCERTAIN_PEER]
 
     ns = len(peers_count) * len(peers_distribution) * len(pre_trusted_peers) * len(targets) * \
          len(malicious_targets) * len(malicious_peers_lie_abouts) * \
@@ -96,16 +124,13 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
 def execute_configuration(configuration: SimulationConfiguration):
     result = generate_and_run(configuration)
-
     plot_simulation_result(result)
 
 
 if __name__ == '__main__':
     sims = sample_simulation_definitions()
     logger.info(f"Number of simulations: {len(sims)}")
-    sims = [s for s in sims if s.initial_reputation == 0.5]
-    logger.info(f"Number of filtered simulations: {len(sims)}")
 
-    random.shuffle(sims)
-    for simulation in sims:
-        execute_configuration(simulation)
+    # random.shuffle(sims)
+    # for simulation in sims:
+    #     execute_configuration(simulation)

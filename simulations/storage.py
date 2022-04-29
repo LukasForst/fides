@@ -1,29 +1,35 @@
 import json
 from dataclasses import asdict
-from typing import Dict
 
-from fides.model.aliases import Target, PeerId
+from dacite import from_dict
+
+# noinspection PyUnresolvedReferences
+from fides.evaluation.ti_aggregation import *
+# noinspection PyUnresolvedReferences
+from fides.evaluation.ti_evaluation import *
+from fides.model.configuration import RecommendationsConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
+from simulations.environment import SimulationResult
+from simulations.peer import PeerBehavior
 from simulations.setup import SimulationConfiguration
-from simulations.utils import Click
 
 
 def store_simulation_result(
         file_name: str,
-        configuration: SimulationConfiguration,
-        peer_trust_history: Dict[Click, Dict[PeerId, float]],
-        targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]):
-    time = list(peer_trust_history.keys())
+        result: SimulationResult
+):
+    time = list(result.peer_trust_history.keys())
     history_data = {}
     for click in time:
         history_data[click] = {
-            'peers_trust': peer_trust_history[click],
-            'targets': {target: asdict(ti) for target, ti in targets_history[click].items()}
+            'peers_trust': result.peer_trust_history[click],
+            'targets': {target: asdict(ti) for target, ti in result.targets_history[click].items()}
         }
 
     data = {
-        'configuration': _serialize_configuration(configuration),
-        'data': history_data
+        'configuration': _serialize_configuration(result.simulation_config),
+        'data': history_data,
+        'labels': result.targets_labels
     }
     with open(file_name, "w+") as f:
         f.write(json.dumps(data))
@@ -47,3 +53,43 @@ def _serialize_configuration(cfg: SimulationConfiguration) -> Dict:
                                   f' {cfg.new_peers_join_between[1][1]}' if cfg.new_peers_join_between else None,
         'recommendation_setup': asdict(cfg.recommendation_setup) if cfg.recommendation_setup else None
     }
+
+
+def read_simulation(file_name: str) -> SimulationResult:
+    with open(file_name, 'r') as f:
+        data = json.load(f)
+    new_peers_join_between = data['configuration']['new_peers_join_between']
+    if new_peers_join_between:
+        count, start, end = new_peers_join_between.split(', ')
+        new_peers_join_between = count, (start, end)
+    peer_trust_history = {}
+    targets = {}
+    for click, events in data['data'].items():
+        peer_trust_history[int(click)] = events['peers_trust']
+        targets[int(click)] = {target: from_dict(data_class=SlipsThreatIntelligence, data=ti)
+                               for target, ti in events['targets'].items()}
+
+    return SimulationResult(
+        simulation_id=file_name.replace('.json', ''),
+        simulation_config=SimulationConfiguration(
+            benign_targets=data['configuration']['benign_targets'],
+            malicious_targets=data['configuration']['malicious_targets'],
+            peers_distribution={PeerBehavior[behavior_name]: count for behavior_name, count in
+                                data['configuration']['peers_distribution'].items()},
+            malicious_peers_lie_about_targets=data['configuration']['malicious_peers_lie_about_targets'],
+            simulation_length=data['configuration']['simulation_length'],
+            malicious_peers_lie_since=data['configuration']['malicious_peers_lie_since'],
+            service_history_size=data['configuration']['service_history_size'],
+            pre_trusted_peers_count=data['configuration']['pre_trusted_peers_count'],
+            initial_reputation=data['configuration']['initial_reputation'],
+            evaluation_strategy=globals()[data['configuration']['evaluation_strategy']](),
+            ti_aggregation_strategy=globals()[data['configuration']['ti_aggregation_strategy']](),
+            local_slips_acts_as=PeerBehavior[data['configuration']['local_slips_acts_as']],
+            new_peers_join_between=new_peers_join_between,
+            recommendation_setup=from_dict(data_class=RecommendationsConfiguration, data=d)
+            if (d := data['configuration']['recommendation_setup']) else None
+        ),
+        peer_trust_history=peer_trust_history,
+        targets_history=targets,
+        targets_labels=data['labels']
+    )

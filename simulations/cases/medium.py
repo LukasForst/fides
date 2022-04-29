@@ -96,12 +96,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
 
 def execute_configuration(configuration: SimulationConfiguration):
-    config, peer_trust_history, targets_history = generate_and_run(configuration)
-
-    title = f'{type(config.interaction_evaluation_strategy).__name__}\n' + \
-            f'{type(config.ti_aggregation_strategy).__name__}'
-
-    plot_simulation_result(title, configuration, peer_trust_history, targets_history)
+    result = generate_and_run(configuration)
+    plot_simulation_result(result)
 
 
 if __name__ == '__main__':

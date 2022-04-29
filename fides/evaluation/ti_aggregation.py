@@ -5,6 +5,7 @@ import numpy as np
 
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence
+from fides.utils import bound
 
 
 @dataclass
@@ -73,7 +74,7 @@ class StdevFromScoreTIAggregation(TIAggregation):
 
         merged_score = [r.score * r.confidence * w for r, w, in zip(reports_ti, weighted_reporters)]
         combined_score = sum(merged_score)
-        combined_confidence = 1 - np.std(merged_score)
+        combined_confidence = bound(1 - np.std(merged_score), 0, 1)
 
         return ThreatIntelligence(score=combined_score, confidence=combined_confidence)
 

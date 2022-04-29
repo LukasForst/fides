@@ -1,27 +1,29 @@
-from typing import Dict
+from typing import Optional
 
 import matplotlib.pyplot as plt
 
-from fides.model.aliases import Target, PeerId
-from fides.model.threat_intelligence import SlipsThreatIntelligence
+from simulations.environment import SimulationResult
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration
-from simulations.utils import Click
 
 
 def plot_simulation_result(
-        title: str,
-        configuration: SimulationConfiguration,
-        peer_trust_history: Dict[Click, Dict[PeerId, float]],
-        targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]):
-    time_scale = list(peer_trust_history.keys())
+        result: SimulationResult,
+        title_override: Optional[str] = None
+):
+    time_scale = list(result.peer_trust_history.keys())
 
     fig, axs = plt.subplots(3, 1, figsize=(10, 15))
+    title = title_override if title_override else \
+        f'Interaction Evaluation: {type(result.simulation_config.evaluation_strategy).__name__}\n' + \
+        f'TI Aggregation: {type(result.simulation_config.ti_aggregation_strategy).__name__}\n' + \
+        f'Local Slips is {result.simulation_config.local_slips_acts_as.name}\n' + \
+        f'There\'re {result.simulation_config.pre_trusted_peers_count} pre-trusted peers\n' + \
+        f'Peers had initial reputation of {result.simulation_config.initial_reputation}'
     fig.suptitle(title)
 
     def plot_peers_lie_since(ax):
-        if configuration.peers_distribution[PeerBehavior.MALICIOUS_PEER] != 0:
-            ax.axvline(x=configuration.malicious_peers_lie_since, color='black', ls='--', lw=1,
+        if result.simulation_config.peers_distribution[PeerBehavior.MALICIOUS_PEER] != 0:
+            ax.axvline(x=result.simulation_config.malicious_peers_lie_since, color='black', ls='--', lw=1,
                        label='Malicious Peers Lie')
 
     service_trust_plt = axs[0]
@@ -31,7 +33,7 @@ def plot_simulation_result(
     service_trust_plt.set_ylabel('Service Trust')
     service_trust_plt.set_ylim([0, 1])
 
-    service_trust_progress = [peer_trust_history[click] for click in time_scale]
+    service_trust_progress = [result.peer_trust_history[click] for click in time_scale]
 
     other_peers = set()
     for time in service_trust_progress:
@@ -60,7 +62,7 @@ def plot_simulation_result(
     confidence_plt.set_ylabel('Confidence')
     confidence_plt.set_ylim([0, 1])
 
-    target_progress = [targets_history[click] for click in time_scale]
+    target_progress = [result.targets_history[click] for click in time_scale]
     targets = set()
     for time in target_progress:
         targets.update(time.keys())

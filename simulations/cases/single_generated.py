@@ -1,10 +1,11 @@
-from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
+from fides.evaluation.ti_aggregation import WeightedAverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation
 from fides.model.configuration import RecommendationsConfiguration
 from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
 from simulations.peer import PeerBehavior
 from simulations.setup import SimulationConfiguration
+from simulations.storage import store_simulation_result, read_simulation
 from simulations.visualisation import plot_simulation_result
 
 logger = Logger(__name__)
@@ -32,8 +33,8 @@ def run():
         # evaluation_strategy=DistanceBasedTIEvaluation(),
         # evaluation_strategy=ThresholdTIEvaluation(threshold=0.5),
         # evaluation_strategy=EvenTIEvaluation(),
-        ti_aggregation_strategy=AverageConfidenceTIAggregation(),
-        # ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
+        # ti_aggregation_strategy=AverageConfidenceTIAggregation(),
+        ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
         # ti_aggregation_strategy=StdevFromScoreTIAggregation(),
         new_peers_join_between=(0, (10, 50)),
         recommendation_setup=RecommendationsConfiguration(
@@ -47,16 +48,12 @@ def run():
         )
     )
 
-    config, peer_trust_history, targets_history = generate_and_run(simulation_configuration)
-    title = f'Interaction Evaluation: {type(config.interaction_evaluation_strategy).__name__}\n' + \
-            f'TI Aggregation: {type(config.ti_aggregation_strategy).__name__}\n' + \
-            f'Local Slips is {simulation_configuration.local_slips_acts_as.name}\n' + \
-            f'There\'re {simulation_configuration.pre_trusted_peers_count} pre-trusted peers\n' + \
-            f'Peers had initial reputation of {simulation_configuration.initial_reputation}'
+    result = generate_and_run(simulation_configuration)
+    plot_simulation_result(result)
 
-    # store_simulation_result('simulation.json', simulation_configuration, peer_trust_history, targets_history)
-
-    plot_simulation_result(title, simulation_configuration, peer_trust_history, targets_history)
+    store_simulation_result(f'results/{result.simulation_id}.json', result)
+    sim = read_simulation(f'results/{result.simulation_id}.json')
+    plot_simulation_result(sim)
 
 
 if __name__ == '__main__':
