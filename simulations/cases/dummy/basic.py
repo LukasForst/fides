@@ -21,8 +21,10 @@ class TestBasicSimulationWithOneTypeOfPeer(TestCase):
         other_peers = [
             # ConfidentCorrectPeer(PeerInfo("#1", []), sample_base=perfect_behavior),
             # ConfidentCorrectPeer(PeerInfo("#2", []), sample_base=perfect_behavior),
-            ConfidentCorrectPeer(PeerInfo("#1", [])),
-            ConfidentCorrectPeer(PeerInfo("#2", [])),
+            ConfidentCorrectPeer(PeerInfo("#1", []), fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
+            ConfidentCorrectPeer(PeerInfo("#2", []), fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
         ]
         targets = {"google.com": 1, "microsoft.com": 1}
         env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
@@ -45,8 +47,10 @@ class TestBasicSimulationWithOneTypeOfPeer(TestCase):
         fides, stream, ti = get_fides_stream(config=config)
 
         other_peers = [
-            ConfidentCorrectPeer(ppeer),
-            ConfidentCorrectPeer(PeerInfo("#2", [])),
+            ConfidentCorrectPeer(ppeer, fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
+            ConfidentCorrectPeer(PeerInfo("#2", []), fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
         ]
         targets = {"google.com": 1, "microsoft.com": 1}
         env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
@@ -72,10 +76,14 @@ class TestBasicSimulationWithOneTypeOfPeer(TestCase):
         fides, stream, ti = get_fides_stream(config=config, ti_db=ti_db)
 
         other_peers = [
-            ConfidentCorrectPeer(ppeer),
-            ConfidentCorrectPeer(PeerInfo("CORRECT", [])),
-            UncertainPeer(PeerInfo("UNCERTAIN", [])),
-            ConfidentIncorrectPeer(PeerInfo("INCORRECT", [])),
+            ConfidentCorrectPeer(ppeer, fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
+            ConfidentCorrectPeer(PeerInfo("CORRECT", []), fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
+            UncertainPeer(PeerInfo("UNCERTAIN", []), fides.config.service_history_max_size,
+                          fides.config.recommendations.peers_max_count),
+            ConfidentIncorrectPeer(PeerInfo("INCORRECT", []), fides.config.service_history_max_size,
+                                   fides.config.recommendations.peers_max_count),
         ]
         env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
 
@@ -102,8 +110,11 @@ class TestBasicSimulationWithOneTypeOfPeer(TestCase):
         fides, stream, ti = get_fides_stream(config=config, ti_db=ti_db)
 
         other_peers = [
-            ConfidentCorrectPeer(PeerInfo("CORRECT", [])),
-            MaliciousPeer(PeerInfo("MALICIOUS", []), 0, list(targets.keys()), epoch_starts_lying=50),
+            ConfidentCorrectPeer(PeerInfo("CORRECT", []), fides.config.service_history_max_size,
+                                 fides.config.recommendations.peers_max_count),
+            MaliciousPeer(PeerInfo("MALICIOUS", []),
+                          fides.config.service_history_max_size,
+                          fides.config.recommendations.peers_max_count, list(targets.keys()), epoch_starts_lying=50),
         ]
         env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
 

@@ -36,10 +36,14 @@ def plot_correct_malicious_local_compare():
 
     other_peers = [
         # ConfidentCorrectPeer(PeerInfo("PRE-TRUSTED", [])),
-        ConfidentCorrectPeer(PeerInfo("CORRECT", [])),
-        UncertainPeer(PeerInfo("UNCERTAIN", [])),
-        ConfidentIncorrectPeer(PeerInfo("INCORRECT", [])),
-        MaliciousPeer(PeerInfo("MALICIOUS", []), 0, list(targets.keys()), epoch_starts_lying=50),
+        ConfidentCorrectPeer(PeerInfo("CORRECT", []), fides.config.service_history_max_size,
+                             fides.config.recommendations.peers_max_count),
+        UncertainPeer(PeerInfo("UNCERTAIN", []), fides.config.service_history_max_size,
+                      fides.config.recommendations.peers_max_count),
+        ConfidentIncorrectPeer(PeerInfo("INCORRECT", []), fides.config.service_history_max_size,
+                               fides.config.recommendations.peers_max_count),
+        MaliciousPeer(PeerInfo("MALICIOUS", []), fides.config.service_history_max_size,
+                      fides.config.recommendations.peers_max_count, list(targets.keys()), epoch_starts_lying=50),
     ]
     env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
 

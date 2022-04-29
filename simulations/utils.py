@@ -11,13 +11,6 @@ Click = int
 
 
 @dataclass
-class RecommendationsSetup:
-    trusted_peer_threshold: float
-    required_trusted_peers_count: int
-    only_pretrusted: bool
-
-
-@dataclass
 class PreTrustedPeer:
     peer_id: PeerId
     trust: float
@@ -31,7 +24,7 @@ class FidesSetup:
     evaluation_strategy: TIEvaluation
     ti_aggregation_strategy: TIAggregation
 
-    recommendations_setup: Optional[RecommendationsSetup] = None
+    recommendations_setup: Optional[RecommendationsConfiguration] = None
     service_history_max_size: int = 100
 
 
@@ -42,16 +35,14 @@ def build_config(setup: FidesSetup) -> TrustModelConfiguration:
         data_default_level=0,
         initial_reputation=setup.default_reputation,
         service_history_max_size=setup.service_history_max_size,
-        recommendations=RecommendationsConfiguration(
-            enabled=setup.recommendations_setup is not None,
+        recommendations=setup.recommendations_setup if setup.recommendations_setup else RecommendationsConfiguration(
+            enabled=False,
             only_connected=False,
-            only_preconfigured=setup.recommendations_setup.only_pretrusted if setup.recommendations_setup else False,
-            required_trusted_peers_count=setup.recommendations_setup.required_trusted_peers_count
-            if setup.recommendations_setup else 0,
-            trusted_peer_threshold=setup.recommendations_setup.trusted_peer_threshold
-            if setup.recommendations_setup else 0,
-            peers_max_count=100000,
-            history_max_size=setup.service_history_max_size
+            only_preconfigured=False,
+            required_trusted_peers_count=0,
+            trusted_peer_threshold=0,
+            peers_max_count=1000,
+            history_max_size=1000
         ),
         alert_trust_from_unknown=1.0,
         trusted_peers=[TrustedEntity(p.peer_id, f"Pre-trusted peer {p.peer_id}", p.trust, p.enforce_trust, 1.0)

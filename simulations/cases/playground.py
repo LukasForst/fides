@@ -15,17 +15,17 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [10]
-    pre_trusted_peers = [0.2]
+    pre_trusted_peers = [0.0]
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
     peers_distribution = [
         # CC,  UP,  CI,  MA
-        [0.4, 0.2, 0.0, 0.4]
+        [0.7, 0.2, 0.1, 0.0]
     ]
 
     targets = [2]
     malicious_targets = [0.5]
     malicious_peers_lie_abouts = [1.0]
-    gaining_trust_periods = [50]
+    gaining_trust_periods = [100]
 
     simulation_lengths = [200]
     service_history_sizes = [100]
@@ -95,14 +95,14 @@ def execute_configuration(configuration: SimulationConfiguration):
             f'There\'re {configuration.pre_trusted_peers_count} pre-trusted peers\n' + \
             f'Peers had initial reputation of {configuration.initial_reputation}'
 
-    plot_simulation_result(title, peer_trust_history, targets_history)
+    plot_simulation_result(title, configuration, peer_trust_history, targets_history)
 
 
 if __name__ == '__main__':
     sims = sample_simulation_definitions()
     logger.info(f"Number of simulations: {len(sims)}")
-    # sims = [s for s in sims if s.initial_reputation == 0.5]
-    # logger.info(f"Number of filtered simulations: {len(sims)}")
+    sims = [s for s in sims if s.initial_reputation == 0.5]
+    logger.info(f"Number of filtered simulations: {len(sims)}")
 
     random.shuffle(sims)
     for simulation in sims:

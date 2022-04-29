@@ -23,7 +23,10 @@ def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[
     malicious_lie_about = list(targets.keys())
     random.shuffle(malicious_lie_about)
     malicious_lie_about = malicious_lie_about[: int(len(targets) * simulation_config.malicious_peers_lie_about_targets)]
+
     other_peers = generate_peers(
+        service_history_size=simulation_config.service_history_size,
+        recommendation_history_size=simulation_config.service_history_size,
         distribution=simulation_config.peers_distribution,
         malicious_lie_about=malicious_lie_about,
         malicious_start_lie_at=simulation_config.malicious_peers_lie_since
@@ -40,8 +43,18 @@ def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[
                           ][:simulation_config.pre_trusted_peers_count],
         evaluation_strategy=simulation_config.evaluation_strategy,
         ti_aggregation_strategy=simulation_config.ti_aggregation_strategy,
-        service_history_max_size=simulation_config.service_history_size
+        service_history_max_size=simulation_config.service_history_size,
+        recommendations_setup=simulation_config.recommendation_setup
     ))
+
+    random.shuffle(other_peers)
+    if simulation_config.new_peers_join_between:
+        late_joining_peers_count, (start_joining, stop_joining) = simulation_config.new_peers_join_between
+        pretrusted_peers_ids = {p.id for p in config.trusted_peers}
+        late_joining_peers = [p for p in other_peers
+                              if p.peer_info.id not in pretrusted_peers_ids][:late_joining_peers_count]
+        for peer in late_joining_peers:
+            peer.network_joining_epoch = random.randint(start_joining, stop_joining)
 
     peer_trust_history, targets_history = run_simulation(
         config=config,
@@ -72,8 +85,9 @@ def run_simulation(
         targets_history[click] = {}
 
         for peer in other_peers:
-            peer_trust_history[click][peer.peer_info.id] = \
-                fides.trust_db.get_peer_trust_data(peer.peer_info.id).service_trust
+            maybe_trust = fides.trust_db.get_peer_trust_data(peer.peer_info.id)
+
+            peer_trust_history[click][peer.peer_info.id] = maybe_trust.service_trust if maybe_trust else None
 
         for target in targets.keys():
             targets_history[click][target] = ti[target]

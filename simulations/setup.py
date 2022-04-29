@@ -1,8 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Tuple, Optional
 
 from fides.evaluation.ti_aggregation import TIAggregation
 from fides.evaluation.ti_evaluation import TIEvaluation
+from fides.model.configuration import RecommendationsConfiguration
 from simulations.peer import PeerBehavior
 from simulations.utils import Click
 
@@ -21,3 +22,5 @@ class SimulationConfiguration:
     evaluation_strategy: TIEvaluation
     ti_aggregation_strategy: TIAggregation
     local_slips_acts_as: PeerBehavior
+    new_peers_join_between: Optional[Tuple[int, Tuple[Click, Click]]] = None
+    recommendation_setup: Optional[RecommendationsConfiguration] = None

@@ -19,6 +19,8 @@ def generate_targets(being: int, malicious: int) -> Dict[Target, Score]:
 
 
 def generate_peers(
+        service_history_size: int,
+        recommendation_history_size: int,
         distribution: Dict[PeerBehavior, int],
         malicious_lie_about: List[Target],
         malicious_start_lie_at: Click
@@ -26,17 +28,22 @@ def generate_peers(
     peers = []
 
     for idx, (peer_type, count) in enumerate(distribution.items()):
-
         if peer_type == PeerBehavior.CONFIDENT_CORRECT:
-            p = [ConfidentCorrectPeer(PeerInfo(f"CONFIDENT_CORRECT #{i}", [])) for i in range(count)]
+            p = [ConfidentCorrectPeer(PeerInfo(f"CONFIDENT_CORRECT #{i}", []), service_history_size,
+                                      recommendation_history_size)
+                 for i in range(count)]
         elif peer_type == PeerBehavior.UNCERTAIN_PEER:
-            p = [UncertainPeer(PeerInfo(f" UNCERTAIN_PEER #{i}", [])) for i in range(count)]
+            p = [UncertainPeer(PeerInfo(f" UNCERTAIN_PEER #{i}", []), service_history_size, recommendation_history_size)
+                 for i in range(count)]
         elif peer_type == PeerBehavior.CONFIDENT_INCORRECT:
-            p = [ConfidentIncorrectPeer(PeerInfo(f"CONFIDENT_INCORRECT #{i}", [])) for i in range(count)]
+            p = [ConfidentIncorrectPeer(PeerInfo(f"CONFIDENT_INCORRECT #{i}", []), service_history_size,
+                                        recommendation_history_size)
+                 for i in range(count)]
         elif peer_type == PeerBehavior.MALICIOUS_PEER:
             p = [MaliciousPeer(
                 PeerInfo(f"MALICIOUS_PEER #{i}", []),
-                0, malicious_lie_about, malicious_start_lie_at) for i in range(count)]
+                service_history_size, recommendation_history_size, malicious_lie_about, malicious_start_lie_at)
+                for i in range(count)]
         else:
             raise ValueError()
 

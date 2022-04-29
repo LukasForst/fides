@@ -4,11 +4,14 @@ import matplotlib.pyplot as plt
 
 from fides.model.aliases import Target, PeerId
 from fides.model.threat_intelligence import SlipsThreatIntelligence
+from simulations.peer import PeerBehavior
+from simulations.setup import SimulationConfiguration
 from simulations.utils import Click
 
 
 def plot_simulation_result(
         title: str,
+        configuration: SimulationConfiguration,
         peer_trust_history: Dict[Click, Dict[PeerId, float]],
         targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]):
     time_scale = list(peer_trust_history.keys())
@@ -16,7 +19,13 @@ def plot_simulation_result(
     fig, axs = plt.subplots(3, 1, figsize=(10, 15))
     fig.suptitle(title)
 
+    def plot_peers_lie_since(ax):
+        if configuration.peers_distribution[PeerBehavior.MALICIOUS_PEER] != 0:
+            ax.axvline(x=configuration.malicious_peers_lie_since, color='black', ls='--', lw=1,
+                       label='Malicious Peers Lie')
+
     service_trust_plt = axs[0]
+    plot_peers_lie_since(service_trust_plt)
     service_trust_plt.set_title('Service Trust')
     service_trust_plt.set_xlabel('Clicks')
     service_trust_plt.set_ylabel('Service Trust')
@@ -36,6 +45,7 @@ def plot_simulation_result(
     service_trust_plt.legend(loc=(1.04, 0), borderaxespad=0)
 
     score_plt = axs[1]
+    plot_peers_lie_since(score_plt)
     score_plt.set_title('Target Score')
     score_plt.set_xlabel('Clicks')
     score_plt.set_ylabel('Score')
@@ -44,6 +54,7 @@ def plot_simulation_result(
     score_plt.axhline(0.0, color='red', linewidth=5.0)
 
     confidence_plt = axs[2]
+    plot_peers_lie_since(confidence_plt)
     confidence_plt.set_title('Target Confidence')
     confidence_plt.set_xlabel('Clicks')
     confidence_plt.set_ylabel('Confidence')
@@ -63,5 +74,10 @@ def plot_simulation_result(
     score_plt.legend(loc=(1.04, 0), borderaxespad=0)
     confidence_plt.legend(loc=(1.04, 0), borderaxespad=0)
 
-    plt.subplots_adjust(right=0.7)
+    plt.subplots_adjust(left=0.1,
+                        right=0.7,
+                        top=0.9,
+                        bottom=0.1,
+                        wspace=0.4,
+                        hspace=0.4)
     plt.show()

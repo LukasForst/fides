@@ -35,7 +35,7 @@ class RecommendationProtocol(Protocol):
             return
 
         connected_peers = connected_peers if connected_peers is not None else self.__trust_db.get_connected_peers()
-        recipients = self.__get_recommendation_request_recipients(connected_peers)
+        recipients = self.__get_recommendation_request_recipients(peer, connected_peers)
         if recipients:
             self.__bridge.send_recommendation_request(recipients=recipients, peer=peer.id)
         else:
@@ -114,7 +114,9 @@ class RecommendationProtocol(Protocol):
                recommendation.recommendation == 0 and \
                recommendation.initial_reputation_provided_by_count == 0
 
-    def __get_recommendation_request_recipients(self, connected_peers: List[PeerInfo]) -> List[PeerId]:
+    def __get_recommendation_request_recipients(self,
+                                                subject: PeerInfo,
+                                                connected_peers: List[PeerInfo]) -> List[PeerId]:
         recommenders: List[PeerInfo] = []
         require_trusted_peer_count = self.__rec_conf.required_trusted_peers_count
         trusted_peer_threshold = self.__rec_conf.trusted_peer_threshold
@@ -151,6 +153,7 @@ class RecommendationProtocol(Protocol):
 
         # now we need to get all trust data and sort them by recommendation trust
         candidates = list(self.__trust_db.get_peers_trust_data(recommenders).values())
+        candidates = [c for c in candidates if c.peer_id != subject.id]
         # check if we can proceed
         if len(candidates) == 0 or len(candidates) < require_trusted_peer_count:
             logger.debug(
