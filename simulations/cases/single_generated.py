@@ -12,13 +12,13 @@ logger = Logger(__name__)
 
 def run():
     simulation_configuration = SimulationConfiguration(
-        being_targets=1,
+        benign_targets=1,
         malicious_targets=1,
         malicious_peers_lie_about_targets=1.0,
         peers_distribution={
             PeerBehavior.CONFIDENT_CORRECT: 5,
             PeerBehavior.UNCERTAIN_PEER: 5,
-            PeerBehavior.CONFIDENT_INCORRECT: 1,
+            PeerBehavior.CONFIDENT_INCORRECT: 0,
             PeerBehavior.MALICIOUS_PEER: 0,
         },
         simulation_length=200,
@@ -35,7 +35,7 @@ def run():
         ti_aggregation_strategy=AverageConfidenceTIAggregation(),
         # ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
         # ti_aggregation_strategy=StdevFromScoreTIAggregation(),
-        new_peers_join_between=(2, (10, 50)),
+        new_peers_join_between=(0, (10, 50)),
         recommendation_setup=RecommendationsConfiguration(
             enabled=False,
             only_connected=False,
@@ -53,6 +53,8 @@ def run():
             f'Local Slips is {simulation_configuration.local_slips_acts_as.name}\n' + \
             f'There\'re {simulation_configuration.pre_trusted_peers_count} pre-trusted peers\n' + \
             f'Peers had initial reputation of {simulation_configuration.initial_reputation}'
+
+    # store_simulation_result('simulation.json', simulation_configuration, peer_trust_history, targets_history)
 
     plot_simulation_result(title, simulation_configuration, peer_trust_history, targets_history)
 

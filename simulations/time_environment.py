@@ -18,12 +18,14 @@ class TimeEnvironment:
                  fides: Fides,
                  fides_stream: List[NetworkMessage],
                  other_peers: List[Peer],
-                 targets: Dict[Target, Score]
+                 targets: Dict[Target, Score],
+                 enable_messages_processing: bool = False
                  ) -> None:
         self._fides = fides
         self._fides_stream = fides_stream
         self._other_peers = other_peers
         self._targets = targets
+        self._enable_messages_processing = enable_messages_processing
 
     def run(self, simulation_clicks: Click, epoch_callback: Optional[Callable[[Click], None]] = None):
         for epoch in range(simulation_clicks):

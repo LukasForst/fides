@@ -78,7 +78,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                                                 for initial_reputation in initial_reputations:
                                                     for local_slips_acts_as in local_slips_acts_ass:
                                                         simulation_configuration = SimulationConfiguration(
-                                                            being_targets=being_targets_count,
+                                                            benign_targets=being_targets_count,
                                                             malicious_targets=malicious_targets_count,
                                                             malicious_peers_lie_about_targets=malicious_peers_lie_about,
                                                             peers_distribution=p_distribution,

@@ -33,7 +33,7 @@ def generate_peers(
                                       recommendation_history_size)
                  for i in range(count)]
         elif peer_type == PeerBehavior.UNCERTAIN_PEER:
-            p = [UncertainPeer(PeerInfo(f" UNCERTAIN_PEER #{i}", []), service_history_size, recommendation_history_size)
+            p = [UncertainPeer(PeerInfo(f"UNCERTAIN_PEER #{i}", []), service_history_size, recommendation_history_size)
                  for i in range(count)]
         elif peer_type == PeerBehavior.CONFIDENT_INCORRECT:
             p = [ConfidentIncorrectPeer(PeerInfo(f"CONFIDENT_INCORRECT #{i}", []), service_history_size,

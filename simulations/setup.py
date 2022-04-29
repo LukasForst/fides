@@ -10,7 +10,7 @@ from simulations.utils import Click
 
 @dataclass
 class SimulationConfiguration:
-    being_targets: int
+    benign_targets: int
     malicious_targets: int
     peers_distribution: Dict[PeerBehavior, int]
     malicious_peers_lie_about_targets: float  # percentage

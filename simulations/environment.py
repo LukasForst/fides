@@ -19,7 +19,7 @@ logger = Logger(__name__)
 def generate_and_run(simulation_config: SimulationConfiguration) -> Tuple[
     TrustModelConfiguration, Dict[Click, Dict[PeerId, float]], Dict[Click, Dict[Target, SlipsThreatIntelligence]]
 ]:
-    targets = generate_targets(being=simulation_config.being_targets, malicious=simulation_config.malicious_targets)
+    targets = generate_targets(being=simulation_config.benign_targets, malicious=simulation_config.malicious_targets)
     malicious_lie_about = list(targets.keys())
     random.shuffle(malicious_lie_about)
     malicious_lie_about = malicious_lie_about[: int(len(targets) * simulation_config.malicious_peers_lie_about_targets)]
@@ -75,7 +75,8 @@ def run_simulation(
 ) -> (Dict[Click, Dict[PeerId, float]], Dict[Click, Dict[Target, SlipsThreatIntelligence]]):
     fides, stream, ti = get_fides_stream(config=config, ti_db=local_ti_db)
 
-    env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets)
+    env = TimeEnvironment(fides=fides, fides_stream=stream, other_peers=other_peers, targets=targets,
+                          enable_messages_processing=config.recommendations.enabled)
 
     peer_trust_history: Dict[Click, Dict[PeerId, float]] = {}
     targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]] = {}

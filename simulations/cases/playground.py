@@ -19,7 +19,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
     peers_distribution = [
         # CC,  UP,  CI,  MA
-        [0.7, 0.2, 0.1, 0.0]
+        [0.7, 0.2, 0.1, 0.0],
+        [0.2, 0.2, 0.1, 0.5]
     ]
 
     targets = [2]
@@ -76,7 +77,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                                                 for initial_reputation in initial_reputations:
                                                     for local_slips_acts_as in local_slips_acts_ass:
                                                         simulation_configuration = SimulationConfiguration(
-                                                            being_targets=being_targets_count,
+                                                            benign_targets=being_targets_count,
                                                             malicious_targets=malicious_targets_count,
                                                             malicious_peers_lie_about_targets=malicious_peers_lie_about,
                                                             peers_distribution=p_distribution,
