@@ -1,3 +1,5 @@
+import random
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
@@ -7,12 +9,14 @@ from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
 from simulations.peer import PeerBehavior
 from simulations.setup import SimulationConfiguration
-from simulations.visualisation import plot_simulation_result
+from simulations.storage import store_simulation_result
 
 logger = Logger(__name__)
 
 
 def sample_peers_distribution() -> List[List[float]]:
+    # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
+
     sample = {
         'cc': [0.25, 0.5, 0.75],
         'up': [0.25, 0.5, 0.75],
@@ -44,9 +48,8 @@ def sample_peers_distribution() -> List[List[float]]:
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
-    peers_count = [10]
-    pre_trusted_peers = [0.0, 0.25, 0.5]
-    # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
+    peers_count = [8]
+    pre_trusted_peers = [0.0, 0.25, 0.5, 0.75]
 
     # CC,  UP,  CI,  MA
     peers_distribution = sample_peers_distribution()
@@ -57,7 +60,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     gaining_trust_periods = [50]
 
     simulation_lengths = [200]
-    service_history_sizes = [100]
+    service_history_sizes = [100, 200]
     evaluation_strategies = [
         MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
@@ -69,7 +72,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         StdevFromScoreTIAggregation()
     ]
     initial_reputations = [0.0, 0.5, 0.95]
-    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT, PeerBehavior.UNCERTAIN_PEER]
+    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT, PeerBehavior.UNCERTAIN_PEER,
+                            PeerBehavior.CONFIDENT_INCORRECT]
 
     ns = len(peers_count) * len(peers_distribution) * len(pre_trusted_peers) * len(targets) * \
          len(malicious_targets) * len(malicious_peers_lie_abouts) * \
@@ -123,14 +127,18 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
 
 def execute_configuration(configuration: SimulationConfiguration):
-    result = generate_and_run(configuration)
-    plot_simulation_result(result)
+    try:
+        result = generate_and_run(configuration)
+        store_simulation_result(f'results/{result.simulation_id}.json', result)
+    except Exception as ex:
+        logger.error("error during execution", ex)
 
 
 if __name__ == '__main__':
     sims = sample_simulation_definitions()
+    random.shuffle(sims)
+
     logger.info(f"Number of simulations: {len(sims)}")
 
-    # random.shuffle(sims)
-    # for simulation in sims:
-    #     execute_configuration(simulation)
+    with ThreadPoolExecutor() as executor:
+        executor.map(execute_configuration, sims)
