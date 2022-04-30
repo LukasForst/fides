@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -52,3 +53,23 @@ def build_config(setup: FidesSetup) -> TrustModelConfiguration:
         interaction_evaluation_strategy=setup.evaluation_strategy,
         ti_aggregation_strategy=setup.ti_aggregation_strategy
     )
+
+
+def argmin(arr, key):
+    selected_idx = 0
+    curr_min_value = math.inf
+    for idx, el in enumerate(arr):
+        val = key(el)
+        if val < curr_min_value:
+            selected_idx, curr_min_value = idx, val
+    return arr[selected_idx]
+
+
+def argmax(arr, key):
+    selected_idx = 0
+    curr_min_value = -math.inf
+    for idx, el in enumerate(arr):
+        val = key(el)
+        if val > curr_min_value:
+            selected_idx, curr_min_value = idx, val
+    return arr[selected_idx]

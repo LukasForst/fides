@@ -27,9 +27,11 @@ def store_simulation_result(
         }
 
     data = {
+        'id': result.simulation_id,
         'configuration': _serialize_configuration(result.simulation_config),
         'data': history_data,
-        'labels': result.targets_labels
+        'targets_labels': result.targets_labels,
+        'peers_labels': {peer_id: behavior.name for peer_id, behavior in result.peers_labels.items()}
     }
     with open(file_name, "w+") as f:
         f.write(json.dumps(data))
@@ -70,7 +72,7 @@ def read_simulation(file_name: str) -> SimulationResult:
                                for target, ti in events['targets'].items()}
 
     return SimulationResult(
-        simulation_id=file_name.replace('.json', ''),
+        simulation_id=file_name.split('/')[-1].replace('.json', ''),
         simulation_config=SimulationConfiguration(
             benign_targets=data['configuration']['benign_targets'],
             malicious_targets=data['configuration']['malicious_targets'],
@@ -91,5 +93,6 @@ def read_simulation(file_name: str) -> SimulationResult:
         ),
         peer_trust_history=peer_trust_history,
         targets_history=targets,
-        targets_labels=data['labels']
+        targets_labels=data['targets_labels'],
+        peers_labels={peer_id: PeerBehavior[behavior_name] for peer_id, behavior_name in data['peers_labels'].items()}
     )

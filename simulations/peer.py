@@ -92,7 +92,7 @@ class Peer:
 
         self._service_history_size = service_history_size
         self._max_recommenders = max_recommenders
-        self._sample_base = sample_base
+        self.sample_base = sample_base
 
     def provide_ti(self, epoch: Click, target: Target, baseline: float) -> Optional[ThreatIntelligence]:
         if epoch >= self.network_joining_epoch:
@@ -137,8 +137,8 @@ class ConfidentCorrectPeer(Peer):
                          PeerBehavior.CONFIDENT_CORRECT, sample_base)
 
     def _provide_ti(self, epoch: Click, target: Target, baseline: float) -> ThreatIntelligence:
-        score = self._sample_base.sample_score(baseline)
-        confidence = self._sample_base.sample_confidence()
+        score = self.sample_base.sample_score(baseline)
+        confidence = self.sample_base.sample_confidence()
         return ThreatIntelligence(score=score, confidence=confidence)
 
     def _provide_recommendation(self,
@@ -168,8 +168,8 @@ class UncertainPeer(Peer):
                          PeerBehavior.UNCERTAIN_PEER, sample_base)
 
     def _provide_ti(self, epoch: Click, target: Target, baseline: float) -> ThreatIntelligence:
-        score = self._sample_base.sample_score()
-        confidence = self._sample_base.sample_confidence()
+        score = self.sample_base.sample_score()
+        confidence = self.sample_base.sample_confidence()
         return ThreatIntelligence(score=score, confidence=confidence)
 
     def _provide_recommendation(self,
@@ -198,8 +198,8 @@ class ConfidentIncorrectPeer(Peer):
                          PeerBehavior.CONFIDENT_INCORRECT, sample_base)
 
     def _provide_ti(self, epoch: Click, target: Target, baseline: float) -> ThreatIntelligence:
-        score = self._sample_base.sample_score(-baseline)
-        confidence = self._sample_base.sample_confidence()
+        score = self.sample_base.sample_score(-baseline)
+        confidence = self.sample_base.sample_confidence()
         return ThreatIntelligence(score=score, confidence=confidence)
 
     def _provide_recommendation(self,
@@ -237,8 +237,8 @@ class MaliciousPeer(Peer):
         if epoch >= self._epoch_starts_lying and target in self._lying_about_targets:
             shift = -baseline
 
-        score = self._sample_base.sample_score(shift)
-        confidence = self._sample_base.sample_confidence()
+        score = self.sample_base.sample_score(shift)
+        confidence = self.sample_base.sample_confidence()
         return ThreatIntelligence(score=score, confidence=confidence)
 
     def _provide_recommendation(self,

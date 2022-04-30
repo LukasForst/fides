@@ -25,6 +25,7 @@ class SimulationResult:
     peer_trust_history: Dict[Click, Dict[PeerId, float]]
     targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]
     targets_labels: Dict[Target, Score]
+    peers_labels: Dict[PeerId, PeerBehavior]
 
 
 def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationResult:
@@ -72,7 +73,9 @@ def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationRe
         other_peers=other_peers,
         simulation_time=simulation_config.simulation_length
     )
-    return SimulationResult(str(uuid.uuid4()), simulation_config, peer_trust_history, targets_history, targets)
+    peers_labels = {p.peer_info.id: p.label for p in other_peers}
+    return SimulationResult(str(uuid.uuid4()), simulation_config, peer_trust_history, targets_history, targets,
+                            peers_labels)
 
 
 def run_simulation(
