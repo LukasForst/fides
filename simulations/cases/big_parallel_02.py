@@ -1,5 +1,6 @@
+import concurrent
 import random
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from typing import List, Tuple
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
@@ -153,5 +154,5 @@ if __name__ == '__main__':
     logger.warn(f"Number of simulations: {len(sims)}")
     sims_number = len(sims)
     enumerated_sims = [(idx, sim) for idx, sim in enumerate(sims)]
-    with ThreadPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(execute_configuration, enumerated_sims)

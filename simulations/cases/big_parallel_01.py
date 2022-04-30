@@ -1,3 +1,4 @@
+import concurrent
 import random
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
@@ -140,5 +141,5 @@ if __name__ == '__main__':
 
     logger.info(f"Number of simulations: {len(sims)}")
 
-    with ThreadPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(execute_configuration, sims)
