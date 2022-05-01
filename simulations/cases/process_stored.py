@@ -41,7 +41,7 @@ def process(directory: str):
 
 
 if __name__ == '__main__':
-    process('../../../simulation-results-02')
+    process('../../../simulation-results-04')
     # s = read_simulation('results/64e25246-df3e-4123-8848-baa7dd61106a.json')
     # plot_simulation_result(s)
     #

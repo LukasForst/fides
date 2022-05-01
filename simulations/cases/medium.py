@@ -65,6 +65,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                 p_distribution[PeerBehavior.CONFIDENT_INCORRECT] - \
                 p_distribution[PeerBehavior.MALICIOUS_PEER]
             for pre_trusted_peer in pre_trusted_peers:
+                if pre_trusted_peer > distribution[0]:
+                    continue
                 for target in targets:
                     for malicious_target in malicious_targets:
                         malicious_targets_count = int(target * malicious_target)

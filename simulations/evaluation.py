@@ -17,6 +17,7 @@ class SimulationEvaluation:
 
     avg_target_diff: float
     avg_peers_diff: float
+    avg_accumulated_trust: float
 
     evaluation: float
 
@@ -46,15 +47,19 @@ def evaluate_simulation(result: SimulationResult, weight: float = 0.7) -> Simula
     peer_diffs = [abs(peer_label_to_mean_trust(result.peers_labels[peer]) - trust)
                   for peer, trust in result.peer_trust_history[last_click].items()]
 
+    accumulated_peer_trust = [trust for _, trust in result.peer_trust_history[last_click].items()]
+
     avg_target_diff = sum(target_diffs) / len(target_diffs)
     avg_peers_diff = sum(peer_diffs) / len(peer_diffs)
+    avg_accumulated_trust = sum(accumulated_peer_trust) / len(accumulated_peer_trust)
     return SimulationEvaluation(
         simulation_id=result.simulation_id,
         environment_group=compute_group(result),
         setup_label=compute_label(result),
         avg_target_diff=avg_target_diff,
         avg_peers_diff=avg_peers_diff,
-        evaluation=weight * avg_target_diff + (1 - weight) * avg_peers_diff
+        evaluation=weight * avg_target_diff + (1 - weight) * avg_peers_diff,
+        avg_accumulated_trust=avg_accumulated_trust
     )
 
 
@@ -82,6 +87,7 @@ def compute_label(result: SimulationResult) -> str:
     return f'{e}|{a}|{rep}'
 
 
+# noinspection PyTypeChecker
 def matrix_to_csv(file_name: str, matrix: SimulationEvaluationMatrix):
     all_environment_groups = list(matrix.keys())
     all_setup_labels = list(matrix[all_environment_groups[0]].keys())
@@ -89,20 +95,29 @@ def matrix_to_csv(file_name: str, matrix: SimulationEvaluationMatrix):
     with open(file_name, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(
-            ['environment'] + all_setup_labels + ['best', 'best_avg_target_diff', 'best_avg_peers_diff', 'best_id'])
+            ['hash', 'pretrusted_ratio', 'behavior_distribution', 'local_slips'] + \
+            all_setup_labels + \
+            ['best_hash', 'best_evaluation_strategy', 'best_ti_aggregation', 'best_initial_reputation',
+             'best_avg_target_diff', 'avg_peers_diff', 'avg_accumulated_trust', 'best_id'])
+
         for group in all_environment_groups:
             best_eval, best_label = math.inf, None
-            row = [group]
+            row = [group] + group.split('|')
             for label in all_setup_labels:
                 val = matrix[group][label]
-                row.extend([val.evaluation])
+                row.append(val.evaluation)
 
                 if val.evaluation < best_eval:
                     best_eval, best_label = val.evaluation, label
 
             best_result = matrix[group][best_label]
+            evaluation_strategy, ti_aggregation, initial_reputation = best_result.setup_label.split('|')
             row.extend([best_result.setup_label,
+                        evaluation_strategy,
+                        ti_aggregation,
+                        initial_reputation,
                         best_result.avg_target_diff,
                         best_result.avg_peers_diff,
+                        best_result.avg_accumulated_trust,
                         best_result.simulation_id])
             writer.writerow(row)
