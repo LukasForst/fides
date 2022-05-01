@@ -81,7 +81,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
          len(gaining_trust_periods) * len(simulation_lengths) * len(service_history_sizes) * \
          len(evaluation_strategies) * len(ti_aggregation_strategies) * \
          len(initial_reputations) * len(local_slips_acts_ass)
-    logger.info(f'Number of simulations: {ns}')
+    logger.warn(f'Number of simulations: {ns}')
 
     simulations = []
     for peer_count in peers_count:
@@ -97,6 +97,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                 p_distribution[PeerBehavior.CONFIDENT_INCORRECT] - \
                 p_distribution[PeerBehavior.MALICIOUS_PEER]
             for pre_trusted_peer in pre_trusted_peers:
+                if pre_trusted_peer < distribution[0]:
+                    continue
                 for target in targets:
                     for malicious_target in malicious_targets:
                         malicious_targets_count = int(target * malicious_target)

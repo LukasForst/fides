@@ -1,6 +1,6 @@
 import concurrent
 import random
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from typing import List, Tuple
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
@@ -13,37 +13,40 @@ from simulations.setup import SimulationConfiguration
 from simulations.storage import store_simulation_result
 
 logger = Logger(__name__)
-
 sims_number = 0
+
+
+def append_if_possible(row, value) -> bool:
+    if sum(row) + value <= 1:
+        row.append(value)
+        return True
+    else:
+        return False
 
 
 def sample_peers_distribution() -> List[List[float]]:
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
 
     sample = {
-        'cc': [0, 0.25, 0.5, 0.75],
-        'up': [0.25, 0.5, 0.75],
-        'ci': [0.25, 0.5, 0.75],
-        'ma': [0.25, 0.5, 0.75],
+        'cc': [0.0, 0.25, 0.5, 0.75],
+        'up': [0.0, 0.25, 0.5, 0.75],
+        'ci': [0.0, 0.25, 0.5, 0.75],
+        'ma': [0.0, 0.25, 0.5, 0.75],
     }
     data = []
     for cc in sample['cc']:
         row = [cc]
         for up in sample['up']:
-            row.append(up if sum(row) + up <= 1 else 0)
+            if not append_if_possible(row, up):
+                continue
             for ci in sample['ci']:
-                row.append(ci if sum(row) + ci <= 1 else 0)
+                if not append_if_possible(row, ci):
+                    continue
                 for ma in sample['ma']:
+                    if not append_if_possible(row, ma):
+                        continue
                     if sum(row) == 1:
-                        row.append(0)
-                    elif sum(row) + ma == 1:
-                        row.append(ma)
-                    elif sum(row) + ma < 1:
-                        continue
-                    elif sum(row) + ma > 1:
-                        continue
-
-                    data.append(row)
+                        data.append(row)
                     row = row[:-1]
                 row = row[:-1]
             row = row[:-1]
@@ -51,7 +54,7 @@ def sample_peers_distribution() -> List[List[float]]:
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
-    peers_count = [8, 16]
+    peers_count = [8]
     pre_trusted_peers = [0.0, 0.25, 0.5, 0.75]
 
     # CC,  UP,  CI,  MA
@@ -59,11 +62,11 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
     targets = [2]
     malicious_targets = [0.5]
-    malicious_peers_lie_abouts = [0.5, 1.0]
-    gaining_trust_periods = [50, 100]
+    malicious_peers_lie_abouts = [1.0]
+    gaining_trust_periods = [50]
 
     simulation_lengths = [200]
-    service_history_sizes = [100, 200]
+    service_history_sizes = [100]
     evaluation_strategies = [
         MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
@@ -82,7 +85,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
          len(gaining_trust_periods) * len(simulation_lengths) * len(service_history_sizes) * \
          len(evaluation_strategies) * len(ti_aggregation_strategies) * \
          len(initial_reputations) * len(local_slips_acts_ass)
-    logger.warn(f'Number of simulations: {ns}')
+    logger.warn(f'Original number of combinations: {ns}')
 
     simulations = []
     for peer_count in peers_count:
@@ -130,8 +133,14 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     return simulations
 
 
+def log_callback(level: str, msg: str):
+    if level in {'ERROR', 'WARN'}:
+        print(f'{level}: {msg}\n')
+
+
 def execute_configuration(i: Tuple[int, SimulationConfiguration]):
     try:
+        LoggerPrintCallbacks[0] = log_callback
         idx, configuration = i
         logger.warn(f'#{idx}/{sims_number} - executing')
         result = generate_and_run(configuration)
@@ -141,19 +150,14 @@ def execute_configuration(i: Tuple[int, SimulationConfiguration]):
         logger.error("error during execution", ex)
 
 
-def log_callback(level: str, msg: str):
-    if level in {'ERROR', 'WARN'}:
-        print(f'{level}: {msg}\n')
-
-
 if __name__ == '__main__':
-    LoggerPrintCallbacks[0] = log_callback
-
     sims = sample_simulation_definitions()
     random.shuffle(sims)
 
-    logger.warn(f"Number of simulations: {len(sims)}")
+    logger.warn(f"Generated number of simulations: {len(sims)}")
     sims_number = len(sims)
     enumerated_sims = [(idx, sim) for idx, sim in enumerate(sims)]
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(execute_configuration, enumerated_sims)
+
+    logger.warn("Simulations done")
