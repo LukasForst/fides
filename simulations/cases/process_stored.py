@@ -8,6 +8,7 @@ from fides.utils.logger import Logger
 from simulations.evaluation import SimulationEvaluation, evaluate_simulation
 from simulations.storage import read_simulation
 from simulations.utils import argmin, argmax
+from simulations.visualisation import plot_simulation_result
 
 logger = Logger(__name__)
 
@@ -38,13 +39,13 @@ def process(directory: str):
 
     for group_key, data in grouped.items():
         smallest_target_diff: SimulationEvaluation = argmin(data, lambda x: x.accumulated_target_diff)
+        biggest_target_diff: SimulationEvaluation = argmax(data, lambda x: x.accumulated_target_diff)
         smallest_peers_diff: SimulationEvaluation = argmin(data, lambda x: x.accumulated_peers_diff)
         max_accumulated_trust: SimulationEvaluation = argmax(data, lambda x: x.accumulated_peer_trust)
         logger.info(
             f'Group: {group_key} '
-            f'Target: {smallest_target_diff.accumulated_target_diff} '
-            f'Peers: {smallest_peers_diff.accumulated_peers_diff} '
-            f'Same: {smallest_target_diff.simulation_id == smallest_peers_diff.simulation_id}'
+            f'Best: {smallest_target_diff.simulation_id} '
+            f'Worst: {biggest_target_diff.simulation_id}'
         )
 
     # s = read_simulation(join(directory, f'{m_el}.json'))
@@ -61,4 +62,9 @@ def group_simulations_per_group(data: List[SimulationEvaluation]) -> Dict[str, L
 
 
 if __name__ == '__main__':
-    process('results/')
+    # process('results/')
+    s = read_simulation('results/64e25246-df3e-4123-8848-baa7dd61106a.json')
+    plot_simulation_result(s)
+
+    s = read_simulation('results/78373f0a-da1d-4505-877e-03c6e5a14177.json')
+    plot_simulation_result(s)

@@ -4,7 +4,7 @@ from concurrent.futures import ProcessPoolExecutor
 from typing import List, Tuple
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
-    WeightedAverageConfidenceTIAggregation, StdevFromScoreTIAggregation
+    WeightedAverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
 from fides.utils.logger import Logger, LoggerPrintCallbacks
 from simulations.environment import generate_and_run
@@ -60,7 +60,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     targets = [2]
     malicious_targets = [0.5]
     malicious_peers_lie_abouts = [0.5, 1.0]
-    gaining_trust_periods = [50]
+    gaining_trust_periods = [50, 100]
 
     simulation_lengths = [200]
     service_history_sizes = [100, 200]
@@ -72,18 +72,17 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
         WeightedAverageConfidenceTIAggregation(),
-        StdevFromScoreTIAggregation()
     ]
     initial_reputations = [0.0, 0.5, 0.95]
-    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT, PeerBehavior.UNCERTAIN_PEER,
-                            PeerBehavior.CONFIDENT_INCORRECT]
+    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT,
+                            PeerBehavior.UNCERTAIN_PEER]
 
     ns = len(peers_count) * len(peers_distribution) * len(pre_trusted_peers) * len(targets) * \
          len(malicious_targets) * len(malicious_peers_lie_abouts) * \
          len(gaining_trust_periods) * len(simulation_lengths) * len(service_history_sizes) * \
          len(evaluation_strategies) * len(ti_aggregation_strategies) * \
          len(initial_reputations) * len(local_slips_acts_ass)
-    logger.info(f'Number of simulations: {ns}')
+    logger.warn(f'Number of simulations: {ns}')
 
     simulations = []
     for peer_count in peers_count:
