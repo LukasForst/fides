@@ -1,8 +1,10 @@
 \section{Computational Model of Fides}
 \label{sec:computational-model}
-This section describes how does Fides come up with a single most important value $st_{i,j}$ service trust. Service trust describes how much can local peer $i$ trust remote peer $j$.
-Used algorithm, or in other words the trust model itself, that computes $st_{i,j}$, is based on SORT\cite{sort} with modifications to fit our use case - a global peer-to-peer network for sharing threat intelligence. 
-The modifications are based on the interaction evaluation strategies proposed in \ref{sec:interaction-evaluation-strategies} and algorithms to solve cold start problem described in \ref{sec:cold-start-problem}. 
+This section describes how Fides computes its more important value: service trust. Service trust is a value that describes how much the local peer can trust a \textit{specific} remote peer. 
+
+Fides is based on the SORT~\cite{sort} algorithm, and it extends it so it can be used in P2P networks of intrusion prevention systems that share threat intelligence data.
+
+The extensions are based on the interaction evaluation strategies proposed in \ref{sec:interaction-evaluation-strategies} and algorithms to solve cold start problem described in \ref{sec:cold-start-problem}. 
 The table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
 
 \begin{table}[ht]
@@ -32,7 +34,7 @@ The table \ref{tab:notation-computational-model} describes the most important no
 
 \subsection{Intuition}
 In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down to bits.
-There are two main ideas behind the most of the equations. 
+There are two main ideas behind most of the equations. 
 
 The first one is that we want to robustly capture average behavior of the peers. In order to do that, we will be computing average behavior and standard deviations from said behavior and normalizing them.
 
@@ -43,7 +45,7 @@ Remote experience is what happened between one remote peer and another remote pe
 \subsection{Service Trust}
 \label{subsec:service-trust}
 One of the major goals of the algorithm is to compute the service trust $st_{i,j}$. 
-Service trust is a value that describes how much does peer $i$ trust remote peer $j$, that it is going to provide \textit{good service}.
+Service trust is a value that describes how much does peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
 We compute the value by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network, when it was first seen by $i$.
 The used weight is the size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
 
@@ -52,11 +54,11 @@ The used weight is the size of the service interaction history $sh_{i,j}$ to max
     st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
 \end{equation}
 
-The service trust equation (\ref{eq:service-trust}) implies that the more interaction there was, between $i$ and $j$, the bigger impact on $st_{i,j}$ it has. 
-In other words, the more $i$ and $j$ interact the less $i$ rely on the reputation, that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time and it 
+The service trust equation (\ref{eq:service-trust}) implies that the more interaction there was between peers $i$ and $j$, the bigger impact on $st_{i,j}$ it has. 
+In other words, the more $i$ and $j$ interact the less $i$ rely on the reputation that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time and it 
 
 \subsection{Local Experience for Service Trust}
-First part of the equation \ref{eq:service-trust} contains \textit{competence belief}, $cb_{i,j}$, and $ib_{i,j}$ - \textit{integrity belief}.
+The first part of the equation \ref{eq:service-trust} contains \textit{competence belief}, $cb_{i,j}$, and $ib_{i,j}$ - \textit{integrity belief}.
 Both of the values are based solely on the interactions history that peer $i$ experienced with the peer $j$.
 
 \subsubsection{Competence Belief}
@@ -71,6 +73,7 @@ It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation
 $\beta_{cb}$ is the normalization coefficient that ensures that $cb_{i, j}$ stays within the interval of $0 \leq cb_{i,j} \leq 1$.
 
 \subsubsection{Integrity Belief}
+\todo[inline]{We need to justify why this Integrity belief. Is it in SORT? if yes just reference. If not, then we need to justify why is not like a normal stdev. Is the more weird for me}
 \textit{Integrity belief} is a level of confidence in predictability of future interactions. $ib_{i,j}$ is then measured as deviation from the average behavior $cb_{i,j}$. 
 Therefore, $ib_{i,j}$ is calculated as an approximation to the standard deviation of interaction parameters\cite{sort}.
 \begin{equation}
@@ -104,7 +107,7 @@ This depends on the implementation - Fides implements it as a decreasing linear 
 \begin{equation}
     f^{k}_{i,j} = \frac{k}{sh_{i,j}}, 1 \leq k \leq sh_{i,j}
 \end{equation}
-However, it can be implemented as a function of time as well. In that case, the function does not depend on $k$ (as an index of a time window) bur rather on the time, when the interaction happened.
+However, it can be implemented as a function of time as well. In that case, the function does not depend on $k$ (as an index of a time window) but rather on the time, when the interaction happened.
 
 \subsection{Reputation and Recommendations}
 In order to mitigate cold start problem outlined in section \ref{sec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
@@ -143,7 +146,7 @@ A single recommendation response from peer $z \in T_{i}$ about giving recommenda
     \item $\eta_{z,j}$ - number of peers that provided recommendations for $j$ when $j$ was new to $z$ and their recommendation was used to compute $r_{z,j}$
 \end{itemize}
 
-\todo{Do we need to explain why did we added all these properties to a single recommendation? Original paper does that, but I'm not sure if we need to do that or not.}
+\todo{Do we need to explain why did we added all these properties to a single recommendation? Original paper does that, but I'm not sure if we need to do that or not. (sebas: well, since you did it, we need to explain. Now don't delete)}
 
 \subsubsection{Computing Reputation}
 \label{subsubsec:computing-reputation}
