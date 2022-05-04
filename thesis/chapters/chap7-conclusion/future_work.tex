@@ -1,23 +1,53 @@
 \section{Future Work}
 \label{sec:future-work}
-It is clear from the evaluation of simulations in chapter \ref{ch:results} that Fides performs differently with different setup under different conditions.
-Even though we are able to manually pick settings that ensures the best performance, this is not a perfect solution for the real world scenarios.
-For that reason, we propose to explore further following approaches.
+Even though we achieved our goal of designing a resilient trust model for sharing threat intelligence, there are multiple areas where the model can improve either by exploring different approaches or by implementing new additions to the data flow.
 
-\subsection{Exploring Different Interaction Evaluation Strategies}
-Trust model developed in this thesis is generic and it is heavily relying on the interaction evaluation function.
+Most importantly, it is clear from the evaluation of simulations in the chapter \ref{ch:results}, that Fides performs differently with different setups under different conditions.
+Even though we are able to manually pick settings that ensure the best performance, this is not a perfect solution for real-world scenarios.
+For that reason, we propose to explore further the following approaches.
+
+\subsection{Exploring Interaction Evaluation Strategies}
+\label{subsec:exploring-interaction-eval-strategies}
+The trust model developed in this thesis is generic and it is heavily relying on the interaction evaluation function.
 This means that the performance of the trust model is as good as the evaluation function.
-If the function is able to determine the peers behavior perfectly, the model is going to have great performance.
 
 In this work, we explored evaluation methods that are using only data from a single time window to evaluate the interactions.
 However, the local peer might store the complete interaction history with all other peers and whenever it finds out that some peer reported threat intelligence, that proved to be correct after some time, the reporter's service trust should benefit from such discovery.
-Another way might be storing whole interaction history and use machine learning techniques, to discover irregularities in provided data during the all communication windows.
+Another way might be storing the whole interaction history and using machine learning techniques, to discover irregularities in provided data during all communication windows.
 
-In other words, all interaction evaluation strategies described in section \ref{sec:interaction-evaluation-strategies} do not utilize the knowledge from the past, nor the interactions history.
-We believe that this is interesting space to explore more as it might lead to better performance of Fides in the real world scenarios.
+In other words, all interaction evaluation strategies described in the section \ref{sec:interaction-evaluation-strategies}do not utilize the knowledge from the past, or the history of the interactions.
+We believe that this is an interesting space to explore more as it might lead to better performance of Fides in real-world scenarios.
 
-\subsection{Exploring Different Threat Intelligence Aggregation Methods}
+\subsection{Exploring Threat Intelligence Aggregation Methods}
+\label{subsec:exploring-threat-intelligence-aggregation-methods}
+Similarly, as in the previous section (\ref{subsec:exploring-interaction-eval-strategies}), threat intelligence aggregation methods explored in this thesis, described in section \ref{sec:threat-intelligence}, do not use any other information than ones provided by the network at a single time window.
+By incorporating information from the recent history, the aggregation might improve the overall detection performed by the trust model.
+
+Moreover, there might be better ways how to aggregate the threat intelligence, or maybe the combination of multiple approaches to one might improve the final confidence in trust model decisions.
+As we saw in chapter \ref{ch:results}, the combination of interaction evaluation and threat intelligence aggregation influences the performance of the trust model to great extent.
 
 \subsection{Adding Threat Intelligence Challenges}
+\label{subsec:adding-threat-intelligence-challenges}
+The paper \cite{fung2008trust} explores an interesting idea of gaining the trust of remote peers by giving it \textit{computational challenges}.
+In our case, challenges might be asking the remote peer for threat intelligence about the target, that the local Slips know very well and with high confidence.
+When the trust model receives a response it uses the interaction evaluation strategy described in section \ref{subsec:use-local-threat-to-evaluate} to evaluate the received data.
+The trust model can then ask multiple times to have more interactions and thus effectively \textit{probing} the remote peer and getting an estimate about its future behavior.
+
+By using this approach, one can either replace the recommendation system or greatly improve it in cases when the trust model does not have enough pre-trusted peers.
+The disadvantage might be a higher amount of messages sent across the network when the new peer is registered by the network, which could eventually lead even to a denial of service attack on the newcomers. 
+
+This method should be explored more in detail and as the Fides is quite flexible, it can be easily incorporated into the trust model as well.
 
 \subsection{Threat Intelligence Sharing Motivation}
+\label{subsec:threat-intelligence-sharing-motivation}
+The designed peer-to-peer network for threat intelligence sharing unfortunately does not promote data sharing at all.
+The peers sharing threat intelligence are not gaining any benefit other than gaining trust in the eyes of other peers.
+As the gained trust brings little to no benefit by itself, there is a lack of incentive for the peers to share their threat intelligence with the network.
+
+However, we can see data \& threat intelligence filtering as one of the ways how to motivate other peers to share their threat intelligence.
+As we described in section \ref{subsec:data-filtering}, the Fides administrator can choose what threat intelligence is shared with which peers by configuring confidentiality levels with required service trust.
+Using this approach, the threat intelligence is shared only with high trusted peers.
+That would result in an incentive for the peers to gain the service trust which they do by sharing their own threat intelligence with the network.
+
+Another approach is exploring the idea of \textit{payments} for the threat intelligence where the peers use some sort of cryptocurrency to \textit{pay} for the received threat intelligence and they receive payments for their own threat intelligence they shared.
+This would give the peers an incentive to share the threat intelligence and ask for it only when they need it.
