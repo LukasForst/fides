@@ -1,0 +1,23 @@
+\section{Future Work}
+\label{sec:future-work}
+It is clear from the evaluation of simulations in chapter \ref{ch:results} that Fides performs differently with different setup under different conditions.
+Even though we are able to manually pick settings that ensures the best performance, this is not a perfect solution for the real world scenarios.
+For that reason, we propose to explore further following approaches.
+
+\subsection{Exploring Different Interaction Evaluation Strategies}
+Trust model developed in this thesis is generic and it is heavily relying on the interaction evaluation function.
+This means that the performance of the trust model is as good as the evaluation function.
+If the function is able to determine the peers behavior perfectly, the model is going to have great performance.
+
+In this work, we explored evaluation methods that are using only data from a single time window to evaluate the interactions.
+However, the local peer might store the complete interaction history with all other peers and whenever it finds out that some peer reported threat intelligence, that proved to be correct after some time, the reporter's service trust should benefit from such discovery.
+Another way might be storing whole interaction history and use machine learning techniques, to discover irregularities in provided data during the all communication windows.
+
+In other words, all interaction evaluation strategies described in section \ref{sec:interaction-evaluation-strategies} do not utilize the knowledge from the past, nor the interactions history.
+We believe that this is interesting space to explore more as it might lead to better performance of Fides in the real world scenarios.
+
+\subsection{Exploring Different Threat Intelligence Aggregation Methods}
+
+\subsection{Adding Threat Intelligence Challenges}
+
+\subsection{Threat Intelligence Sharing Motivation}
