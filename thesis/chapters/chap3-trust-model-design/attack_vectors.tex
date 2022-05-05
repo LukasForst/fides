@@ -99,6 +99,7 @@ On the other hand, the network layer is designed in a way that peers pass messag
 How does this affect the propagation of messages is part of the experiments in said paper \cite{nl}.
 
 \subsection{Whitewashing \& Sybil Attack}
+\label{subsec:whitewashing-and-sybil-attack}
 Due to the nature of the global peer-to-peer network, where many devices run behind NAT\footnote{Network address translation - a router mapping multiple IP addresses from the private network to a single public IP address.} or even NAPT\footnote{Network address and port translation - similar as NAT, but on the private network even the ports are used during translation process.} and have the same IP address, the identity is not associated to an IP address.
 However, this also mean that any device can have multiple identities and can essentially generate new ones as time goes.
 This opens Fides to other types of attacks such as \textit{Whitewashing}, where the malicious peer drops identity, that was discovered as malicious and its service trust dropped in $0$, and then it generates new, fresh identity.
@@ -110,4 +111,5 @@ Sybil attack refers to a situation where a single malicious peer creates multipl
 In our case the attacker can maliciously flood the network with wrong data thus making some of the interaction evaluation strategies \ref{sec:interaction-evaluation-strategies} perform poorly.
 Moreover, if the attacker is able to gain \textit{some} service trust for its malicious peers, it can effectively overtake the network and influence most of the decisions the Fides makes.
 The defense against this attack is to make it \textit{computationally hard} to join the peer-to-peer network, for example by making it hard to compute peer ID or by letting peers to other type of computational puzzle. 
-However, we did not introduce any of these measures to our system and we leave that as a part of future work \ref{sec:future-work}. 
+
+However, we did not introduce any of these measures to our system and we leave that as a part of future work (\ref{sec:future-work}) in section \ref{subsec:possible-mittigation-of-sybil-attack}. 

@@ -26,6 +26,15 @@ By incorporating information from the recent history, the aggregation might impr
 Moreover, there might be better ways how to aggregate the threat intelligence, or maybe the combination of multiple approaches to one might improve the final confidence in trust model decisions.
 As we saw in chapter \ref{ch:results}, the combination of interaction evaluation and threat intelligence aggregation influences the performance of the trust model to great extent.
 
+\subsection{Possible Mitigation of Sybil Attack}
+\label{subsec:possible-mittigation-of-sybil-attack}
+When analyzing the possible attack vectors for Fides, we described the Sybil attack in section \ref{subsec:whitewashing-and-sybil-attack} and we stated that Fides is vulnerable to this type of attack when an attacker floods the network with their own malicious peers.
+The experiments showed that under specific circumstances, where the attacker controls the majority of the network they can manipulate the decisions made by the trust model.
+
+In order to mitigate this type of attack, it would need to be \textit{computationally hard} to join the peer-to-peer network or generate a new peer identity.
+So the attacker would need to spend either time or computational resources when generating new peer identities.
+This directly does not prevent a malicious actor to perform this type of attack, but it makes it significantly harder.
+
 \subsection{Adding Threat Intelligence Challenges}
 \label{subsec:adding-threat-intelligence-challenges}
 The paper \cite{fung2008trust} explores an interesting idea of gaining the trust of remote peers by giving it \textit{computational challenges}.
