@@ -1,7 +1,7 @@
 \section{Interaction Evaluation Strategies}
 \label{sec:interaction-evaluation-strategies}
-In order to determine what remote peers are providing valuable data and what peers are are not, the local peer needs to be able to evaluate each interaction it had with the remote peer.
-In general, there are two options how to approach this - either by designing evaluation that is protocol aware (meaning, that it understands the protocol and the data that are two peers sharing with each other), or by having an evaluation function that does not need to understand the protocol and can be used for any data.
+In order to determine which remote peers are providing valuable data and which peers are not, the local peer needs to be able to evaluate each interaction it had with the remote peer.
+In general, there are two options how to approach this, (i) by designing an evaluation that is protocol-aware (i.e. it understands the protocol and the data that the two peers shared ); or (ii) by having an evaluation function that does not need to understand the protocol and can be used for any type of data.
 
 We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in chapter \ref{ch:experiments}. 
 We will use notation from table (\ref{table:interaction-eval})  when referring to peers and their interactions.\todo{maybe do not use S and C when referring to score and confidence as we use "s" for satisfaction}
