@@ -24,7 +24,7 @@ This part is based on the Sality botnet \cite{falliere2011sality}, where botnet 
 The idea behind this is simple yet very effective, the more peers talk to each other, the more are they trusted.
 
 Final peer trust is computed using \textit{goodcount} and also Slips's threat intelligence about the peer. 
-This is possible thanks to the limitation of the local peer-to-peer network, where Slips knows every IP address and can obtain a full overview of the device on the network.
+This is possible thanks to the fact that in local networks Slips knows every IP address and can obtain a full overview of the device on the network and its behavior.
 
 Unlike other trust models where new peers start with no trust, Dovecot trusts new peers by default. 
 However, the authors mention in the future work that this property should be explored more in detail so this may change in future versions of Dovecot.
@@ -36,7 +36,7 @@ Self-ORganizing Trust model (SORT) aims to decrease malicious activity in a P2P 
 In SORT, peers are assumed to be untrustworthy until they prove otherwise by providing \textit{good} service to the local peer. 
 For example, in file-sharing networks, this might be providing access to required files, or as in our case, providing threat intelligence about some target.
 
-Unlike other trust models, for example Eigentrust \cite{kamvar2003eigentrust}, SORT does not need a priori information about the network nor any pre-trusted peers to be able to operate effectively in the network.
+Unlike other trust models, for example, Eigentrust \cite{kamvar2003eigentrust}, SORT does not need a priori information about the network nor any pre-trusted peers to be able to operate effectively in the network.
 Peers do not try to collect trust information from all peers.
 Each peer develops its own local view of trust about the peers who interacted in the past \cite{sort}.
 
@@ -55,12 +55,29 @@ For example, in the file-sharing environment such interaction evaluation functio
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
-In \cite{1562680} He, Niu and Hu propose gathering peers and modeling their trust relationships as \textit{clouds} and propose \textit{extended-cloud-model-based trust model}.
-Huynh, Jennings and Shadbolt propose FIRE trust and reputation model in \cite{huynh2006integrated} which was designed for open multi agent systems.
-In \cite{li2014design}, Li, Meng and Kwok employ machine learning based trust model for collaboration of IDS instances.
-Xiong and Liu then propose in \cite{xiong2004peertrust} PeerTrust, which uses transaction-based feedback system to determine the reputation and trust of the peers.
-Sadan proposed in \cite{abera2019sadan} is another trust model that uses committees and computational challenges to identify malicious peers in the network.
-Sadan uses hardware chips - Trusted Platform Module, to verify the running software which allows other peers to verify trustworthiness of the peer.
+The field of trust models for peer-to-peer networks is not new and there are many other interesting trust models that attempt to tackle trust relationships between peers.
+In this section, we describe only notable trust models, that we liked but didn't base our design on them at the end.
+
+Sadan proposed in \cite{abera2019sadan} is a trust model that uses committees and computational challenges to identify malicious peers in the network.
+Sadan requires hardware chips - Trusted Platform Module (TPM), to verify the running software which allows other peers to verify the trustworthiness of the peer.
+The requirement of TPM chips means that Sadan can not be used as the base for our trust model, as we do not want to limit our solution to specific hardware.
+
+Xiong and Liu then propose PeerTrust~\cite{xiong2004peertrust}, which uses a transaction-based feedback system to determine the reputation and trust of the peers.
+Even though the model is generic and was designed for peer-to-peer networks, it was optimized for \textit{e-commerce communities} that inherently have completely different behavior than the network for sharing threat intelligence, which needs to protect itself from the malicious peers.
+
+Huynh, Jennings, and Shadbolt propose FIRE trust and reputation model \cite{huynh2006integrated} which was designed for open multi agent systems.
+FIRE incorporates multiple different trust metrics that are aggregated and provide a view of the agents' behavior.
+After analyzing the paper, we had concerns about three different trust metrics out of four in our specific settings.
+For that reason, we decided not to use FIRE as the base for our further design.
+
+In \cite{1562680} He, Niu and Hu propose gathering peers and modeling their trust relationships as \textit{clouds} and propose an \textit{extended-cloud-model-based trust model} - ECMBTM.
+ECMBTM utilizes cooperation history between peers to compute trust clouds. 
+This trust model attempts to mitigate the cold start problem by directly propagating trust to another peer in the network.
+We find the application of this method in our setting problematic because it would be easier for the malicious peers to propagate their false information through the network.
+
+In \cite{li2014design}, Li, Meng, and Kwok employ a machine learning-based trust model for the collaboration of IDS instances.
+Even though this model is closely related to our use case we can not utilize it, because it uses a central certificate authority to issue a registration for the new peers. 
+In our design, we want to have a permission-less peer-to-peer network where each peer is equal and there is no central authority that controls the network and is a single point of failure.
 
 \vspace{1cm}
 
