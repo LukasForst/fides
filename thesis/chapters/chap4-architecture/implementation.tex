@@ -9,8 +9,8 @@ We choose to use Conda \cite{conda} for managing dependencies and Python version
 \label{subsec:configuration}
 Our trust model contains many different configuration options either related to the computational model itself or to the data persistence or identity of the local peer.
 
-Computational model settings are for example threat intelligence aggregation methods described in section \ref{sec:network-intelligence-aggregation} or interaction evaluation strategy from section \ref{sec:interaction-evaluation-strategies}.
-As the trust model needs only single method, administrator needs to define which one of these functions should be used.
+Computational model settings are for example threat intelligence aggregation methods described in the section \ref{sec:network-intelligence-aggregation} or interaction evaluation strategy from the section \ref{sec:interaction-evaluation-strategies}.
+As the trust model needs only a single method, the administrator needs to define which one of these functions should be used.
 
 The configuration itself is in a single YAML \cite{yaml} format in \href{https://github.com/LukasForst/fides/blob/master/fides.conf.yml}{\textit{fides.conf.yml}} file.
 This file is loaded and validated during the trust model startup and is used to provide all possible configuration options for the trust model.

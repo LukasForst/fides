@@ -1,36 +1,37 @@
 \section{Attack Vectors}
 \label{sec:attack-vectors}
-As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about targets being malicious or being.
-Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputations}, if the recommendation protocol is enabled, and eventually with the aggregated score and confidence.
+As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about whether targets are malicious or being.
+Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputation} if the recommendation protocol is enabled and eventually with the aggregated score and confidence.
 
 \subsection{Influencing Aggregated Score \& Confidence}
 \label{subsec:influencing-aggregated-score-confidence}
-The final result of work, the trust model is doing, is aggregated score and confidence.
-Any attacker wants to ultimately influence these aggregated values (either to make malicious IP/domain seem being or other way around).
-However, for that to happen, the attacker need to gain sufficient service trust as that is used while computing the aggregated opinion (see section \ref{sec:network-intelligence-aggregation}).
+The final result of the work, the trust model is doing, is aggregated score and confidence.
+Any attacker wants to ultimately influence these aggregated values either to make malicious IP/domain seem to be or another way around.
+However, for that to happen, the attacker needs to gain sufficient service trust like that used while computing the aggregated opinion.
+For more information about the aggregated threat intelligence see section \ref{sec:network-intelligence-aggregation}.
 
 \subsection{Influencing Service Trust}
 \label{subsec:influencing-service-trust}
 Thanks to the design of the trust model described in detail in section \ref{sec:computational-model}, no peer is able to influence local service trust in any other peer once the peer was first seen by the Fides.
-The only time, when Fides allows remote peers to directly influence the local decisions on any remote peer is when Fides asks for the recommendations. 
-The recommendation protocol is engaged only in some cases (when the network is \textit{trusted enough}) and only for the first time the new remote peer is seen. We describe this more in detail in the section \ref{subsec:influencing-peers-reputation} below.
+The only time, when Fides allows remote peers to directly influence the local decisions of any remote peer is when Fides asks for the recommendations. 
+The recommendation protocol is engaged only in some cases (when the network is \textit{trusted enough}) and only for the first time, the new remote peer is seen. We describe this more in detail in the section \ref{subsec:influencing-peers-reputation} below.
 When should we start the recommendation protocol is then part of the experiments described in section \ref{sec:environment-simulation}.
 
-However, the malicious peer can indirectly influence the service trust for any other remote peer in cases, when one of interaction evaluation strategies - \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} or \ref{subsec:weight-local-opinion-with-aggregated-one} is used.
-In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data then the being peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in being peers.
-This is expected, as an interaction evaluation strategies \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} and \ref{subsec:weight-local-opinion-with-aggregated-one} use aggregated network opinion to evaluate the interactions and thus if the \textit{wrong} opinion is in majority (considering service trust of each peer), it is taken in account even though it is \textit{wrong}.
+However, the malicious peer can indirectly influence the service trust for any other remote peer in cases, when one of the interaction evaluation strategies - \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} or \ref{subsec:weight-local-opinion-with-aggregated-one} is used.
+In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data than the being peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in being peers.
+This is expected, as an interaction evaluation strategies \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} and \ref{subsec:weight-local-opinion-with-aggregated-one} use aggregated network opinion to evaluate the interactions thus if the \textit{wrong} opinion is in majority and while considering the service trust of each peer, it is taken into the account even though it is \textit{wrong}.
 
-For that reason, the intermediate goal of any attacker to gain the service trust of the local peer in order to have \textit{any} influence over the decisions the Fides makes.
-We explore this behavior in the experiments in section \ref{sec:environment-simulation}, when we let malicious peers to gain the service trust at the beginning of the simulation.
+For that reason, the intermediate goal of an attacker is to gain the service trust of the local peer in order to have \textit{any} influence over the decisions the Fides makes.
+We explore this behavior in the experiments in section \ref{sec:environment-simulation}, when we let malicious peers gain the service trust at the beginning of the simulation.
 
 \subsection{Influencing Peers Reputation}
 \label{subsec:influencing-peers-reputation}
-When new peer joins the network, Fides requests recommendations in cases described in section \ref{subsubsec:requesting-recommendation}.
-It is possible, that one or more of the peers providing the recommendations is malicious and it provides \textit{incorrect} recommendation with goal either to silence being peer or to support other malicious peer.
+When a new peer joins the network, Fides requests recommendations in the cases described in section \ref{subsubsec:requesting-recommendation}.
+It is possible, that one or more of the peers providing the recommendations is malicious and it provides \textit{incorrect} recommendations with a goal either to silence a benign peer or to support another malicious peer.
 
 Even though the reputation of a peer can be skewed by the attacker, it is still able to gain \textit{correct} service trust by following the protocol and providing useful data.
-Recall equation \ref{eq:service-trust} for service trust - the more experience local peer has with remote peer, the more it ignores the initial received recommendations.
-This means that the service trust will tend to converge to \textit{correct} values that not necessarily depends on the initial recommendations and eventually will loose that information completely.
+Recall equation \ref{eq:service-trust} for service trust. The more experience a local peer has with a remote peer, the more it ignores the initially received recommendations.
+This means that the service trust will tend to converge to \textit{correct} values that do not necessarily depend on the initial recommendations and eventually will lose that information completely.
 In other words, if the peer's initial reputation was \textit{incorrect} (from the ground truth point of view), it will only take the peer longer to gain \textit{correct} service trust, but eventually, it will end up with the same value as with the correct reputation value.
 
 \section{Taxonomy of Attacks}
@@ -40,76 +41,76 @@ They classify the reputation attacks in the following categories.
 
 \subsection{Unfair Recommendations}
 \label{subsec:unfair-recommendations}
-This category describes behavior when peer provides incorrect data.
+This category describes the behavior when a peer provides incorrect data.
 The peer does not need to be necessarily malicious in order to do that, it can also have not enough data to make correct decisions or maybe it is missing some important information.
-In case of Fides, this types of attacks can be against service trust as well as reputation system.
-Moreover, the malicious peers can collude together to amplify effect on the final computations of the trust model.
+In the case of Fides, these types of attacks can be against service trust as well as the reputation system.
+Moreover, the malicious peers can collude together to amplify the effect on the final computations of the trust model.
 
-The intent of the malicious peers in this case is to lower someones service trust/reputation (\textit{badmouthing attack}) or on the other hand, to make somebody's service trust/reputation higher (\textit{unfair praises}).
-In a case of service trust, this is not possible directly, but rather with colluding with multiple high trusted peers as described in detail in section \ref{subsec:influencing-service-trust}.
-In a case of reputation, this is possible if the malicious peer is selected as a recommender.
-Fides mitigates both of these problems by asking a numerous peers on the opinion (in case of service trust) and by asking only pre-selected and high trusted peers in case of recommendations.
-Of course it is not possible to eliminate the possibility of malicious peer being asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral pattern.
-In simulations we then evaluate what network topology is needed in order for the Fides, not to be easily manipulated in believing even to the malicious peers.
+The intent of the malicious peers, in this case, is to lower someone's service trust/reputation (\textit{badmouthing attack}) or on the other hand, to make somebody's service trust/reputation higher (\textit{unfair praises}).
+In a case of service trust, this is not possible directly, but rather by colluding with multiple high trusted peers as described in detail in section \ref{subsec:influencing-service-trust}.
+In the case of reputation, this is possible if the malicious peer is selected as a recommender.
+Fides mitigates both of these problems by asking numerous peers for their opinion (in case of service trust) and by asking only pre-selected and high trusted peers in case of recommendations.
+Of course, it is not possible to eliminate the possibility of a malicious peer being asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral patterns.
+In simulations we then evaluate what network topology is needed in order for the Fides, not to be easily manipulated into believing even the malicious peers.
 
-\textit{Inaccurate recommendations} is a type of \textit{unfair recommendations} when an honest peer provide wrong data but due to lack of complete information.
-This can happen for example because they were not attacked by adversary (yet), and they consider them to be being, because they have no reason to see it otherwise.
-Other example can be peer that does not have latest threat intelligence data from the black lists or other remote resources.
+\textit{Inaccurate recommendations} are a type of \textit{unfair recommendation} when an honest peer provide wrong data due to a lack of complete information.
+This can happen for example because they were not attacked by the adversary (yet), and they consider them to be benign because they have no reason to see it otherwise.
+Another example can be a peer that does not have the latest threat intelligence data from the black lists or other remote resources.
 These peers are included in the experiments as well, we call that \textit{Confident Incorrect} (\ref{subsubsec:confident-incorrect-peer}) behavioral pattern.
 
-The Koutrouli and Tsalgatidou \cite{KOUTROULI201247} also mention \textit{Random opinions} where the peer is essentially providing random data.
-We simulate this in our experiments as well, because there will be peers, in the network, that simply don't have enough information to make good and confident decision about some target.
+Koutrouli and Tsalgatidou \cite{KOUTROULI201247} also mention \textit{Random opinions} where the peer is essentially providing random data.
+We simulate this in our experiments as well, because there will be peers, in the network, that simply don't have enough information to make a good and confident decision about some target.
 This is the \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
 
-Because of the nature of the Fides, which aggregates all network opinions it receives, the worst case scenario is the situation where the attackers collude together, because it amplifies their effect on the final aggregated score \& confidence.
-However, our trust model uses service trust during computing the final score with confidence so in order for attackers to influence this decision, their total service trust must be higher then the service trust of the being peers.
-This makes it harder for the adversary to overturn the decisions in their favor, because it forces them to gain the service trust for all their peers.
-In simulations, we have malicious peers that collude (and lie about same targets) as well as peers that do not collude and lie about different targets.
+Because of the nature of the Fides, which aggregates all network opinions it receives, the worst-case scenario is the situation where the attackers collude together because it amplifies their effect on the final aggregated score \& confidence.
+However, our trust model uses service trust during computing the final score with confidence so, in order for attackers to influence this decision, their total service trust must be higher than the service trust of the being peers.
+This makes it harder for the adversary to overturn the decisions in their favor because it forces them to gain the service trust of all their peers.
+In simulations, we have malicious peers that collude (and lie about the same targets) as well as peers that do not collude and lie about different targets.
 
 \subsection{Inconsistent Behavior}
 \label{subsec:inconsistent-behavior}
-In aforementioned section \ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence trust model's decisions.
+In the aforementioned section,\ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence the trust model's decisions.
 This leads to malicious peers that will have different behavior when they try to gain the service trust and when they provide misleading data to achieve their goals.
-This behavior is an equivalent of the \textit{Traitors} from \cite{KOUTROULI201247}.
-Fides tries to mitigate this problem with some of the interaction evaluations strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as \ref{subsec:distance-based-eval}).
+This behavior is equivalent to the \textit{Traitors} from \cite{KOUTROULI201247}.
+Fides tries to mitigate this problem with some of the interaction evaluation strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as \ref{subsec:distance-based-eval}).
 Thanks to these strategies, even peers that gained service trust at the beginning can be eventually identified as malicious and their service trust will be lowered whenever they provide threat intelligence data that are different from the aggregated ones.
 
-However, even the honest peers can have inconsistent behavior, mainly when they don not have enough information about IP/domains.
-In experiments, we simulate this behavior for honest peers with \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
+However, even the honest peers can have inconsistent behavior, mainly when they do not have enough information about IP/domains.
+In experiments, we simulate this behavior for honest peers with \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral patterns.
 For malicious peers we have a period, during which they provide correct and consistent data, allowing them to gain the service trust. 
 
 \subsection{Identity Management Related Attacks}
 \label{subsec:identity-management-attacks}
-The service trust and reputation is tied to the peers identity. 
-In our case, Fides utilizes peer's identity that was provided by the Network Layer \cite{nl}.
-From the technical point of view, the identity is, in a fact, a public key and any data the peer provides, are signed with peer's private key. Thus, we can verify that the data were provided by the owner of the private key to said public key (identity).
-Moreover, any peer in our network, can belong to one or more organizations that are, again, represented by their public key. 
-Peer proves the membership to the organization by providing its own public key signed by the organizations private key.
-The identity as well as organization membership is cryptographically verified by the network layer \cite{nl} and Fides does not perform any additional verification. 
+The service trust and reputation are tied to the peer's identity. 
+In our case, Fides utilizes a peer's identity that was provided by the Network Layer \cite{nl}.
+From the technical point of view, the identity is, in a fact, a public key, and any data the peer provides is signed with the peer's private key. Thus, we can verify that the data were provided by the owner of the private key to said public key (identity).
+Moreover, any peer in our network can belong to one or more organizations that are, again, represented by their public key. 
+Peer proves their membership to the organization by providing their own public key signed by the organization's private key.
+The identity, as well as organization membership, is cryptographically verified by the network layer \cite{nl} and Fides does not perform any additional verification. 
 
 \subsubsection{Impersonation}
 Thanks to the data signatures and identities tied to private/public key pairs, the \textit{Impersonation} based attacks are then possible solely in cases when the attacker gained access to the private key of the peer.
 Unfortunately, this type of attack is not possible to prevent completely. 
-However, when the attacker gains the access and starts submitting incorrect data, the Fides will start lowering service trust associated with that identity and thus eventually limiting the attacker's influence.
+However, when the attacker gains access and starts submitting incorrect data, the Fides will start lowering service trust associated with that identity and thus eventually limiting the attacker's influence.
 
 \subsubsection{Man-in-the-middle attack}
-\textit{Man-in-the-middle attack} are attacks when third party is able to either intercept and manipulate the transmitted data.
-From the Fides point of view, the data manipulation is not possible as the data are signed by the sender and because of the network layer \cite{nl} design and Fides never manipulates with any data which signature is invalid.
+\textit{Man-in-the-middle attack}s are attacks when a third party is able to either intercept or manipulate the transmitted data.
+From Fide's point of view, the data manipulation is not possible as the data are signed by the sender and because of the network layer \cite{nl} design and Fides never works with any data whose signature is invalid.
 On the other hand, the network layer is designed in a way that peers pass messages to each other through the network \cite{nl}, so any malicious peer can choose not to pass down the message.
-How does this affect the propagation of messages is part of the experiments in said paper \cite{nl}.
+How this affects the propagation of messages is part of the experiments in said paper \cite{nl}.
 
 \subsection{Whitewashing \& Sybil Attack}
 \label{subsec:whitewashing-and-sybil-attack}
-Due to the nature of the global peer-to-peer network, where many devices run behind NAT\footnote{Network address translation - a router mapping multiple IP addresses from the private network to a single public IP address.} or even NAPT\footnote{Network address and port translation - similar as NAT, but on the private network even the ports are used during translation process.} and have the same IP address, the identity is not associated to an IP address.
-However, this also mean that any device can have multiple identities and can essentially generate new ones as time goes.
-This opens Fides to other types of attacks such as \textit{Whitewashing}, where the malicious peer drops identity, that was discovered as malicious and its service trust dropped in $0$, and then it generates new, fresh identity.
+Due to the nature of the global peer-to-peer network, where many devices run behind NAT\footnote{Network address translation - a router mapping multiple IP addresses from the private network to a single public IP address.} or even NAPT\footnote{Network address and port translation - similar to NAT, but on the private network even the ports are used during the translation process.} and have the same IP address, the identity is not associated to an IP address.
+However, this also means that any device can have multiple identities and can essentially generate new ones as time goes by.
+This opens Fides to other types of attacks such as \textit{Whitewashing}, where the malicious peer drops an identity, that was discovered as malicious and its service trust dropped in $0$, and then it generates a new, fresh identity.
 However, this behavior does not benefit the attacker as much as in Dovecot \cite{dita}, because Fides assigns the initial service trust $0$, instead of $1$.
-In other words, Fides distrust new peers by default, so whenever a peer drops its identity and create new one, it starts with service trust of $0$.
+In other words, Fides distrust new peers by default, so whenever a peer drops its identity and creates a new one, it starts with a service trust of $0$.
 
-As it is not expensive to generate new identity, it is not hard for the attacker to perform \textit{Sybil attack}.
+As it is not expensive to generate a new identity, it is not hard for the attacker to perform a \textit{Sybil attack}.
 Sybil attack refers to a situation where a single malicious peer creates multiple identities and uses them in concert to defeat the system \cite{sybil}.
-In our case the attacker can maliciously flood the network with wrong data thus making some of the interaction evaluation strategies \ref{sec:interaction-evaluation-strategies} perform poorly.
+In our case, the attacker can maliciously flood the network with wrong data thus making some of the interaction evaluation strategies \ref{sec:interaction-evaluation-strategies} perform poorly.
 Moreover, if the attacker is able to gain \textit{some} service trust for its malicious peers, it can effectively overtake the network and influence most of the decisions the Fides makes.
-The defense against this attack is to make it \textit{computationally hard} to join the peer-to-peer network, for example by making it hard to compute peer ID or by letting peers to other type of computational puzzle. 
+The defense against this attack is to make it \textit{computationally hard} to join the peer-to-peer network, for example by making it hard to compute peer ID or by letting peers solve some other type of computational puzzle. 
 
 However, we did not introduce any of these measures to our system and we leave that as a part of future work (\ref{sec:future-work}) in section \ref{subsec:possible-mittigation-of-sybil-attack}. 

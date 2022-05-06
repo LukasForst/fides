@@ -1,17 +1,17 @@
 \section{Computational Model of Fides}
 \label{sec:computational-model}
-This section describes how Fides to whom and how much it can trust to other remote peers.
+This section describes how Fides to whom and how much it can trust other remote peers.
 Our trust model expresses trust in a specif peer with metrics called \textit{service trust}.
 Service trust is a value that describes how much the local peer can trust a \textit{specific} remote peer. 
 
-In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down to bits.
+In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down into bits.
 Note, that there are two main ideas behind most of the equations. 
 
-The first one is that we want to robustly capture average behavior of the peers. In order to do that, we will be trying to capture average behavior of the peers and then approximating the standard deviations from said behavior and normalizing them.
+The first one is that we want to robustly capture the average behavior of the peers. In order to do that, we will be computing the average behavior of the peers and then approximating the deviations from said behavior.
 
-Secondly, we will be comparing and weighting first hand experience with the remote experience. 
-First hand experience is what happened between local and remote peer during time they interacted. This can be, for example, threat intelligence sharing, file sharing or the results of recommendation protocol.
-Remote experience is what happened between one remote peer and another remote peer. In other words, first hand experience for peer $j$ are actions between $j$ and $z$. Whenever $j$ shares information about these actions with peer $i$, for $i$ it is a remote experience.
+Secondly, we will be comparing and weighing first-hand experience with the remote experience. 
+First-hand experience is what happened between local and remote peer during the time they interacted. This can be, for example, threat intelligence sharing, file-sharing, or the results of recommendation protocol.
+Remote experience is what happened between one remote peer and another remote peer. In other words, first-hand experience for peer $j$ are actions between $j$ and $z$. Whenever $j$ shares information about these actions with peer $i$, for $i$ it is a remote experience.
 
 \vspace{0.5cm}
 
@@ -45,8 +45,8 @@ Note that the table \ref{tab:notation-computational-model} describes the most im
 
 \subsection{Service Trust}
 \label{subsec:service-trust}
-As outlined previously, service trust $st_{i, j}$ is a value that describes how much does peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
-We compute the $st_{i, j}$ in equation \ref{eq:service-trust} by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network, when it was first seen by $i$.
+As outlined previously, service trust $st_{i, j}$ is a value that describes how much peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
+We compute the $st_{i, j}$ in the equation \ref{eq:service-trust} by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
 The used weight is the size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
 
 \begin{equation}
@@ -59,23 +59,22 @@ In other words, the more $i$ and $j$ interact the less $i$ rely on the reputatio
 
 \subsection{Local Experience for Service Trust}
 The first part of the equation \ref{eq:service-trust} contains \textit{competence belief} - $cb_{i,j}$, and \textit{integrity belief} - $ib_{i,j}$.
-Both of the values are based solely on the interactions history that peer $i$ experienced with the peer $j$.
+Both of the values are based solely on the history of the interactions that peer $i$ experienced with the peer $j$.
 
 \subsubsection{Competence Belief}
-\textit{Competence belief} represents how much did peer $j$ satisfy local peer $i$ with the past interactions. We measure it as an average of interactions from the past \cite{sort}.
+\textit{Competence belief} represents how much did peer $j$ satisfied local peer $i$ with the past interactions. We measure it as an average of interactions from the past \cite{sort}.
 \begin{equation}
 \begin{split}
     cb_{i,j} &= \frac{1}{\beta_{cb}} \sum_{k=1}^{sh_{i, j}} s_{i,j}^{k} \cdot w_{i,j}^{k} \cdot f_{i,j}^{k} \\
     \beta_{cb} &= \sum_{k=1}^{sh_{i, j}} s_{i,j}^{k} \cdot w_{i,j}^{k}
 \end{split}
 \end{equation}
-It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation of the interaction in window $k$, $w^{k}_{i, j}$ is the weight of the interaction (how important it was) and $f^{k}_{i,j}$ is the fading effect of that interaction. We describe $s^{k}_{i,j}$, $w^{k}_{i,j}$ and $f^{k}_{i,j}$ in greater detail in \ref{subsec:evaluating-an-interaction}. 
+It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation of the interaction in window $k$, $w^{k}_{i, j}$ is the weight of the interaction (how important it was) and $f^{k}_{i,j}$ is the fading effect of that interaction. We described $s^{k}_{i,j}$, $w^{k}_{i,j}$ and $f^{k}_{i,j}$ in section \ref{subsec:interaction-satisfaction}. 
 $\beta_{cb}$ is the normalization coefficient that ensures that $cb_{i, j}$ stays within the interval of $0 \leq cb_{i,j} \leq 1$.
 
 \subsubsection{Integrity Belief}
-\todo[inline]{We need to justify why this Integrity belief. Is i in SORT? if yes just reference. If not, then we need to justify why is not like a normal stdev. Is the more weird for me}
-\textit{Integrity belief} is a level of confidence in predictability of future interactions. $ib_{i,j}$ is then measured as deviation from the average behavior $cb_{i,j}$. 
-Therefore, $ib_{i,j}$ is calculated as an approximation to the standard deviation of interaction parameters\cite{sort}.
+\textit{Integrity belief} $ib_{i,j}$ is a level of confidence in the predictability of future interactions~\cite{sort}. It is measured as a deviation from the average behavior $cb_{i,j}$.
+Therefore, $ib_{i,j}$ is calculated as an approximation to the standard deviation of interaction parameters~\cite{sort}.
 \begin{equation}
 \begin{split}
     ib_{i,j} &= \sqrt{\frac{1}{sh_{i,j}} \sum_{k=1}^{sh_{i,j}}\left(s_{i,j}^{k} \cdot w_{i,j}^{\mu} \cdot f_{i,j}^{\mu} - cb_{i,j}\right)^{2}} \\
@@ -85,24 +84,29 @@ Therefore, $ib_{i,j}$ is calculated as an approximation to the standard deviatio
 \end{equation}
 
 It holds that $0 \leq ib_{i,j} \leq 1$.
-The more consistent behavior peer $j$ has, the lower the $ib_{i,j}$ is. Consistency is highly desired property as the local peer then have more precise estimates about future behavior of the remote peer.
+The more consistent behavior peer $j$ has, the lower the $ib_{i,j}$ is. Consistency is a highly desired property as the local peer then has more precise estimates about the future behavior of the remote peer.
 
-\subsection{Evaluating an Interaction}
-\label{subsec:evaluating-an-interaction}
-\todo{Should we keep it here or move somewhere else?}
-In section \ref{sec:interaction-evaluation-strategies}, we describe multiple strategies in detail, how to compute $s^{k}_{i,j}$ - satisfaction value with $k$th interaction of the local peer $i$ with peer $j$.
-However, not all interactions are same - some of the interactions are more important then the others. 
-Moreover, because peers can change their behavior, most recent interactions should be more important the the interactions that happened long time ago.
+\subsection{Interaction Satisfaction}
+\label{subsec:interaction-satisfaction}
+$s^{k}_{i, j}$ is $i$'s satisfaction value with interaction with peer $j$ in window $k$.
+We outlined before, that each interaction between two peers is evaluated, $s^{k}_{i, j}$ is a result of this evaluation of a single interaction between peers $i$ and $j$.
+Because our trust model is generic, the evaluation function can be implemented for different data differently.
+How did we design it and implemented it for threat intelligence is described in the section \ref{sec:interaction-evaluation-strategies}.
+
+However, even with the computed interaction satisfaction value, not all interactions are the same. 
+Some of the interactions are more important than others. 
+Moreover, because peers can change their behavior, most recent interactions should be more important than the interactions that happened a long time ago.
+That is why we include the weight of the interaction and fading effect.
 
 \subsubsection{Weight of the Interaction}
 Because each interaction is different and its importance is different, we have $w^{k}_{i,j}$ that measures the importance.
 Weight belongs to interval $0 \leq w^{k}_{i,j} \leq 1$ and Fides implements it as a discrete function of interaction type. 
-For example, weight of interaction when remote peer shares the threat intelligence is higher, then when the peer sends threat intelligence request.
+For example, the weight of interaction when a remote peer shares the threat intelligence is higher than when the remote peer requests threat intelligence.
 
 
 \subsubsection{Fading Effect}
-Fading effect $f^{k}_{i,j}$ determines \textit{"how much does algorithm forget"} as the algorithm prefers most recent interactions over past interactions and thus $f^{k}_{i,j}$ reduces weight of the past interactions. 
-$f^{k}_{i,j}$ is a \textit{non-increasing function} of interaction and time, or an index of said interaction in the history.
+Fading effect $f^{k}_{i,j}$ determines \textit{"how much does algorithm forget"} as the algorithm prefers most recent interactions over past interactions and thus $f^{k}_{i,j}$ reduces the weight of the past interactions. 
+$f^{k}_{i,j}$ is a \textit{non-increasing function} of interaction and time or an index of said interaction in history.
 This depends on the implementation - Fides implements it as a decreasing linear function.
 \begin{equation}
     f^{k}_{i,j} = \frac{k}{sh_{i,j}}, 1 \leq k \leq sh_{i,j}
@@ -110,35 +114,35 @@ This depends on the implementation - Fides implements it as a decreasing linear 
 However, it can be implemented as a function of time as well. In that case, the function does not depend on $k$ (as an index of a time window) but rather on the time, when the interaction happened.
 
 \subsection{Reputation and Recommendations}
-In order to mitigate cold start problem outlined in section \ref{sec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
+In order to mitigate the cold start problem outlined in the section \ref{sec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
 $r_{i,j}$ is the second part of the service trust equation \ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
 
-\textit{Reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what do remote peers think about another remote peer. However, this value is calculated by the local peer with respect, how much it trusts each peer, that provided the recommendation.
+The \textit{reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what remote peers think about another remote peer. However, this value is calculated by the local peer with respect, to how much it trusts each peer, that provided the recommendation.
 When the local peer $i$ encounters remote peer $j$ for the first time and it does not have any data about its trustworthiness, $i$ can request recommendations on peer $j$ from $i$'s most trusted peers.
 We denote a set of remote peers, that provided the recommendations as $T_{i}$.
 
 \subsubsection{Requesting a Recommendation}
 \label{subsubsec:requesting-recommendation}
-The recommendation system build into Fides can not be used in every scenario.
-Because of the sensitive nature of the environment, the trust model was designed for, there are cases when it is dangerous to ask for the recommendations.
-That is mainly the case, when there are \textit{not enough} peers that are \textit{trusted enough}.
+The recommendation system built into Fides can not be used in every scenario.
+Because of the sensitive nature of the environment, the trust model was designed for, there are cases when it is dangerous to ask for recommendations.
+That is mainly the case when there are \textit{not enough} peers that are \textit{trusted enough}.
 
-SORT \cite{sort} requests recommendations every time it encounters a new peer. Set of recommending peers is created by taking all known peers and selecting the ones, that have higher then average service trust.
-However, those can also be peers with trust as low as $0.001$. In a sensitive environment, which peer-to-peer network of IPS definitely is, we do not want to get recommendations from peers, that have low trust at all.
-Moreover, given the nature of Slips, we decided to combine recommendation system based on SORT with static initial trust \ref{subsec:static-initial-trust} and with pre-trusted peers \ref{subsec:pre-trusted-peers}. 
-This approach gives us more robust basis for trust sensitive environment and it helps us to mitigate cold start problem \ref{sec:cold-start-problem}.\todo{This is again too text heavy, should we leave that here, or move that somewhere else?}
+SORT \cite{sort} requests recommendations every time it encounters a new peer. Set of recommending peers is created by taking all known peers and selecting the ones, that have higher than average service trust.
+However, those can also be peers with trust as low as $0.001$. In a sensitive environment, which the peer-to-peer network of IPS definitely is, we do not want to get recommendations from peers, that have low trust at all.
+Moreover, given the nature of Slips, we decided to combine a recommendation system based on SORT with static initial trust \ref{subsec:static-initial-trust} and with pre-trusted peers \ref{subsec:pre-trusted-peers}.
+This approach gives us a more robust basis for trust sensitive environment and it helps us to mitigate the cold start problem \ref{sec:cold-start-problem}.
 
-If the peer is part of pre-trusted organization or it is pre-trusted itself, it inherits the configured reputation - $r_{i, j}$ from the configuration.
+If the peer is part of a pre-trusted organization or it is pre-trusted itself, it inherits the configured reputation - $r_{i, j}$ from the configuration.
 In this case, Fides does not engage recommendation protocol at all, because the peer already has reputation $r_{i,j}$ assigned from the configuration and it was \textit{recommended} by the administrator.
 Moreover, the administrator can choose if this value is \textit{frozen}, or not. 
 \textit{Frozen Service Trust} configuration means, that the peer $j$ has in eyes of $i$ \textit{static service trust} $st_{i, j}$ - it will never change and whatever data peer $j$ sends to $i$ will not influence the $st_{i,j}$.
 On the other hand, when this configuration is not selected, the peer's service trust is going to change during the time when it communicates with the local instance according to the data and interactions it provides.
 
-In a case when the peer is not pre-trusted, Fides evaluates if has \textit{enough} well trusted peers that it can trust to provide the correct recommendation. How many is \textit{"enough"} is subject to simulations in chapter \ref{ch:experiments}. This value as well as number of maximal peers used for recommendation, is configurable.
-In addition, administrator can enforce that for the recommendation protocol, only the pre-trusted peers or the peers from pre-trusted organizations are used.
+In a case when the peer is not pre-trusted, Fides evaluates if has \textit{enough} well-trusted peers that can be trusted to provide the correct recommendation. How many is \textit{"enough"} is subject to simulations in chapter \ref{ch:experiments}. This value as well as a number of maximal peers used for recommendation is configurable.
+In addition, the administrator can enforce that for the recommendation protocol, only the pre-trusted peers or the peers from pre-trusted organizations are used.
 
 \subsubsection{Recommendation Response}
-A single recommendation response from peer $z \in T_{i}$ about giving recommendation to peer $i$ about peer $j$ contains following data.
+A single recommendation response from peer $z \in T_{i}$ about giving the recommendation to peer $i$ about peer $j$ contains the following data.
 \begin{itemize}
     \item $cb_{z,j}$, $ib_{z,j}$ - summary of $z$'s interactions with $j$, competence belief and integrity belief
     \item $sh_{z,j}$ - service history size, number of the interactions between $z$ and $j$ - the more interactions they had, then the $z$'s recommendation has more credibility
@@ -160,25 +164,25 @@ When the local peer receives all recommendations, it computes reputation value $
 \end{equation}
 
 \noindent
-The weight, used in equation \ref{eq:reputation-value}, is the average of history sizes in all recommendations to $sh_{max}$, maximal interactions history size. 
+The weight, used in the equation \ref{eq:reputation-value}, is the average of history sizes in all recommendations to $sh_{max}$, maximal interactions history size. 
 We calculate $\mu_{sh}$ as follows.
 \begin{equation}
     \mu_{sh} = \frac{1}{|T_{i}|} \sum_{z \in T_{i}} sh_{z, j}
 \end{equation}
 \noindent
-Again, we are weighting local experience to remote experience. However, in this case it is local for remote peers that provided the recommendations.
+Again, we are weighting local experience to remote experience. However, in this case, it is local for remote peers that provided the recommendations.
 
 \subsection{Remote Local Experience}
 \label{subsec:remote-local-experience}
 \todo{This name is weird}
-Similarly as when we compute service trust in \ref{eq:service-trust}, we need to get competence and integrity belief.
+Similarly, when we compute service trust in \ref{eq:service-trust}, we need to get competence and integrity belief.
 However, while creating reputation value in \ref{eq:reputation-value} where the values are coming from the remote peers, we are trying to estimate those values received from the network.
 For that reason, we call them \textit{estimated competence belief} - $ecb_{i,j}$ and \textit{estimated integrity belief} - $eib_{i,j}$.
 
 \subsubsection{Estimated Competence Belief}
 $ecb_{i,j}$ is estimation about competence belief made by $i$ about $j$. 
 This value is computed from the received recommendations in combination with $rt_{i,z}$ - a \textit{recommendation trust} that $i$ has about $z$.
-Similarly as for service trust, we have a normalization coefficient $\beta_{ecb}$ that moves the resulting data to correct interval.
+Similarly, as for service trust, we have a normalization coefficient $\beta_{ecb}$ that moves the resulting data to the correct interval.
 It holds that $0 \leq ecb_{i,j} \leq 1$.
 
 \begin{equation}
@@ -208,7 +212,7 @@ This means that normalization coefficient $\beta_{eib} = \beta_{ecb}$.
 \subsection{Remote Remote Experience}
 Going back to equation \ref{eq:reputation-value} from section \ref{subsubsec:computing-reputation}, we use \textit{estimated reputation value} - $er_{i,j}$.
 This value represents information that was created by the peers, that are remote even for remote peer $j$. 
-Essentially making it an information that came from the \textit{second ring of trust} - from an acquaintances of an acquaintance.
+Essentially making it information that came from the \textit{second ring of trust} - from acquaintances of an acquaintance.
 
 \begin{equation}
 \label{eq:estimated-reputation}
@@ -220,13 +224,13 @@ Essentially making it an information that came from the \textit{second ring of t
 
 \subsection{Recommendation Trust Metric}
 \label{subsec:recommendation-trust-metric}
-Recommendation trust - $rt_{i,z}$ - is another metric that a peers calculate and store. It expresses how much does $i$ trust $z$, that it provides \textit{good recommendations}.
+Recommendation trust - $rt_{i,z}$ - is another metric that a peer calculate and store. It expresses how much does $i$ trust $z$, that it provides \textit{good recommendations}.
 Even though one could theoretically use service trust $st_{i, z}$ for this,
-we have another trust metric, because there are peers that can provide very good data (service), but they have very bad taste on other peers, or other way around.
-This also gives us the ability to have specialized nodes in the network, that serve as a peers registry for organizations - a single node that only provides recommendations on peers.
+we have another trust metric because there are peers that can provide very good data (service), but they have a very bad taste in other peers or the other way around.
+This also gives us the ability to have specialized nodes in the network, that serves as a peers registry for organizations - a single node that only provides recommendations on peers.
 
 We calculate recommendation trust in a similar way as the service trust and reputation, but we use recommendation competence belief $rcb_{i, z}$, recommendation integrity belief $rib_{i,z}$ and reputation $r_{i, z}$.
-This time, used weight is $rh_{i,z}$, which is size of the recommendations history provided by $z$ to $i$, and $rh_{max}$, a maximal size of said history.
+This time, we use weight is $rh_{i,z}$, which is the size of the history of the recommendations provided by $z$ to $i$, and $rh_{max}$, the maximal size of said history.
 
 \begin{equation}
 \label{eq:recommendation-trust}
@@ -239,7 +243,7 @@ This time, used weight is $rh_{i,z}$, which is size of the recommendations histo
 \label{subsubsec:recommendation-competence-integrity-belief}
 Similar for interactions, we use three different parameters for calculating the $rcb_{i, z}$ and $rib_{i,z}$. 
 We use satisfaction $rs^{x}_{i, z}$, weight $rw^{x}_{i, z}$ and the fading effect $rf^{x}_{i, z}$. 
-The parameters have the same background as described in section \ref{subsec:evaluating-an-interaction}, but in this case they are connected to recommendations instead of service.
+The parameters have the same background as described in the section \ref{subsec:interaction-satisfaction}, but in this case, they are connected to recommendations instead of service.
 We calculate $rcb_{i, z}$ as follows:
 
 \begin{equation}
@@ -256,24 +260,25 @@ And for recommendation integrity we compute $rib_{i, z}$ as:
 \end{equation}
 
 \noindent
-One more time, the computational model is trying to approximate average behavior in recommendations - $rcb_{i,z}$ - and its standard deviation from such behavior - $rib_{i,z}$.
+One more time, the computational model is trying to approximate average behavior in recommendations - $rcb_{i,z}$ - and then the deviation from such behavior - $rib_{i,z}$.
+
+Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsec:interaction-satisfaction}. It is a non-increasing function of a number of recommendations or a time. 
+For the recommendations, Fides implements it exactly the same as for the service interactions, thus $rf^{x}_{i, z} = \frac{x}{rh_{i, z}}, 1 \leq x \leq rh_{i,z}$.
 
 \subsubsection{Evaluating Received Recommendation}
-As outlined in section \ref{subsubsec:recommendation-competence-integrity-belief}, in order to evaluate particular recommendation from remote peer $z$, we have satisfaction, weight and fading effect. 
+As outlined in the section \ref{subsubsec:recommendation-competence-integrity-belief}, in order to evaluate a particular recommendation from remote peer $z$, we have satisfaction, weight, and the fading effect. 
 We calculate recommendation satisfaction $rs^{x}_{i,z}$ by comparing values from $z$'s recommendation $r_{z,j}$, $cb_{z,j}$, $ib_{z,j}$, with values that are the results of the the recommendation algorithm.
-In other words, we compare each recommendation, with the aggregated values - $er_{i,j}$, $ecb_{i,j}$ and $eib_{i,j}$. This gives us estimate how off, was the peer $z$'s recommendation from the final result of the recommendation algorithm.
+In other words, we compare each recommendation, with the aggregated values - $er_{i,j}$, $ecb_{i,j}$ and $eib_{i,j}$. This gives us an estimate of how off was the peer $z$'s recommendation from the final result of the recommendation algorithm.
 
 \begin{equation}
 \begin{split}
-    rs^{x}_{i,z} = \frac{1}{3} \left[ \left(1-\frac{\left|r_{z, j} - er_{i,j}\right|}{er_{i,j}}\right) + \left(1 - \frac{\left|cb_{z, j} - ecb_{i, j}\right|}{ecb_{i, j}}\right) + \left(1 - \frac{\left|ib_{z, j} - eib_{i, j}\right|}{eib_{i, j}}\right) \right]
+    rs^{x}_{i,z} = \frac{1}{3} \left[ \left(1-\frac{\left|r_{z, j} - er_{i,j}\right|}{er_{i,j}}\right) + \right. \\
+    \left(1 - \frac{\left|cb_{z, j} - ecb_{i, j}\right|}{ecb_{i, j}}\right) + \\
+    \left. \left(1 - \frac{\left|ib_{z, j} - eib_{i, j}\right|}{eib_{i, j}}\right)\vphantom{\frac{1}{2}}\right]
 \end{split}
 \end{equation}
-\todo{This seems to be too wide, make it smaller}
 
-We calculate weight of recommendation $rw^{x}_{i,z}$ as a weighted sum of proportion of size of thee service history between $z$ and $j$ with maximal service history size. And number of peers that provided the initial reputations $\eta_{z,j}$ divided by maximal number of possible recommending peers.
+We calculate the weight of recommendation $rw^{x}_{i,z}$ as a weighted sum of the proportion of the size of the service history between $z$ and $j$ with maximal service history size. And a number of peers that provided the initial reputations $\eta_{z,j}$ divided by a maximal number of possible recommending peers.
 \begin{equation}
     rw^{x}_{i,z} = \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}} \cdot \frac{sh_{z, j}}{sh_{max}} + \left(1 - \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}}\right) \cdot \frac{\eta_{z,j}}{\eta_{max}}
 \end{equation}
-
-Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsec:evaluating-an-interaction}. It is a non-increasing function of number of recommendation or time. 
-For the recommendations, Fides implements it exactly the same as for the service interactions, thus $rf^{x}_{i, z} = \frac{x}{rh_{i, z}}, 1 \leq x \leq rh_{i,z}$.

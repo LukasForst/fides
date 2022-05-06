@@ -2,7 +2,7 @@
 \label{sec:experiments-evaluation}
 
 Each experiment is evaluated with a single value $x$.
-The evaluation function (\ref{eq:simulation_evaluation_function}) weights the performance of detecting correct target score with the detection of peer behaviors.
+The evaluation function (\ref{eq:simulation_evaluation_function}) weights the performance of detecting the correct target score with the detection of peer behaviors.
 \begin{equation}
 \begin{split}
     x = w \cdot \frac{1}{|\tau|} \sum_{T \in \tau}\left|GS_{T} - S^{k_{max}}_{T} \right| + \left(1 - w\right) \cdot \frac{1}{|P|} \sum_{j \in P}\left|\bar{b_{j}} - st^{k_{max}}_{i, j} \right|
@@ -10,11 +10,11 @@ The evaluation function (\ref{eq:simulation_evaluation_function}) weights the pe
 \label{eq:simulation_evaluation_function}
 \end{equation}
 
-In the first part, we measure average target detection, or how close was score produced by the trust model to the ground truth.
-We use following notation - $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then score for given target computed by Fides at the end of the simulation.
+In the first part, we measure average target detection, or how close was score produced by the trust model is to the ground truth.
+We use the following notation - $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then the score for the given target computed by Fides at the end of the simulation.
 
 The second half is the evaluation that defines how close was trust model's service trust value for the remote peer to the peer's real behavior in the simulation.
-$P$ is set of remote peers in the simulation, $st^{k_{max}}_{i, j}$ is the service trust that the local trust model (\textit{i}) had for the remote peer (\textit{j}) at then end of the simulation.
+$P$ is the set of remote peers in the simulation, $st^{k_{max}}_{i, j}$ is the service trust that the local trust model (\textit{i}) had for the remote peer (\textit{j}) at the end of the simulation.
 $\bar{b_{j}}$ is then the ground truth behavior of the remote peer and we compute it in the equation \ref{eq:ground_truth_peer_behavior}.
 
 \begin{equation}
@@ -24,15 +24,15 @@ $\bar{b_{j}}$ is then the ground truth behavior of the remote peer and we comput
     \label{eq:ground_truth_peer_behavior}
 \end{equation}
 
-Recall description of the peers behaviors from section \ref{sec:peers-behavioral-patterns}, where each peer's behavior $b$ had $\mu^{b}_{s}$ that was used during threat intelligence sampling.
-Because sampled score is $<-1; 1>$ and service trust $<0; 1>$, we can not use the $\mu^{b}_{s}$ directly, but we need to scale it to correct interval.
+Recall the description of the peers' behaviors from the section \ref{sec:peers-behavioral-patterns}, where each peer's behavior $b$ had $\mu^{b}_{s}$ that was used during threat intelligence sampling.
+Because the sampled score is $<-1; 1>$ and service trust $<0; 1>$, we can not use the $\mu^{b}_{s}$ directly, but we need to scale it to the correct interval.
 Moreover, as malicious and incorrect peers  do have $\mu^{b}_{s}$ on the opposite scale that the ground truth is, we need to shift it before normalizing it.
-For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ for confident correct and uncertain behaviors and thus the equation \ref{eq:ground_truth_peer_behavior}.
+For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ for confident correct, and uncertain behaviors and thus the equation \ref{eq:ground_truth_peer_behavior}.
 
 \vspace{1cm}
 
 \noindent
 The simulations and experiments were designed to evaluate the trust model in multiple ways and environments.
-At the end, we run 165 890 different combinations of environment as well as setup parameters.
+In the end, we run 165 890 different combinations of the environment as well as setup parameters.
 During the simulations, we generated over 25 GB of raw data.
 In the next chapter (\ref{ch:results}) we describe how we evaluated the experiments and we learned about the trust model behavior in various environments.

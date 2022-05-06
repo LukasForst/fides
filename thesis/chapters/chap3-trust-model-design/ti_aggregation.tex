@@ -1,13 +1,13 @@
 \section{Network Intelligence Aggregation}
 \label{sec:network-intelligence-aggregation}
-Fides is a trust model designed for global peer-to-peer network that is created by instances of Slips.
+Fides is a trust model designed for global peer-to-peer networks that  consist of Slips instances.
 It is designed to support Slips in detecting malicious actors on the network and enables threat intelligence sharing between peers of Slips instances.
-Because Slips was designed to be as modular as possible, Fides is effectively running as a module which provides aggregated threat intelligence to Slips. 
-In other words, Fides provides a view on what does the network think about some threat intelligence target.
+Because Slips was designed to be as modular as possible, Fides is effectively running as a module that provides aggregated threat intelligence to Slips. 
+In other words, Fides provides a view of what the network thinks about some threat intelligence target.
 This means that Fides needs to be able to aggregate elements of threat intelligence from remote peers into a single value that is then presented to Slips - ($S^{k}_{T}$, $C^{k}_{T}$) - a network opinion on given target $T$ in window $k$.
 
-We need to be able to say, that some reports are better then others based on the service trust the local peer has in remote peer - $st^{k}_{i, j}$.
-Thus we need to weight every report based on this trust.
+We need to be able to say, that some reports are better than others based on the service trust the local peer has in remote peer - $st^{k}_{i, j}$.
+Thus we need to weigh every report based on this trust.
 Let $R^{k}_{i, T}$ denote a set of remote peers that provided threat intelligence ($S^{k}_{j, T}$, $C^{k}_{j, T}$) to a local peer $i$ and $ws^{k}_{j}$ weight of their report (computed by $i$ as a normalized service trust that it has in the remote peer).
 Then we can compute aggregated score $S^{k}_{T}$ like.
 \begin{equation}

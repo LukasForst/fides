@@ -1,29 +1,29 @@
 \section{Environment Simulation}
 \label{sec:environment-simulation}
 The time in the simulations is measured in \textit{clicks}. 
-The local instance of Fides performs a single action and receives responses from other peers in network in exactly \textit{one click}. 
-For example this is the series of events that happen a \textit{single click} - Fides asks network for threat intelligence, receives the responses, aggregates network opinion and evaluates the interactions with peers.
-Another series of evens happening in a \textit{single click} is the actions of  recommendation protocol: new peer joins the network, Fides asks for the recommendation on new peer, collects responses, computes reputation and evaluates the received recommendations.
-What is the relation of real time and \textit{clicks} depends solely on the network layer, mostly on speed of messages convergence described in depth in \cite{nl}.
+The local instance of Fides performs a single action and receives responses from other peers in the network in exactly \textit{one click}. 
+For example, this is the series of events that happen in a \textit{single click} - Fides asks the network for threat intelligence, receives the responses, aggregates network opinion, and evaluates the interactions with peers.
+Another series of events happening in a \textit{single click} is the actions of  recommendation protocol: a new peer joins the network, Fides asks for the recommendation for  a new peer, collects responses, computes reputation, and evaluates the received recommendations.
+What is the relation between the real time and \textit{clicks} depends solely on the network layer, mostly on the speed of messages convergence described in-depth in \cite{nl}.
 
-In order to simulate the environment, we have multiple parameters that corresponds with the expectations of how does the peer-to-peer network look like.
+In order to simulate the environment, we have multiple parameters that correspond with the expectations of how does the peer-to-peer network looks like.
 We start with \textbf{number of peers in network} - that simulates the size of the network and how many different peers can appear during the whole simulation.
 
-The network anatomy is another parameter for the simulation, where define what \textbf{percentage of peers} are using \textbf{what strategy} that were described in section \ref{sec:peers-behavioral-patterns}. 
+The network anatomy is another parameter for the simulation, where define what \textbf{percentage of peers} are using \textbf{what strategy} that were described in the section \ref{sec:peers-behavioral-patterns}. 
 In other words, how many peers in the network are adversarial and how many of them are being.
 
-Another parameter is \textbf{number of targets} (IP addresses and DNS domains) that will used when the Fides will be requesting the network threat intelligence.
+Another parameter is \textbf{number of targets} (IP addresses and DNS domains) that will be used when the Fides will be requesting the network threat intelligence.
 For each target, we know the label (malicious and being) and we will be sampling threat intelligence that came from the local Slips instance. 
-The local threat intelligence will be sampled from parameters of one of the strategies described in \ref{sec:peers-behavioral-patterns} - confident correct, uncertain or confident incorrect - which is yet another parameters that describes how does the local Slips behave.
+The local threat intelligence will be sampled from parameters of one of the strategies described in \ref{sec:peers-behavioral-patterns} - confident correct, uncertain or confident incorrect - which is yet another parameter that describes how the local Slips behave.
 
-For each remote peer we select one of the behaviors from \ref{sec:peers-behavioral-patterns}, \textbf{number of peers for each behavior} is determined by the configuration of the simulation.
-We also determine if the peer is pre-trusted or if its member of pre-trusted organization. \textbf{Percentage of pre-trusted peers} is again configurable.
+For each remote peer, we select one of the behaviors from \ref{sec:peers-behavioral-patterns}, \textbf{the number of peers for each behavior} is determined by the configuration of the simulation.
+We also determine if the peer is pre-trusted or if it is a member of the pre-trusted organization. \textbf{Percentage of pre-trusted peers} is again configurable.
 Next we determine the \textbf{time} (in $clicks$), when the peer is going to \textbf{join the network}. This allows us to evaluate the recommendation part of Fides, because if the peer joins late, Fides requests recommendations from the other peers which can lead to further problems if the recommending peers are adversarial.
 
 If the strategy selected in the previous step is malicious (with behavior \ref{subsubsec:malicious-peer}), we determine for \textbf{how many targets} is the peer going to \textbf{lie} about.
 This allows us to also simulate highly advanced attacker that lies only selectively for the targets that they control.
 It is not rational for the attacker to lie about targets that are not known to them as they do not gain any advantage from that. On the contrary, if they do not lie, they gain more trust which they can use to further influence the local decisions. 
 
-Last simulation parameter is how many \textit{clicks} is left at the beginning, for the pears to gain the initial trust.
-This means that in that initial time period, malicious peers will behave like confident (\ref{subsubsec:confident-correct-peer}), in order to gain initial trust, and after that they will switch to their own malicious behavior (\ref{subsubsec:malicious-peer}).
-This allows us to evaluate how fast is the trust model able to determine that the peer, with existing service trust, is malicious.
+The last simulation parameter is how many \textit{clicks} are left at the beginning, for the pears to gain the initial trust.
+This means that in that initial time period, malicious peers will behave like confident (\ref{subsubsec:confident-correct-peer}), in order to gain initial trust, and after that, they will switch to their own malicious behavior (\ref{subsubsec:malicious-peer}).
+This allows us to evaluate how fast is the trust model able to determine that the peer, with existing service trust, is malicious
