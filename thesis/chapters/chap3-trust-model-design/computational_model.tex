@@ -1,11 +1,22 @@
 \section{Computational Model of Fides}
 \label{sec:computational-model}
-This section describes how Fides computes its more important value: service trust. Service trust is a value that describes how much the local peer can trust a \textit{specific} remote peer. 
+This section describes how Fides to whom and how much it can trust to other remote peers.
+Our trust model expresses trust in a specif peer with metrics called \textit{service trust}.
+Service trust is a value that describes how much the local peer can trust a \textit{specific} remote peer. 
 
-Fides is based on the SORT~\cite{sort} algorithm, and it extends it so it can be used in P2P networks of intrusion prevention systems that share threat intelligence data.
+In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down to bits.
+Note, that there are two main ideas behind most of the equations. 
 
-The extensions are based on the interaction evaluation strategies proposed in \ref{sec:interaction-evaluation-strategies} and algorithms to solve cold start problem described in \ref{sec:cold-start-problem}. 
-The table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
+The first one is that we want to robustly capture average behavior of the peers. In order to do that, we will be trying to capture average behavior of the peers and then approximating the standard deviations from said behavior and normalizing them.
+
+Secondly, we will be comparing and weighting first hand experience with the remote experience. 
+First hand experience is what happened between local and remote peer during time they interacted. This can be, for example, threat intelligence sharing, file sharing or the results of recommendation protocol.
+Remote experience is what happened between one remote peer and another remote peer. In other words, first hand experience for peer $j$ are actions between $j$ and $z$. Whenever $j$ shares information about these actions with peer $i$, for $i$ it is a remote experience.
+
+\vspace{0.5cm}
+
+\noindent
+Note that the table \ref{tab:notation-computational-model} describes the most important notation we use in the following sections.
 
 \begin{table}[ht]
 \centering
@@ -32,21 +43,10 @@ The table \ref{tab:notation-computational-model} describes the most important no
 \label{tab:notation-computational-model}
 \end{table}
 
-\subsection{Intuition}
-In the following pages, we describe the process top-down starting with the most important parts - service trust - and then breaking it down to bits.
-There are two main ideas behind most of the equations. 
-
-The first one is that we want to robustly capture average behavior of the peers. In order to do that, we will be computing average behavior and standard deviations from said behavior and normalizing them.
-
-Secondly, we will be comparing and weighting first hand experience with the remote experience. 
-First hand experience is what happened between local and remote peer during time they interacted. This can be, for example, threat intelligence sharing, file sharing or the results of recommendation protocol.
-Remote experience is what happened between one remote peer and another remote peer. In other words, first hand experience for peer $j$ are actions between $j$ and $z$. When $j$ shares information about these action with peer $i$, for $i$ it is a remote experience.
-
 \subsection{Service Trust}
 \label{subsec:service-trust}
-One of the major goals of the algorithm is to compute the service trust $st_{i,j}$. 
-Service trust is a value that describes how much does peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
-We compute the value by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network, when it was first seen by $i$.
+As outlined previously, service trust $st_{i, j}$ is a value that describes how much does peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
+We compute the $st_{i, j}$ in equation \ref{eq:service-trust} by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network, when it was first seen by $i$.
 The used weight is the size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
 
 \begin{equation}
@@ -54,11 +54,11 @@ The used weight is the size of the service interaction history $sh_{i,j}$ to max
     st_{i,j}=\frac{sh_{i,j}}{sh_{max}} \cdot \left(cb_{i,j} - \frac{1}{2} ib_{i,j} \right) +\left(1-\frac{sh_{i,j}}{sh_{max}}\right) \cdot r_{i,j}
 \end{equation}
 
-The service trust equation (\ref{eq:service-trust}) implies that the more interaction there was between peers $i$ and $j$, the bigger impact on $st_{i,j}$ it has. 
-In other words, the more $i$ and $j$ interact the less $i$ rely on the reputation that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time and it 
+The equation \ref{eq:service-trust} implies that the more interaction there was between peers $i$ and $j$, the bigger impact on $st_{i,j}$ it has. 
+In other words, the more $i$ and $j$ interact the less $i$ rely on the reputation that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time by the peer $i$.
 
 \subsection{Local Experience for Service Trust}
-The first part of the equation \ref{eq:service-trust} contains \textit{competence belief}, $cb_{i,j}$, and $ib_{i,j}$ - \textit{integrity belief}.
+The first part of the equation \ref{eq:service-trust} contains \textit{competence belief} - $cb_{i,j}$, and \textit{integrity belief} - $ib_{i,j}$.
 Both of the values are based solely on the interactions history that peer $i$ experienced with the peer $j$.
 
 \subsubsection{Competence Belief}
