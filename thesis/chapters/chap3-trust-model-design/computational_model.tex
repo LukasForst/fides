@@ -150,7 +150,9 @@ A single recommendation response from peer $z \in T_{i}$ about giving the recomm
     \item $\eta_{z,j}$ - number of peers that provided recommendations for $j$ when $j$ was new to $z$ and their recommendation was used to compute $r_{z,j}$
 \end{itemize}
 
-\todo{Do we need to explain why did we added all these properties to a single recommendation? Original paper does that, but I'm not sure if we need to do that or not. (sebas: well, since you did it, we need to explain. Now don't delete)}
+$cb_{z,j}$, $ib_{z,j}$ are included in the recommendation in order to provide a view on what does $z$ think about $j$.
+$sh_{z,j}$ and $\eta_{z,j}$ are included to indicate how much experience with $j$ does $z$ actually have. To determine to which extent is the $z$ sure about correctness of $cb_{z,j}$, $ib_{z,j}$, $r_{z, j}$ in the recommendation.
+And also to protect the $z$'s recommendation trust in $i$'s eyes, if $cb_{z,j}$, $ib_{z,j}$, $r_{z, j}$ values are wrong, because $i$ inspects $sh_{z,j}$ and $\eta_{z,j}$ and does not penalize $z$ that much, if the history size or the number of original recommender are low.
 
 \subsubsection{Computing Reputation}
 \label{subsubsec:computing-reputation}
