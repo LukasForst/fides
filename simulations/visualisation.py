@@ -1,6 +1,7 @@
 from typing import Optional
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from simulations.environment import SimulationResult
 from simulations.peer import PeerBehavior
@@ -73,8 +74,15 @@ def plot_simulation_result(
     targets.sort()
 
     for target in targets:
-        score_plt.plot(time_scale, [c[target].score for c in target_progress], label=target)
-        confidence_plt.plot(time_scale, [c[target].confidence for c in target_progress], label=target)
+        score_plt.plot(time_scale, [c[target].score for c in target_progress],
+                       label=target, alpha=0.4, linewidth=0.5)
+        score_plt.plot(time_scale, moving_average([c[target].score for c in target_progress]),
+                       label=f'{target} (MM)')
+
+        confidence_plt.plot(time_scale, [c[target].confidence for c in target_progress],
+                            label=target, alpha=0.4, linewidth=0.5)
+        confidence_plt.plot(moving_average([c[target].confidence for c in target_progress]),
+                            label=f'{target} (MM)')
 
     score_plt.legend(loc=(1.04, 0), borderaxespad=0)
     confidence_plt.legend(loc=(1.04, 0), borderaxespad=0)
@@ -89,3 +97,9 @@ def plot_simulation_result(
         plt.savefig(save_output)
     else:
         plt.show()
+
+
+def moving_average(data, window=10):
+    # small hack to make the graph looks nice at the end
+    avg = np.average(data[-window:])
+    return np.convolve(data + ([avg] * (window - 1)), np.ones(window) / window, mode='valid')
