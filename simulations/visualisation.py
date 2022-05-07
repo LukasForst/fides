@@ -8,13 +8,15 @@ from simulations.peer import PeerBehavior
 
 def plot_simulation_result(
         result: SimulationResult,
-        title_override: Optional[str] = None
+        title_override: Optional[str] = None,
+        save_output: Optional[str] = None
 ):
     time_scale = list(result.peer_trust_history.keys())
 
     fig, axs = plt.subplots(3, 1, figsize=(10, 15))
     title = title_override if title_override else \
         f'ID: {result.simulation_id}\n' + \
+        f'History Size: {result.simulation_config.service_history_size}\n' + \
         f'Interaction Evaluation: {type(result.simulation_config.evaluation_strategy).__name__}\n' + \
         f'TI Aggregation: {type(result.simulation_config.ti_aggregation_strategy).__name__}\n' + \
         f'Local Slips is {result.simulation_config.local_slips_acts_as.name}\n' + \
@@ -80,8 +82,10 @@ def plot_simulation_result(
     plt.subplots_adjust(left=0.1,
                         right=0.7,
                         top=0.88,
-                        bottom=0.1,
+                        bottom=0.03,
                         wspace=0.4,
                         hspace=0.4)
-    plt.show()
-    plt.savefig('foo.png')
+    if save_output is not None:
+        plt.savefig(save_output)
+    else:
+        plt.show()
