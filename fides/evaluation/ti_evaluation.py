@@ -145,7 +145,7 @@ class LocalCompareTIEvaluation(DistanceBasedTIEvaluation):
         )
 
 
-class WeightedDistanceToLocalTIEvaluation(TIEvaluation):
+class WeighedDistanceToLocalTIEvaluation(TIEvaluation):
     """Strategy combines DistanceBasedTIEvaluation and LocalCompareTIEvaluation with the local weight parameter."""
 
     def __init__(self, **kwargs):
@@ -251,5 +251,5 @@ EvaluationStrategy = {
     'localDistance': LocalCompareTIEvaluation,
     'threshold': ThresholdTIEvaluation,
     'maxConfidence': MaxConfidenceTIEvaluation,
-    'weightedDistance': WeightedDistanceToLocalTIEvaluation
+    'weighedDistance': WeighedDistanceToLocalTIEvaluation
 }
