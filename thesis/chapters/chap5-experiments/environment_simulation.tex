@@ -10,10 +10,10 @@ In order to simulate the environment, we have multiple parameters that correspon
 We start with \textbf{number of peers in network} - that simulates the size of the network and how many different peers can appear during the whole simulation.
 
 The network anatomy is another parameter for the simulation, where define what \textbf{percentage of peers} are using \textbf{what strategy} that were described in the section \ref{sec:peers-behavioral-patterns}. 
-In other words, how many peers in the network are adversarial and how many of them are being.
+In other words, how many peers in the network are adversarial and how many of them are benign.
 
 Another parameter is \textbf{number of targets} (IP addresses and DNS domains) that will be used when the Fides will be requesting the network threat intelligence.
-For each target, we know the label (malicious and being) and we will be sampling threat intelligence that came from the local Slips instance. 
+For each target, we know the label (malicious and benign) and we will be sampling threat intelligence that came from the local Slips instance. 
 The local threat intelligence will be sampled from parameters of one of the strategies described in \ref{sec:peers-behavioral-patterns} - confident correct, uncertain or confident incorrect - which is yet another parameter that describes how the local Slips behave.
 
 For each remote peer, we select one of the behaviors from \ref{sec:peers-behavioral-patterns}, \textbf{the number of peers for each behavior} is determined by the configuration of the simulation.

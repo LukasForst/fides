@@ -11,17 +11,21 @@ We selected several solutions to this issue, which are all implemented in Fides.
 \label{subsec:static-initial-trust}
 In this approach, whenever the trust model encounters a new peer, it assigns a static value as an initial trust. The value is assigned by pre-choosing some third-party trust models in the configuration.
 
-For example, in \textbf{Dovecot} trust model, every peer starts with the trust of $1$ (highest possible), and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning, and only during this time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peer.
+For example, in the \textbf{Dovecot} trust model~\cite{dita} trust model, every peer starts with trust $1$ (highest possible), and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning, and only during this time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peer.
 
-On the other hand, \textbf{Sality} botnet uses \textit{goodcount} as a counter of interactions with any other peer, the higher the \textit{goodcount}, the higher trust the peer has for the local peer. The goodcount for each new peer starts with $0$. Meaning, that the botnet does not trust fresh peers at all and they can gain trust only by following the protocol which depends on a number of good interactions and time.
+On the other hand, the \textbf{Sality} botnet~\cite{falliere2011sality} uses a value called \textit{goodcount} as a counter of good interactions with any other peer, the larger the \textit{goodcount}, the greater trust the local peer has on the remote peer. The goodcount for each new peer starts with $0$ in Sality. Meaning, that the botnet does not trust fresh peers at all and they can gain trust only by following the Sality protocol.
 
-Static initial trust is easy to implement, but it somewhat requires assumptions about the network. If the network is considered \textit{mostly being}, it might be safe to use an initial trust of $1$, however for highly adversarial networks using an initial trust of $1$ might be dangerous and it is better to use $0$. 
-On the other hand, using low initial trust and no mechanism how to gain more trust fast means, that the being peers that joined recently, don't affect the final decisions of the model even though they might have useful information about adversaries.
+The model of \textit{static initial trust} is easy to implement, but it requires assumptions about the network. If the network is considered \textit{mostly benign}, it might be safe to use an initial trust of $1$, however for highly adversarial networks using an initial trust of $1$ might be dangerous and it is better to use $0$. 
+Using low initial trust and no mechanism how to gain more trust fast means, that the benign peers that joined recently, don't affect the final decisions of the model even though they might have useful information about adversaries.
 
 Static initial trust is supported by Fides as a form of fallback when no other cold start technique is used. The administrator provides a configuration that contains the initial reputation for each new peer.
 
 \subsection{Pre-Trusted Peers}
 \label{subsec:pre-trusted-peers}
+
+This master thesis was done simultaneously to the master thesis on global P2P security 
+
+
 In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership in some group, the trust model can utilize this knowledge and assign higher or lower trust.
 
 The network layer, designed for Slips and Fides, supports this\cite{nl} and provides a cryptographically-secure way how to identify a single peer in the network and its membership in an organization.

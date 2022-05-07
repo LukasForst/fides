@@ -29,9 +29,12 @@ Because the sampled score is $<-1; 1>$ and service trust $<0; 1>$, we can not us
 Moreover, as malicious and incorrect peers  do have $\mu^{b}_{s}$ on the opposite scale that the ground truth is, we need to shift it before normalizing it.
 For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ for confident correct, and uncertain behaviors and thus the equation \ref{eq:ground_truth_peer_behavior}.
 
-\vspace{1cm}
+\section{Simulations Execution}
+\label{sec:simulations-execution}
+In order to run all possible scenarios, we developed a framework, that allows us to simulate virtually any environment with various combinations of Fides configuration.
 
-\noindent
+
+
 The simulations and experiments were designed to evaluate the trust model in multiple ways and environments.
 In the end, we run 165 890 different combinations of the environment as well as setup parameters.
 During the simulations, we generated over 25 GB of raw data.

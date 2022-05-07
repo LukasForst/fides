@@ -1,16 +1,16 @@
 \section{Peer's Behavioral Patterns}
 \label{sec:peers-behavioral-patterns}
 For a sake of the experiments, every peer will follow one of the chosen behavior.
-We identified multiple different behavioral patterns for the being as well as for the malicious peers.
+We identified multiple different behavioral patterns for the benign as well as for the malicious peers.
 Every behavior is different and is defined by the $(\mu, \sigma)$ for every data we sample and by the intent the peer has in the network.
-Most of the behavior depends on the baseline, which is the ground truth for any target in the system - if it is being or malicious.
-We note baseline score as $S_{B} \in \{-1, 1\}$ - where $S_{B} = -1$, the target is malicious and $S_{B} = 1$ means that target is being.
+Most of the behavior depends on the baseline, which is the ground truth for any target in the system - if it is benign or malicious.
+We note baseline score as $S_{B} \in \{-1, 1\}$ - where $S_{B} = -1$, the target is malicious and $S_{B} = 1$ means that target is benign.
 
 
 \subsubsection{Confident Correct Peer}
 \label{subsubsec:confident-correct-peer}
 An honest peer that provides correct data according to the baseline. 
-Meaning, that if the target (domain/IP address that we have threat intelligence for) is being, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is being. 
+Meaning, that if the target (domain/IP address that we have threat intelligence for) is benign, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is benign. 
 Moreover, the peer will provide the data with high confidence.
 
 The very same thing applies to the situation when this peer is asked to provide a recommendation for any other peer. 
