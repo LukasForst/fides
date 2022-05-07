@@ -59,12 +59,11 @@ def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationRe
 
     random.shuffle(other_peers)
     if simulation_config.new_peers_join_between:
-        late_joining_peers_count, (start_joining, stop_joining) = simulation_config.new_peers_join_between
-        pretrusted_peers_ids = {p.id for p in config.trusted_peers}
+        cfg = simulation_config.new_peers_join_between
         late_joining_peers = [p for p in other_peers
-                              if p.peer_info.id not in pretrusted_peers_ids][:late_joining_peers_count]
+                              if cfg.peers_selector(p)][:cfg.number_of_peers_joining_late]
         for peer in late_joining_peers:
-            peer.network_joining_epoch = random.randint(start_joining, stop_joining)
+            peer.network_joining_epoch = random.randint(cfg.start_joining, cfg.stop_joining)
 
     peer_trust_history, targets_history = run_simulation(
         config=config,

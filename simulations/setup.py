@@ -1,11 +1,19 @@
 from dataclasses import dataclass
-from typing import Dict, Tuple, Optional
+from typing import Dict, Optional, Callable
 
 from fides.evaluation.ti_aggregation import TIAggregation
 from fides.evaluation.ti_evaluation import TIEvaluation
 from fides.model.configuration import RecommendationsConfiguration
-from simulations.peer import PeerBehavior
+from simulations.peer import PeerBehavior, Peer
 from simulations.utils import Click
+
+
+@dataclass
+class NewPeersJoiningLater:
+    number_of_peers_joining_late: int
+    start_joining: Click
+    stop_joining: Click
+    peers_selector: Callable[[Peer], bool]
 
 
 @dataclass
@@ -22,5 +30,5 @@ class SimulationConfiguration:
     evaluation_strategy: TIEvaluation
     ti_aggregation_strategy: TIAggregation
     local_slips_acts_as: PeerBehavior
-    new_peers_join_between: Optional[Tuple[int, Tuple[Click, Click]]] = None
+    new_peers_join_between: Optional[NewPeersJoiningLater] = None
     recommendation_setup: Optional[RecommendationsConfiguration] = None

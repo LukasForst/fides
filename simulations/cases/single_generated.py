@@ -4,7 +4,7 @@ from fides.model.configuration import RecommendationsConfiguration
 from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration
+from simulations.setup import SimulationConfiguration, NewPeersJoiningLater
 from simulations.visualisation import plot_simulation_result
 
 logger = Logger(__name__)
@@ -35,7 +35,12 @@ def run():
         ti_aggregation_strategy=AverageConfidenceTIAggregation(),
         # ti_aggregation_strategy=WeightedAverageConfidenceTIAggregation(),
         # ti_aggregation_strategy=StdevFromScoreTIAggregation(),
-        new_peers_join_between=(0, (10, 50)),
+        new_peers_join_between=NewPeersJoiningLater(
+            number_of_peers_joining_late=0,
+            start_joining=20,
+            stop_joining=50,
+            peers_selector=lambda x: x.label == PeerBehavior.CONFIDENT_CORRECT
+        ),
         recommendation_setup=RecommendationsConfiguration(
             enabled=False,
             only_connected=False,
