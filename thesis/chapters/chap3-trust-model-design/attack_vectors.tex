@@ -1,6 +1,6 @@
 \section{Attack Vectors}
 \label{sec:attack-vectors}
-As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about whether targets are malicious or being.
+As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about whether targets are malicious or benign.
 Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputation} if the recommendation protocol is enabled and eventually with the aggregated score and confidence.
 
 \subsection{Influencing Aggregated Score \& Confidence}
@@ -18,7 +18,7 @@ The recommendation protocol is engaged only in some cases (when the network is \
 When should we start the recommendation protocol is then part of the experiments described in section \ref{sec:environment-simulation}.
 
 However, the malicious peer can indirectly influence the service trust for any other remote peer in cases, when one of the interaction evaluation strategies - \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} or \ref{subsec:weigh-local-opinion-with-aggregated-one} is used.
-In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data than the being peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in being peers.
+In those cases, and when the malicious peer has significantly higher service trust and there are more malicious peers, that provide the opposite data than the benign peers, the group of malicious peers can influence the interaction evaluation result which will lower the service trust in benign peers.
 This is expected, as an interaction evaluation strategies \ref{subsec:distance-based-eval}, \ref{subsec:network-intelligence-conf-high-enough} and \ref{subsec:weigh-local-opinion-with-aggregated-one} use aggregated network opinion to evaluate the interactions thus if the \textit{wrong} opinion is in majority and while considering the service trust of each peer, it is taken into the account even though it is \textit{wrong}.
 
 For that reason, the intermediate goal of an attacker is to gain the service trust of the local peer in order to have \textit{any} influence over the decisions the Fides makes.
@@ -50,7 +50,7 @@ The intent of the malicious peers, in this case, is to lower someone's service t
 In a case of service trust, this is not possible directly, but rather by colluding with multiple high trusted peers as described in detail in section \ref{subsec:influencing-service-trust}.
 In the case of reputation, this is possible if the malicious peer is selected as a recommender.
 Fides mitigates both of these problems by asking numerous peers for their opinion (in case of service trust) and by asking only pre-selected and high trusted peers in case of recommendations.
-Of course, it is not possible to eliminate the possibility of a malicious peer being asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral patterns.
+Of course, it is not possible to eliminate the possibility of a malicious peer benign asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral patterns.
 In simulations we then evaluate what network topology is needed in order for the Fides, not to be easily manipulated into believing even the malicious peers.
 
 \textit{Inaccurate recommendations} are a type of \textit{unfair recommendation} when an honest peer provide wrong data due to a lack of complete information.
@@ -63,7 +63,7 @@ We simulate this in our experiments as well, because there will be peers, in the
 This is the \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
 
 Because of the nature of the Fides, which aggregates all network opinions it receives, the worst-case scenario is the situation where the attackers collude together because it amplifies their effect on the final aggregated score \& confidence.
-However, our trust model uses service trust during computing the final score with confidence so, in order for attackers to influence this decision, their total service trust must be higher than the service trust of the being peers.
+However, our trust model uses service trust during computing the final score with confidence so, in order for attackers to influence this decision, their total service trust must be higher than the service trust of the benign peers.
 This makes it harder for the adversary to overturn the decisions in their favor because it forces them to gain the service trust of all their peers.
 In simulations, we have malicious peers that collude (and lie about the same targets) as well as peers that do not collude and lie about different targets.
 
