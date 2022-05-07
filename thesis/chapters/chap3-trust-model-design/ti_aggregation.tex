@@ -31,14 +31,17 @@ The normalized service trust used as weight is computed as:
 
 Which estimates the percentage that the service trust on $j$ $st^{k}_{i, j}$ has relative to the total sum of service trust received by $i$ for all peers, for this target $T$, on time window $k$.
 
-Apart from the aggregated score, Fides needs to compute the aggregated confidence $C^{k}_{T}$ that expresses how confident $i$ are about the $S^{k}_{T}$ that was computed in the previous step.
-Again, we use service trust to compute this for each remote peer and normalize it. 
+Apart from the aggregated score, Fides needs to compute the aggregated confidence $C^{k}_{T}$ that expresses how confident $i$ is about the aggregated score $S^{k}_{T}$ that was computed in the previous step. The aggregated confidence is:
+
 \begin{equation}
 \begin{split}
-    C^{k}_{T} &= \frac{1}{|R^{k}_{i, T}|} \cdot \sum_{{j}\in R^{k}_{T}} st^{k}_{i, j} \cdot C^{k}_{j, T}
+    C^{k}_{T} &= \frac{1}{|R^{k}_{i, T}|} \cdot \sum_{{j}\in R^{k}_{i, T}} st^{k}_{i, j} \cdot C^{k}_{j, T}
 \end{split}
 \end{equation}
 
-\noindent 
-Aggregated score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) is then sent to Slips.
-Depending on the selected interaction evaluation strategy (described in \ref{sec:interaction-evaluation-strategies}), these values can be further used to evaluate each interaction with the remote peers.
+Which is an average, over all the peers that sent to $i$ a report on $T$ in time window $k$, of the weighted confidence sent by peer $j$ on target $T$ on time window $k$. The weight is done by the service trust that $i$ has on $j$ on time window $k$.
+
+
+The aggregated score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) are then sent to Slips about the report on target $T$.
+
+Apart from sending to Slips, these same values can be used to evaluate the interaction the the remote peers, depending on the selected interaction evaluation strategy (described in \ref{sec:interaction-evaluation-strategies}).
