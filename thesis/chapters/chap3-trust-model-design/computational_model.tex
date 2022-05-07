@@ -46,7 +46,7 @@ Note that the table \ref{tab:notation-computational-model} describes the most im
 \subsection{Service Trust}
 \label{subsec:service-trust}
 As outlined previously, service trust $st_{i, j}$ is a value that describes how much peer $i$ trusts that remote peer $j$ will provide a \textit{good service}.
-We compute the $st_{i, j}$ in the equation \ref{eq:service-trust} by weighting local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
+We compute the $st_{i, j}$ in the equation \ref{eq:service-trust} by weighing local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
 The used weight is the size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
 
 \begin{equation}
@@ -156,7 +156,7 @@ And also to protect the $z$'s recommendation trust in $i$'s eyes, if $cb_{z,j}$,
 
 \subsubsection{Computing Reputation}
 \label{subsubsec:computing-reputation}
-When the local peer receives all recommendations, it computes reputation value $r_{i,j}$ as a weighted expected local experience ($ecb_{i,j}$, $eib_{i,j}$ - estimates about competence and integrity) from the remote peers with their remote experience ($er_{i,j}$ - estimate about reputation of said peer).
+When the local peer receives all recommendations, it computes reputation value $r_{i,j}$ as a weighed expected local experience ($ecb_{i,j}$, $eib_{i,j}$ - estimates about competence and integrity) from the remote peers with their remote experience ($er_{i,j}$ - estimate about reputation of said peer).
 
 \begin{equation}
 \label{eq:reputation-value}
@@ -172,7 +172,7 @@ We calculate $\mu_{sh}$ as follows.
     \mu_{sh} = \frac{1}{|T_{i}|} \sum_{z \in T_{i}} sh_{z, j}
 \end{equation}
 \noindent
-Again, we are weighting local experience to remote experience. However, in this case, it is local for remote peers that provided the recommendations.
+Again, we are weighing local experience to remote experience. However, in this case, it is local for remote peers that provided the recommendations.
 
 \subsection{Remote Local Experience}
 \label{subsec:remote-local-experience}
@@ -280,7 +280,7 @@ In other words, we compare each recommendation, with the aggregated values - $er
 \end{split}
 \end{equation}
 
-We calculate the weight of recommendation $rw^{x}_{i,z}$ as a weighted sum of the proportion of the size of the service history between $z$ and $j$ with maximal service history size. And a number of peers that provided the initial reputations $\eta_{z,j}$ divided by a maximal number of possible recommending peers.
+We calculate the weight of recommendation $rw^{x}_{i,z}$ as a weighed sum of the proportion of the size of the service history between $z$ and $j$ with maximal service history size. And a number of peers that provided the initial reputations $\eta_{z,j}$ divided by a maximal number of possible recommending peers.
 \begin{equation}
     rw^{x}_{i,z} = \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}} \cdot \frac{sh_{z, j}}{sh_{max}} + \left(1 - \frac{\lfloor\mu_{sh}\rfloor}{sh_{max}}\right) \cdot \frac{\eta_{z,j}}{\eta_{max}}
 \end{equation}
