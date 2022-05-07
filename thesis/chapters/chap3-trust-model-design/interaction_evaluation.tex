@@ -120,7 +120,7 @@ In order to do that, we combine all previous strategies into one, where we utili
 We introduce new variables here - $w_{0}, w_{1}, w_{2}$ - which are essentially weights of the particular strategies. These weights are based on the confidence, that the strategy has in its own decision.
 Note, that there is a hierarchy and the order matters. 
 In our case we decided to prefer decisions coming from strategy $DistanceBasedTIEvaluation$~\ref{subsec:distance-based-eval}, then we add data from the $LocalCompareTIEvaluation$~\ref{subsec:use-local-threat-to-evaluate} and if the final decision still does not have the confidence of $1$, we add static value configured by the administrator (noted as $S_{C}$). 
-The last part - $S_{C}$ - simulates the static strategy described in \ref{subsec:same-eval-for-all-interactions} and is set by the Slips administrator.
+The last part - $S_{C}$ - simulates the static strategy described in strategy $EvenTIEvaluation$ (\ref{subsec:same-eval-for-all-interactions}) and is set by the Slips administrator.
 
 \begin{equation}
 \label{equation:strategies-weights}

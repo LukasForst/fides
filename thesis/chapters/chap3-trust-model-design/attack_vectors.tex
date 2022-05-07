@@ -1,13 +1,15 @@
 \section{Attack Vectors}
 \label{sec:attack-vectors}
-As the trust model is computing how much to trust to which peer, it is an interesting endpoint for an attacker, which would like to manipulate the final decisions about whether targets are malicious or benign.
-Our trust model is exposed to several attack vectors that where the attacker can either manipulate with the \textit{service trust} or with the \textit{reputation} if the recommendation protocol is enabled and eventually with the aggregated score and confidence.
+Since Fides is a trust model that computes how much to trust peers, it is potentially open to attacks from adversarial peers. Adversarial peers are peers that known how to talk the protocol and manipulate the recommendations, or threat intelligence data in order to influence the final decisions.
+
+Adversarial peers can try to (i) send bad threat intelligence data; (ii) lie about a peer that is benign, (iii) lie about a peer that is malicious.
 
 \subsection{Influencing Aggregated Score \& Confidence}
 \label{subsec:influencing-aggregated-score-confidence}
-The final result of the work, the trust model is doing, is aggregated score and confidence.
-Any attacker wants to ultimately influence these aggregated values either to make malicious IP/domain seem to be or another way around.
-However, for that to happen, the attacker needs to gain sufficient service trust like that used while computing the aggregated opinion.
+The main output of Fides is the aggregated score and confidence of a group of reports on a target. The sequence of actions typically are (i) Slips wants to know what the P2P network thinks about target $T$. It then asks some peers (ii), and (iii) uses Fides to aggregate the scores and confidences sent by all the peers. The aggregated score and confidences are used for computing the service trust of peers and also to weight the aggregated score and confidence of the data sent by the peers.
+
+Any attacker wants to ultimately influence these aggregated values either to make malicious IP/domain seem to be benign or another way around.
+However, for that to happen, the attacker needs to gain sufficient service trust.
 For more information about the aggregated threat intelligence see section \ref{sec:network-intelligence-aggregation}.
 
 \subsection{Influencing Service Trust}
@@ -46,12 +48,12 @@ The peer does not need to be necessarily malicious in order to do that, it can a
 In the case of Fides, these types of attacks can be against service trust as well as the reputation system.
 Moreover, the malicious peers can collude together to amplify the effect on the final computations of the trust model.
 
-The intent of the malicious peers, in this case, is to lower someone's service trust/reputation (\textit{badmouthing attack}) or on the other hand, to make somebody's service trust/reputation higher (\textit{unfair praises}).
+The intent of the malicious peers, in this case, is to lower someone's service trust/reputation (\textit{badmouthing attack}) or to make somebody's service trust/reputation higher (\textit{unfair praises}).
 In a case of service trust, this is not possible directly, but rather by colluding with multiple high trusted peers as described in detail in section \ref{subsec:influencing-service-trust}.
 In the case of reputation, this is possible if the malicious peer is selected as a recommender.
 Fides mitigates both of these problems by asking numerous peers for their opinion (in case of service trust) and by asking only pre-selected and high trusted peers in case of recommendations.
 Of course, it is not possible to eliminate the possibility of a malicious peer benign asked for the recommendations, that's why, in experiments, we simulate malicious peers as \textit{Malicious Peer} (\ref{subsubsec:malicious-peer}) behavioral patterns.
-In simulations we then evaluate what network topology is needed in order for the Fides, not to be easily manipulated into believing even the malicious peers.
+In simulations we then evaluate what network topology is needed in order for Fides not to be easily manipulated into believing the malicious peers.
 
 \textit{Inaccurate recommendations} are a type of \textit{unfair recommendation} when an honest peer provide wrong data due to a lack of complete information.
 This can happen for example because they were not attacked by the adversary (yet), and they consider them to be benign because they have no reason to see it otherwise.
