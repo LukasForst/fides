@@ -89,7 +89,7 @@ def plot_simulation_result(
 
     plt.subplots_adjust(left=0.1,
                         right=0.7,
-                        top=0.88,
+                        top=0.87,
                         bottom=0.03,
                         wspace=0.4,
                         hspace=0.4)
