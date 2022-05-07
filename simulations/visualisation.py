@@ -84,3 +84,4 @@ def plot_simulation_result(
                         wspace=0.4,
                         hspace=0.4)
     plt.show()
+    plt.savefig('foo.png')

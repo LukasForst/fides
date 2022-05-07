@@ -14,7 +14,7 @@ from simulations.utils import Click
 
 
 class PeerBehavior(Enum):
-    # being behaviors
+    # benign behaviors
     CONFIDENT_CORRECT = 'CONFIDENT_CORRECT',
     UNCERTAIN_PEER = 'UNCERTAIN_PEER',
     CONFIDENT_INCORRECT = 'CONFIDENT_INCORRECT',

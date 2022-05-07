@@ -9,7 +9,7 @@ class ThreatIntelligence:
     """Representation of peer's opinion on a subject (IP address or domain)."""
 
     score: Score
-    """How much is subject malicious or being.
+    """How much is subject malicious or benign.
     
     -1 <= score <= 1
     """

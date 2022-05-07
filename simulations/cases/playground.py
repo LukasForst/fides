@@ -67,7 +67,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                 for target in targets:
                     for malicious_target in malicious_targets:
                         malicious_targets_count = int(target * malicious_target)
-                        being_targets_count = target - malicious_targets_count
+                        benign_targets_count = target - malicious_targets_count
                         for malicious_peers_lie_about in malicious_peers_lie_abouts:
                             for gaining_trust_period in gaining_trust_periods:
                                 for simulation_length in simulation_lengths:
@@ -77,7 +77,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                                                 for initial_reputation in initial_reputations:
                                                     for local_slips_acts_as in local_slips_acts_ass:
                                                         simulation_configuration = SimulationConfiguration(
-                                                            benign_targets=being_targets_count,
+                                                            benign_targets=benign_targets_count,
                                                             malicious_targets=malicious_targets_count,
                                                             malicious_peers_lie_about_targets=malicious_peers_lie_about,
                                                             peers_distribution=p_distribution,

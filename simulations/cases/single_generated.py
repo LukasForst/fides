@@ -1,5 +1,5 @@
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
-from fides.evaluation.ti_evaluation import DistanceBasedTIEvaluation
+from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation
 from fides.model.configuration import RecommendationsConfiguration
 from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
@@ -16,20 +16,20 @@ def run():
         malicious_targets=1,
         malicious_peers_lie_about_targets=1.0,
         peers_distribution={
-            PeerBehavior.CONFIDENT_CORRECT: 6,
-            PeerBehavior.UNCERTAIN_PEER: 0,
+            PeerBehavior.CONFIDENT_CORRECT: 2,
+            PeerBehavior.UNCERTAIN_PEER: 1,
             PeerBehavior.CONFIDENT_INCORRECT: 0,
-            PeerBehavior.MALICIOUS_PEER: 5,
+            PeerBehavior.MALICIOUS_PEER: 1,
         },
         simulation_length=200,
         malicious_peers_lie_since=25,
         service_history_size=100,
         pre_trusted_peers_count=0,
-        initial_reputation=0.9,
+        initial_reputation=0.0,
         local_slips_acts_as=PeerBehavior.CONFIDENT_CORRECT,
         # evaluation_strategy=LocalCompareTIEvaluation(),
-        # evaluation_strategy=MaxConfidenceTIEvaluation(),
-        evaluation_strategy=DistanceBasedTIEvaluation(),
+        evaluation_strategy=MaxConfidenceTIEvaluation(),
+        # evaluation_strategy=DistanceBasedTIEvaluation(),
         # evaluation_strategy=ThresholdTIEvaluation(threshold=0.5),
         # evaluation_strategy=EvenTIEvaluation(),
         ti_aggregation_strategy=AverageConfidenceTIAggregation(),

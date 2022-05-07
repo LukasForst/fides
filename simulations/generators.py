@@ -41,7 +41,7 @@ def generate_simulations(evaluation_strategies, gaining_trust_periods, initial_r
                 for target in targets:
                     for malicious_target in malicious_targets:
                         malicious_targets_count = int(target * malicious_target)
-                        being_targets_count = target - malicious_targets_count
+                        benign_targets_count = target - malicious_targets_count
                         for malicious_peers_lie_about in malicious_peers_lie_abouts:
                             for gaining_trust_period in gaining_trust_periods:
                                 for simulation_length in simulation_lengths:
@@ -51,7 +51,7 @@ def generate_simulations(evaluation_strategies, gaining_trust_periods, initial_r
                                                 for initial_reputation in initial_reputations:
                                                     for local_slips_acts_as in local_slips_acts_ass:
                                                         simulation_configuration = SimulationConfiguration(
-                                                            benign_targets=being_targets_count,
+                                                            benign_targets=benign_targets_count,
                                                             malicious_targets=malicious_targets_count,
                                                             malicious_peers_lie_about_targets=malicious_peers_lie_about,
                                                             peers_distribution=p_distribution,
@@ -105,11 +105,11 @@ def generate_peers_distributions() -> List[List[float]]:
     return data
 
 
-def generate_targets(being: int, malicious: int) -> Dict[Target, Score]:
-    being = [(f"BEING #{i}", 1) for i in range(being)]
+def generate_targets(benign: int, malicious: int) -> Dict[Target, Score]:
+    benign = [(f"BENIGN #{i}", 1) for i in range(benign)]
     malicious = [(f"MALICIOUS #{i}", -1) for i in range(malicious)]
 
-    all_targets = being + malicious
+    all_targets = benign + malicious
 
     random.shuffle(all_targets)
     return {target: score for (target, score) in all_targets}

@@ -29,7 +29,7 @@ class SimulationResult:
 
 
 def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationResult:
-    targets = generate_targets(being=simulation_config.benign_targets, malicious=simulation_config.malicious_targets)
+    targets = generate_targets(benign=simulation_config.benign_targets, malicious=simulation_config.malicious_targets)
     malicious_lie_about = list(targets.keys())
     random.shuffle(malicious_lie_about)
     malicious_lie_about = malicious_lie_about[: int(len(targets) * simulation_config.malicious_peers_lie_about_targets)]
