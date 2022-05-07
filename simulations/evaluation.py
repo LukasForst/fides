@@ -20,6 +20,7 @@ class SimulationEvaluation:
     avg_accumulated_trust: float
 
     evaluation: float
+    env_hardness: float
 
 
 # (environment_group, (setup_label, evaluation))
@@ -59,7 +60,8 @@ def evaluate_simulation(result: SimulationResult, weight: float = 0.7) -> Simula
         avg_target_diff=avg_target_diff,
         avg_peers_diff=avg_peers_diff,
         evaluation=weight * avg_target_diff + (1 - weight) * avg_peers_diff,
-        avg_accumulated_trust=avg_accumulated_trust
+        avg_accumulated_trust=avg_accumulated_trust,
+        env_hardness=env_hardness(result)
     )
 
 
@@ -85,6 +87,15 @@ def compute_label(result: SimulationResult) -> str:
     a = type(result.simulation_config.ti_aggregation_strategy).__name__
     rep = result.simulation_config.initial_reputation
     return f'{e}|{a}|{rep}'
+
+
+def env_hardness(result: SimulationResult) -> float:
+    environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
+    local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
+    pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
+
+    d = environment_mean_trust + local_slips + pretrusted_peers
+    return round(d, 1)
 
 
 # noinspection PyTypeChecker
