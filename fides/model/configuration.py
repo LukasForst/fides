@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Union
 
-import yaml
-
 from fides.evaluation.ti_aggregation import TIAggregationStrategy, TIAggregation
 from fides.evaluation.ti_evaluation import TIEvaluation, EvaluationStrategy
 from fides.model.aliases import OrganisationId, PeerId
@@ -134,6 +132,7 @@ class TrustModelConfiguration:
 def load_configuration(file_path: str) -> TrustModelConfiguration:
     with open(file_path, "r") as stream:
         try:
+            import yaml
             return __parse_config(yaml.safe_load(stream))
         except Exception as exc:
             Logger('config_loader').error(f"It was not possible to load file! {exc}.")
