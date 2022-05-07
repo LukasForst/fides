@@ -23,12 +23,9 @@ Static initial trust is supported by Fides as a form of fallback when no other c
 \subsection{Pre-Trusted Peers}
 \label{subsec:pre-trusted-peers}
 
-This master thesis was done simultaneously to the master thesis on global P2P security 
+This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Martin Repa\cite{nl} which implements the new idea of pre-trusted peers in organizations for the Slips IDS. Therefore, we worked with the concept of pre-trusted organizations which have pre-trusted peers. In this case, Fides can use this knowledge and assign a higher or lower trust to new peers.
 
-
-In a case, when the peer-to-peer network protocol allows peers to prove their identity, or to prove membership in some group, the trust model can utilize this knowledge and assign higher or lower trust.
-
-The network layer, designed for Slips and Fides, supports this\cite{nl} and provides a cryptographically-secure way how to identify a single peer in the network and its membership in an organization.
+The global P2P framework implemented by Repa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
 This allows administrators to \textit{pre-trust} peers or the whole organization - by assigning them either initial reputation or service trust directly.
 
 The Fides configuration allows administrators to specify static initial reputation for the specific peer or for all peers from the specific organization. 

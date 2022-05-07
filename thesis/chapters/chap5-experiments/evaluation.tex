@@ -31,11 +31,13 @@ For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ 
 
 \section{Simulations Execution}
 \label{sec:simulations-execution}
-In order to run all possible scenarios, we developed a framework, that allows us to simulate virtually any environment with various combinations of Fides configuration.
-
-
-
 The simulations and experiments were designed to evaluate the trust model in multiple ways and environments.
-In the end, we run 165 890 different combinations of the environment as well as setup parameters.
+In order to run arbitrary scenarios, we developed a framework, that allows us to simulate virtually any environment with various combinations of Fides configuration.
+
+Unfortunately, it is not possible to run and evaluate all possible scenarios, as there are 14 different sets of parameters that can have many different values.
+This leads to the state explosion and therefore we were unable to cover all existing scenarios. 
+However, alongside the Fides implementation, we published the simulation framework as well so anybody can simulate their preferred scenarios.
+
+In the end, we reduced possible values for all parameters to ones, that we consider most important and run 165 890 different combinations of the environment as well as setup parameters.
 During the simulations, we generated over 25 GB of raw data.
 In the next chapter (\ref{ch:results}) we describe how we evaluated the experiments and we learned about the trust model behavior in various environments.
