@@ -112,7 +112,8 @@ What the correct balance is,  is subject to simulations and configuration from t
 \noindent
 In Fides implemented as the $WeighedDistanceToLocalTIEvaluation$.
 
-\subsection{MaxConfidenceEvaluation}
+\subsection{MaxConfidenceTIEvaluation}
+\label{subsec:MaxConfidenceTIEvaluation}
 The goal of this strategy is to evaluate the received data with as much confidence as possible while having a fully automatic process without the administrator's configuration.
 In order to do that, we combine all previous strategies into one, where we utilize all available information into a single $s^{k}_{i, j}$ value.
 
@@ -143,4 +144,4 @@ When we have the weights, we can compute final $s^{k}_{i, j}$ where we use strat
 \end{equation}
 
 \noindent
-This strategy is implemented in Fides under a name $MaxConfidenceEvaluation$.
+This strategy is implemented in Fides under a name $MaxConfidenceTIEvaluation$.

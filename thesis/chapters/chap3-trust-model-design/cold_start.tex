@@ -26,22 +26,18 @@ Static initial trust is supported by Fides as a form of fallback when no other c
 This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Martin Repa\cite{nl} which implements the new idea of pre-trusted peers in organizations for the Slips IDS. Therefore, we worked with the concept of pre-trusted organizations which have pre-trusted peers. In this case, Fides can use this knowledge and assign a higher or lower trust to new peers.
 
 The global P2P framework implemented by Repa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
-This allows administrators to \textit{pre-trust} peers or the whole organization - by assigning them either initial reputation or service trust directly.
+This allows Fides to \textit{pre-trust} specific peers or all the peers from organizations by assigning them an initial value.
 
-The Fides configuration allows administrators to specify static initial reputation for the specific peer or for all peers from the specific organization. 
-This means that whenever a new peer joins the network and it is pre-trusted, it gains the initial reputation specified in the configuration.
-During this time, it interacts with the local peer and provides threat intelligence, the data are evaluated and the trust model decides how much it trusts them (assigns service trust) based on the reputation and the quality of the data. In detail is this process described in \ref{sec:interaction-evaluation-strategies}.
+Fides can be configured to use pre-trust in two different ways. First, to assign the pre-trusted peers an initial \textit{reputation}. This means that the peer will have an initial reputation, but it will be required to interact with the local peer and it will slowly change that initial reputation according to its interactions with others. All the interactions will be evaluated and Fides will compute a service trust for the peer, as described in Section~\ref{sec:interaction-evaluation-strategies}. 
 
-Another option, the administrator can use, is to enforce the service trust for the peer for the time being. This effectively means that the trust model will not evaluate any data received from the pre-trusted peer and directly assigns them service trust from the configuration. This configuration for the Fides is called \textit{enforceTrust}.
+Second, Fides can use the initial pre-trusted value read from the configuration as the final service trust. This effectively means that Fides will not evaluate any data received from the pre-trusted peer and this service trust will be kept forever. This configuration for the Fides is called \textit{enforceTrust}.
 
-Option to pre-trust peers solves the cold start problem for specific peers and organizations, as they will start with/keep a high reputation.
-Which organization or which peer to trust or not is entirely on the administrator of the trust model. The inspiration for whom to trust provides, for example, Tor and their directory authorities~\cite{torauth}.
-However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
+Both options solves the cold start problem for specific peers and organizations, as they will start with a high reputation or fixed service trust. Which organization or peer to trust is completely left to the administrator of Slips. 
+%The inspiration for whom to trust provides, for example, Tor and their directory authorities~\cite{torauth}. However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
 
 \subsection{Recommendations}
 \label{subsec:recommendations}
-As the local peer might have multiple remote peers, that it \textit{trusts enough}, it could be able to utilize this relationship and ask remote peers \textit{what they think about newcomer}. 
-In other words, whenever a local peer encounters a peer that wasn't seen before, they can ask for a recommendation on this peer from the local peer's most trusted remote peers.
+As the local peer might have multiple remote peers that it trusts enough, Fides uses these relationships to ask the remote peers about how much they trust a new peer. Fides only asks for recommendations when the local peer finds a new peer.  
 
 The recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peers that might have some threat intelligence about the malicious actor. 
 These attacks are called \textit{bad-mouthing} and \textit{unfair praises} and we need to consider them and implement countermeasures.
