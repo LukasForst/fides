@@ -93,7 +93,7 @@ def plot_simulation_result(
                         bottom=0.03,
                         wspace=0.4,
                         hspace=0.4)
-    if save_output is not None:
+    if save_output:
         plt.savefig(save_output)
     else:
         plt.show()
