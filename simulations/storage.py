@@ -11,7 +11,7 @@ from fides.model.configuration import RecommendationsConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from simulations.environment import SimulationResult
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration
+from simulations.setup import SimulationConfiguration, NewPeersJoiningLater
 
 
 def store_simulation_result(
@@ -51,8 +51,7 @@ def _serialize_configuration(cfg: SimulationConfiguration) -> Dict:
         'evaluation_strategy': type(cfg.evaluation_strategy).__name__,
         'ti_aggregation_strategy': type(cfg.ti_aggregation_strategy).__name__,
         'local_slips_acts_as': cfg.local_slips_acts_as.name,
-        'new_peers_join_between': f'{cfg.new_peers_join_between[0]}, {cfg.new_peers_join_between[1][0]},'
-                                  f' {cfg.new_peers_join_between[1][1]}' if cfg.new_peers_join_between else None,
+        'new_peers_join_between': _serialize_peers_joining_late(cfg.new_peers_join_between),
         'recommendation_setup': asdict(cfg.recommendation_setup) if cfg.recommendation_setup else None
     }
 
@@ -60,10 +59,6 @@ def _serialize_configuration(cfg: SimulationConfiguration) -> Dict:
 def read_simulation(file_name: str) -> SimulationResult:
     with open(file_name, 'r') as f:
         data = json.load(f)
-    new_peers_join_between = data['configuration']['new_peers_join_between']
-    if new_peers_join_between:
-        count, start, end = new_peers_join_between.split(', ')
-        new_peers_join_between = count, (start, end)
     peer_trust_history = {}
     targets = {}
     for click, events in data['data'].items():
@@ -87,7 +82,7 @@ def read_simulation(file_name: str) -> SimulationResult:
             evaluation_strategy=globals()[data['configuration']['evaluation_strategy']](),
             ti_aggregation_strategy=globals()[data['configuration']['ti_aggregation_strategy']](),
             local_slips_acts_as=PeerBehavior[data['configuration']['local_slips_acts_as']],
-            new_peers_join_between=new_peers_join_between,
+            new_peers_join_between=_deserialize_peers_joining_late(data['configuration']['new_peers_join_between']),
             recommendation_setup=from_dict(data_class=RecommendationsConfiguration, data=d)
             if (d := data['configuration']['recommendation_setup']) else None
         ),
@@ -95,4 +90,29 @@ def read_simulation(file_name: str) -> SimulationResult:
         targets_history=targets,
         targets_labels=data['targets_labels'],
         peers_labels={peer_id: PeerBehavior[behavior_name] for peer_id, behavior_name in data['peers_labels'].items()}
+    )
+
+
+def _serialize_peers_joining_late(cfg: Optional[NewPeersJoiningLater]) -> Optional[dict]:
+    if cfg is None:
+        return None
+    return {
+        'number_of_peers_joining_late': cfg.number_of_peers_joining_late,
+        'start_joining': cfg.start_joining,
+        'stop_joining': cfg.stop_joining
+    }
+
+
+def _deserialize_peers_joining_late(d: dict) -> Optional[NewPeersJoiningLater]:
+    if d is None:
+        return None
+
+    def default_selector(x):
+        raise Exception('Can not deserialize peers selector! Do not replay serialized data.')
+
+    return NewPeersJoiningLater(
+        number_of_peers_joining_late=d['number_of_peers_joining_late'],
+        start_joining=d['start_joining'],
+        stop_joining=d['stop_joining'],
+        peers_selector=default_selector
     )
