@@ -26,6 +26,7 @@ def execute_all_parallel_simulation_configurations(configs: List[SimulationConfi
     enumerated_sims = [(idx, sims_number, output_folder, sim) for idx, sim in enumerate(configs)]
     with ProcessPoolExecutor() as executor:
         executor.map(execute_parallel_simulation_configuration, enumerated_sims)
+    logger.warn(f"Executed {sims_number} simulations.")
 
 
 def execute_parallel_simulation_configuration(i: Tuple[int, int, str, SimulationConfiguration]):
@@ -33,10 +34,9 @@ def execute_parallel_simulation_configuration(i: Tuple[int, int, str, Simulation
         print_only_error_warn()
         idx, total_simulations, folder_with_results, configuration = i
         percentage_done = round((idx / total_simulations) * 100)
-        logger.warn(f'{idx}/{total_simulations} - {percentage_done}% - executing')
         result = generate_and_run(configuration)
         store_simulation_result(f'{folder_with_results}/{result.simulation_id}.json', result)
-        logger.warn(f'{idx}/{total_simulations} - {percentage_done}% - done id {result.simulation_id}')
+        logger.warn(f'{idx}/{total_simulations} - {percentage_done}% - done with ID {result.simulation_id}')
     except Exception as ex:
         logger.error("Error during execution", ex)
 

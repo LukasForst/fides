@@ -4,8 +4,8 @@ from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation
 from fides.model.configuration import RecommendationsConfiguration
 from simulations.environment import generate_and_run
+from simulations.model import SimulationConfiguration, NewPeersJoiningLater
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration, NewPeersJoiningLater
 from simulations.storage import store_simulation_result, read_simulation
 from simulations.visualisation import plot_simulation_result
 

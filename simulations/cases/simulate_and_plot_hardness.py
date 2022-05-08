@@ -1,10 +1,10 @@
-import os
+import shutil
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
     WeightedAverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation, \
-    LocalCompareTIEvaluation
+    LocalCompareTIEvaluation, EvenTIEvaluation
 from fides.utils.logger import Logger
 from simulations.environment import execute_all_parallel_simulation_configurations
 from simulations.evaluation import evaluate_hardness_avg_target_diff, evaluate_hardness_avg_peers_diff, \
@@ -12,7 +12,7 @@ from simulations.evaluation import evaluate_hardness_avg_target_diff, evaluate_h
 from simulations.generators import generate_peers_distributions, generate_simulations
 from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior
-from simulations.utils import ensure_folder_created
+from simulations.utils import ensure_folder_created_and_clean
 from simulations.visualisation import plot_hardness_evaluation
 
 logger = Logger(__name__)
@@ -36,13 +36,14 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
         ThresholdTIEvaluation(threshold=0.5),
-        LocalCompareTIEvaluation()
+        LocalCompareTIEvaluation(),
+        EvenTIEvaluation()
     ]
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
         WeightedAverageConfidenceTIAggregation(),
     ]
-    initial_reputations = [0.0, 0.5, 0.95]
+    initial_reputations = [0.0, 0.5]
     local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT]
 
     return generate_simulations(evaluation_strategies, gaining_trust_periods, initial_reputations, local_slips_acts_ass,
@@ -52,9 +53,9 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
 
 if __name__ == '__main__':
-    output_folder = 'temp_test'
-    ensure_folder_created(output_folder)
+    output_folder = 'results/temp_test'
 
+    ensure_folder_created_and_clean(output_folder)
     sims = sample_simulation_definitions()
     logger.warn(f"Generated number of simulations: {len(sims)}")
     execute_all_parallel_simulation_configurations(sims, output_folder=output_folder)
@@ -68,16 +69,22 @@ if __name__ == '__main__':
                              title_override='Performance of each interaction evaluation function ' +
                                             'with respect to the Target Detection Performance metric',
                              plot_level_one_line=True,
-                             y_label='Target Detection Performance')
+                             y_label='Target Detection Performance',
+                             scatter_instead_of_plot=True
+                             )
 
     plot_hardness_evaluation(evaluate_hardness_avg_peers_diff(evaluations),
                              title_override='Performance of each interaction evaluation function ' +
                                             'with respect to the Behavior Detection Performance metric',
-                             y_label='Peer\'s Behavior Detection Performance')
+                             y_label='Peer\'s Behavior Detection Performance',
+                             scatter_instead_of_plot=True
+                             )
 
     plot_hardness_evaluation(evaluate_hardness_evaluation(evaluations),
                              title_override='Performance of each interaction evaluation function ' +
                                             'with respect to the Simulation Evaluation metric',
-                             y_label='Simulation Evaluation')
+                             y_label='Simulation Evaluation',
+                             scatter_instead_of_plot=True
+                             )
     # cleanup
-    os.rmdir(output_folder)
+    shutil.rmtree(output_folder)

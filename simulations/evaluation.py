@@ -126,29 +126,29 @@ def compute_label(result: SimulationResult) -> str:
     return f'{e}|{a}|{rep}'
 
 
-# def env_hardness(result: SimulationResult) -> float:
-#     environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
-#     local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
-#     pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
-#
-#     d = environment_mean_trust + local_slips + pretrusted_peers
-#     return round(d, 4)
-
-
-#
 def env_hardness(result: SimulationResult) -> float:
-    environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
-    local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)
-    pretrusted_peers = 10 * result.simulation_config.pre_trusted_peers_count
+    environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
+    local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
+    pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
 
     d = environment_mean_trust + local_slips + pretrusted_peers
-    return round(d, 2)
+    return round(d, 5)
+
+
+#
+# def env_hardness(result: SimulationResult) -> float:
+#     environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
+#     local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)
+#     pretrusted_peers = 10 * result.simulation_config.pre_trusted_peers_count
+#
+#     d = environment_mean_trust + local_slips + pretrusted_peers
+#     return round(d, 5)
 
 
 def hardness_for_peer_label(label: PeerBehavior) -> float:
     return {
         PeerBehavior.CONFIDENT_CORRECT.name: 100,
-        PeerBehavior.UNCERTAIN_PEER.name: 10,
+        PeerBehavior.UNCERTAIN_PEER.name: 30,
         PeerBehavior.CONFIDENT_INCORRECT.name: 5,
         PeerBehavior.MALICIOUS_PEER.name: 0
     }[label.name]

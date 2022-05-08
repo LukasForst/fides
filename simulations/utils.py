@@ -1,5 +1,6 @@
 import math
 import os
+import shutil
 
 from fides.utils.logger import LoggerPrintCallbacks
 
@@ -29,15 +30,21 @@ def argmax(arr, key):
 
 def only_error_warn_log_callback(level: str, msg: str):
     if level in {'ERROR', 'WARN'}:
-        print(f'{level}: {msg}\n')
+        print(f'{level}: {msg}', flush=True)
 
 
 def print_only_error_warn():
     LoggerPrintCallbacks[0] = only_error_warn_log_callback
 
 
-def ensure_folder_created(path: str):
-    # noinspection PyBroadException
+# noinspection PyBroadException
+def ensure_folder_created_and_clean(path: str):
+    # clean up
+    try:
+        shutil.rmtree(path)
+    except:
+        pass
+    # and recreate
     try:
         os.mkdir(path)
     except:
