@@ -40,7 +40,6 @@ class TimeEnvironment:
     def _run_epoch(self, epoch: Click):
         # each epoch we need to refresh peer list to get new peers that joined
         self._refresh_peer_list(epoch)
-        # TODO: [!] check if we want to use only a single target or not
         for target, baseline in self._targets.items():
             self._run_for_target(epoch, target, baseline)
 

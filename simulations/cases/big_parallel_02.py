@@ -1,17 +1,13 @@
-import concurrent
-import random
-from concurrent.futures import ProcessPoolExecutor
-from typing import List, Tuple
+from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
     WeightedAverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
-from fides.utils.logger import Logger, LoggerPrintCallbacks
-from simulations.environment import generate_and_run
+from fides.utils.logger import Logger
+from simulations.environment import execute_all_parallel_simulation_configurations
 from simulations.generators import generate_simulations, generate_peers_distributions
+from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration
-from simulations.storage import store_simulation_result
 
 logger = Logger(__name__)
 
@@ -49,30 +45,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
                                 ti_aggregation_strategies)
 
 
-def execute_configuration(i: Tuple[int, SimulationConfiguration]):
-    try:
-        idx, configuration = i
-        logger.warn(f'#{idx}/{sims_number} - executing')
-        result = generate_and_run(configuration)
-        store_simulation_result(f'results/{result.simulation_id}.json', result)
-        logger.warn(f'#{idx}/{sims_number} - done id {result.simulation_id}')
-    except Exception as ex:
-        logger.error("error during execution", ex)
-
-
-def log_callback(level: str, msg: str):
-    if level in {'ERROR', 'WARN'}:
-        print(f'{level}: {msg}\n')
-
-
 if __name__ == '__main__':
-    LoggerPrintCallbacks[0] = log_callback
-
     sims = sample_simulation_definitions()
-    random.shuffle(sims)
-
-    logger.warn(f"Number of simulations: {len(sims)}")
-    sims_number = len(sims)
-    enumerated_sims = [(idx, sim) for idx, sim in enumerate(sims)]
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(execute_configuration, enumerated_sims)
+    logger.warn(f"Generated number of simulations: {len(sims)}")
+    execute_all_parallel_simulation_configurations(sims, output_folder='results')
+    logger.warn("Simulations done")

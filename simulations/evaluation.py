@@ -1,12 +1,17 @@
 import csv
 import math
+import random
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict, Callable
+from typing import Iterable, Optional, Dict, Callable, List
 
 from fides.utils import bound
+from fides.utils.logger import Logger
 from simulations.environment import SimulationResult
 from simulations.peer import PeerBehavior, behavioral_map
-from simulations.storage import read_simulation
+from simulations.storage import read_simulation, get_file_names
+
+logger = Logger(__name__)
 
 
 @dataclass
@@ -121,23 +126,23 @@ def compute_label(result: SimulationResult) -> str:
     return f'{e}|{a}|{rep}'
 
 
-def env_hardness(result: SimulationResult) -> float:
-    environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
-    local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
-    pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
-
-    d = environment_mean_trust + local_slips + pretrusted_peers
-    return round(d, 4)
-
-
-#
 # def env_hardness(result: SimulationResult) -> float:
-#     environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
-#     local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)
-#     pretrusted_peers = 100 * result.simulation_config.pre_trusted_peers_count
+#     environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
+#     local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
+#     pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
 #
 #     d = environment_mean_trust + local_slips + pretrusted_peers
-#     return round(d, 2)
+#     return round(d, 4)
+
+
+#
+def env_hardness(result: SimulationResult) -> float:
+    environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
+    local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)
+    pretrusted_peers = 10 * result.simulation_config.pre_trusted_peers_count
+
+    d = environment_mean_trust + local_slips + pretrusted_peers
+    return round(d, 2)
 
 
 def hardness_for_peer_label(label: PeerBehavior) -> float:
@@ -183,6 +188,16 @@ def matrix_to_csv(file_name: str, matrix: SimulationEvaluationMatrix):
                         best_result.avg_accumulated_trust,
                         best_result.simulation_id])
             writer.writerow(row)
+
+
+def read_and_evaluate_all_files(directory: str) -> List[SimulationEvaluation]:
+    files = get_file_names(directory)
+    logger.info(f'Evaluating {len(files)} simulations...')
+    random.shuffle(files)
+    with ProcessPoolExecutor() as executor:
+        evaluations = executor.map(read_and_evaluate, files)
+    logger.info(f'Evaluation finished.')
+    return [e for e in evaluations if e]
 
 
 def read_and_evaluate(file_name: str) -> Optional[SimulationEvaluation]:

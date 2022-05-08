@@ -1,34 +1,28 @@
-from dataclasses import dataclass
-from typing import Dict, Optional, Callable
-
-from fides.evaluation.ti_aggregation import TIAggregation
-from fides.evaluation.ti_evaluation import TIEvaluation
-from fides.model.configuration import RecommendationsConfiguration
-from simulations.peer import PeerBehavior, Peer
-from simulations.utils import Click
+from fides.model.configuration import TrustModelConfiguration, RecommendationsConfiguration, TrustedEntity
+from simulations.model import FidesSetup
 
 
-@dataclass
-class NewPeersJoiningLater:
-    number_of_peers_joining_late: int
-    start_joining: Click
-    stop_joining: Click
-    peers_selector: Callable[[Peer], bool]
-
-
-@dataclass
-class SimulationConfiguration:
-    benign_targets: int
-    malicious_targets: int
-    peers_distribution: Dict[PeerBehavior, int]
-    malicious_peers_lie_about_targets: float  # percentage
-    simulation_length: Click
-    malicious_peers_lie_since: Click
-    service_history_size: Click
-    pre_trusted_peers_count: int
-    initial_reputation: float
-    evaluation_strategy: TIEvaluation
-    ti_aggregation_strategy: TIAggregation
-    local_slips_acts_as: PeerBehavior
-    new_peers_join_between: Optional[NewPeersJoiningLater] = None
-    recommendation_setup: Optional[RecommendationsConfiguration] = None
+def build_config(setup: FidesSetup) -> TrustModelConfiguration:
+    return TrustModelConfiguration(
+        privacy_levels=[],
+        confidentiality_thresholds=[],
+        data_default_level=0,
+        initial_reputation=setup.default_reputation,
+        service_history_max_size=setup.service_history_max_size,
+        recommendations=setup.recommendations_setup if setup.recommendations_setup else RecommendationsConfiguration(
+            enabled=False,
+            only_connected=False,
+            only_preconfigured=False,
+            required_trusted_peers_count=0,
+            trusted_peer_threshold=0,
+            peers_max_count=1000,
+            history_max_size=1000
+        ),
+        alert_trust_from_unknown=1.0,
+        trusted_peers=[TrustedEntity(p.peer_id, f"Pre-trusted peer {p.peer_id}", p.trust, p.enforce_trust, 1.0)
+                       for p in setup.pretrusted_peers],
+        trusted_organisations=[],
+        network_opinion_cache_valid_seconds=100000,
+        interaction_evaluation_strategy=setup.evaluation_strategy,
+        ti_aggregation_strategy=setup.ti_aggregation_strategy
+    )

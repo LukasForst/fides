@@ -1,58 +1,10 @@
 import math
-from dataclasses import dataclass
-from typing import List, Optional
+import os
 
-from fides.evaluation.ti_aggregation import TIAggregation
-from fides.evaluation.ti_evaluation import TIEvaluation
-from fides.model.aliases import PeerId
-from fides.model.configuration import TrustedEntity, TrustModelConfiguration, RecommendationsConfiguration
+from fides.utils.logger import LoggerPrintCallbacks
 
 Click = int
 """Measure of time."""
-
-
-@dataclass
-class PreTrustedPeer:
-    peer_id: PeerId
-    trust: float
-    enforce_trust: bool = True
-
-
-@dataclass
-class FidesSetup:
-    default_reputation: float
-    pretrusted_peers: List[PreTrustedPeer]
-    evaluation_strategy: TIEvaluation
-    ti_aggregation_strategy: TIAggregation
-
-    recommendations_setup: Optional[RecommendationsConfiguration] = None
-    service_history_max_size: int = 100
-
-
-def build_config(setup: FidesSetup) -> TrustModelConfiguration:
-    return TrustModelConfiguration(
-        privacy_levels=[],
-        confidentiality_thresholds=[],
-        data_default_level=0,
-        initial_reputation=setup.default_reputation,
-        service_history_max_size=setup.service_history_max_size,
-        recommendations=setup.recommendations_setup if setup.recommendations_setup else RecommendationsConfiguration(
-            enabled=False,
-            only_connected=False,
-            only_preconfigured=False,
-            required_trusted_peers_count=0,
-            trusted_peer_threshold=0,
-            peers_max_count=1000,
-            history_max_size=1000
-        ),
-        alert_trust_from_unknown=1.0,
-        trusted_peers=[TrustedEntity(p.peer_id, f"Pre-trusted peer {p.peer_id}", p.trust, p.enforce_trust, 1.0)
-                       for p in setup.pretrusted_peers],
-        trusted_organisations=[],
-        network_opinion_cache_valid_seconds=100000,
-        interaction_evaluation_strategy=setup.evaluation_strategy,
-        ti_aggregation_strategy=setup.ti_aggregation_strategy
-    )
 
 
 def argmin(arr, key):
@@ -73,3 +25,20 @@ def argmax(arr, key):
         if val > curr_min_value:
             selected_idx, curr_min_value = idx, val
     return arr[selected_idx]
+
+
+def only_error_warn_log_callback(level: str, msg: str):
+    if level in {'ERROR', 'WARN'}:
+        print(f'{level}: {msg}\n')
+
+
+def print_only_error_warn():
+    LoggerPrintCallbacks[0] = only_error_warn_log_callback
+
+
+def ensure_folder_created(path: str):
+    # noinspection PyBroadException
+    try:
+        os.mkdir(path)
+    except:
+        pass

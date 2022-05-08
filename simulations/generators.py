@@ -4,9 +4,9 @@ from typing import Dict, List
 from fides.model.aliases import Target, Score
 from fides.model.peer import PeerInfo
 from fides.utils.logger import Logger
+from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior, Peer, ConfidentCorrectPeer, UncertainPeer, ConfidentIncorrectPeer, \
     MaliciousPeer
-from simulations.setup import SimulationConfiguration
 from simulations.utils import Click
 
 logger = Logger(__name__)
@@ -65,6 +65,7 @@ def generate_simulations(evaluation_strategies, gaining_trust_periods, initial_r
                                                             ti_aggregation_strategy=ti_aggregation_strategy,
                                                         )
                                                         simulations.append(simulation_configuration)
+    random.shuffle(simulations)
     return simulations
 
 

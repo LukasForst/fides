@@ -12,8 +12,8 @@ from fides.evaluation.ti_evaluation import *
 from fides.model.configuration import RecommendationsConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
 from simulations.environment import SimulationResult
+from simulations.model import SimulationConfiguration, NewPeersJoiningLater
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration, NewPeersJoiningLater
 
 
 def store_simulation_result(

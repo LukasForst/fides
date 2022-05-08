@@ -27,7 +27,7 @@ def plot_hardness_evaluation(
 
         sorted_keys = sorted(list(data.keys()), reverse=False)
         ax = axes[evaluation]
-        ax.plot(sorted_keys, moving_average([data[i] for i in sorted_keys], window=3),
+        ax.plot(sorted_keys, moving_average([data[i] for i in sorted_keys], window=1),
                 label=f'{aggregation}, {initial_trust}')
 
         ax.set_title(f'{evaluation}')

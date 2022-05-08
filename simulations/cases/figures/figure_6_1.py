@@ -1,8 +1,8 @@
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation
 from simulations.environment import generate_and_run
+from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration
 from simulations.visualisation import plot_simulation_result
 
 if __name__ == '__main__':

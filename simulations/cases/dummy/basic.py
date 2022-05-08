@@ -4,10 +4,12 @@ from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation
 from fides.evaluation.ti_evaluation import ThresholdTIEvaluation, LocalCompareTIEvaluation
 from fides.model.peer import PeerInfo
 from fides.utils.logger import Logger
+from simulations.model import FidesSetup, PreTrustedPeer
 from simulations.peer import ConfidentCorrectPeer, SampleBehavior, LocalSlipsTIDb, ConfidentIncorrectPeer, \
     UncertainPeer, MaliciousPeer
+from simulations.setup import build_config
 from simulations.time_environment import TimeEnvironment
-from simulations.utils import build_config, FidesSetup, PreTrustedPeer, Click
+from simulations.utils import Click
 from tests.load_fides import get_fides_stream
 
 logger = Logger(__name__)

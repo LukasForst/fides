@@ -1,7 +1,7 @@
 import random
 import uuid
-from dataclasses import dataclass
-from typing import List, Dict
+from concurrent.futures import ProcessPoolExecutor
+from typing import List, Dict, Tuple
 
 from fides.model.aliases import Target, Score, PeerId
 from fides.model.configuration import TrustModelConfiguration
@@ -9,23 +9,36 @@ from fides.model.threat_intelligence import SlipsThreatIntelligence
 from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
 from fides.utils.logger import Logger
 from simulations.generators import generate_targets, generate_peers
+from simulations.model import SimulationConfiguration, PreTrustedPeer, FidesSetup, SimulationResult
 from simulations.peer import LocalSlipsTIDb, PeerBehavior, Peer, behavioral_map
-from simulations.setup import SimulationConfiguration
+from simulations.setup import build_config
+from simulations.storage import store_simulation_result
 from simulations.time_environment import TimeEnvironment
-from simulations.utils import build_config, FidesSetup, Click, PreTrustedPeer
+from simulations.utils import print_only_error_warn, Click
 from tests.load_fides import get_fides_stream
 
 logger = Logger(__name__)
 
 
-@dataclass
-class SimulationResult:
-    simulation_id: str
-    simulation_config: SimulationConfiguration
-    peer_trust_history: Dict[Click, Dict[PeerId, float]]
-    targets_history: Dict[Click, Dict[Target, SlipsThreatIntelligence]]
-    targets_labels: Dict[Target, Score]
-    peers_labels: Dict[PeerId, PeerBehavior]
+def execute_all_parallel_simulation_configurations(configs: List[SimulationConfiguration], output_folder: str):
+    sims_number = len(configs)
+    logger.warn(f"About to execute: {sims_number} of simulations.")
+    enumerated_sims = [(idx, sims_number, output_folder, sim) for idx, sim in enumerate(configs)]
+    with ProcessPoolExecutor() as executor:
+        executor.map(execute_parallel_simulation_configuration, enumerated_sims)
+
+
+def execute_parallel_simulation_configuration(i: Tuple[int, int, str, SimulationConfiguration]):
+    try:
+        print_only_error_warn()
+        idx, total_simulations, folder_with_results, configuration = i
+        percentage_done = round((idx / total_simulations) * 100)
+        logger.warn(f'{idx}/{total_simulations} - {percentage_done}% - executing')
+        result = generate_and_run(configuration)
+        store_simulation_result(f'{folder_with_results}/{result.simulation_id}.json', result)
+        logger.warn(f'{idx}/{total_simulations} - {percentage_done}% - done id {result.simulation_id}')
+    except Exception as ex:
+        logger.error("Error during execution", ex)
 
 
 def generate_and_run(simulation_config: SimulationConfiguration) -> SimulationResult:

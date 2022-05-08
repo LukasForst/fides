@@ -3,8 +3,8 @@ from fides.evaluation.ti_evaluation import LocalCompareTIEvaluation
 from fides.model.configuration import RecommendationsConfiguration
 from fides.utils.logger import Logger
 from simulations.environment import generate_and_run
+from simulations.model import SimulationConfiguration, NewPeersJoiningLater
 from simulations.peer import PeerBehavior
-from simulations.setup import SimulationConfiguration, NewPeersJoiningLater
 from simulations.visualisation import plot_simulation_result
 
 logger = Logger(__name__)
