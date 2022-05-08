@@ -17,11 +17,11 @@ from simulations.visualisation import plot_hardness_evaluation_all, HardnessPlot
 
 logger = Logger(__name__)
 
-PRETRUSTED = 0.15
+PRETRUSTED = 0.2
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
-    peers_count = [8]
+    peers_count = [10]
     pre_trusted_peers = [PRETRUSTED]
 
     # CC,  UP,  CI,  MA

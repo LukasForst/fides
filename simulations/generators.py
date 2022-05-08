@@ -74,10 +74,10 @@ def generate_peers_distributions() -> List[List[float]]:
     # [CONFIDENT_CORRECT, UNCERTAIN_PEER, CONFIDENT_INCORRECT, MALICIOUS]
 
     sample = {
-        'cc': [0.0, 0.25, 0.5, 0.75],
-        'up': [0.0, 0.25, 0.5, 0.75],
-        'ci': [0.0, 0.25, 0.5, 0.75],
-        'ma': [0.0, 0.25, 0.5, 0.75],
+        'cc': [0.0, 0.2, 0.4, 0.6, 0.8],
+        'up': [0.0, 0.2, 0.4, 0.6, 0.8],
+        'ci': [0.0, 0.2, 0.4, 0.6, 0.8],
+        'ma': [0.0, 0.2, 0.4, 0.6, 0.8],
     }
     data = []
 

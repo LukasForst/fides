@@ -23,7 +23,7 @@ logger = Logger(__name__)
 def execute_all_parallel_simulation_configurations(configs: List[SimulationConfiguration], output_folder: str):
     sims_number = len(configs)
     logger.warn(f"About to execute: {sims_number} of simulations.")
-    enumerated_sims = [(idx, sims_number, output_folder, sim) for idx, sim in enumerate(configs)]
+    enumerated_sims = [(idx, sims_number, output_folder, sim) for idx, sim in enumerate(configs, start=1)]
     with ProcessPoolExecutor() as executor:
         executor.map(execute_parallel_simulation_configuration, enumerated_sims)
     logger.warn(f"Executed {sims_number} simulations.")
