@@ -1,5 +1,7 @@
 import json
 from dataclasses import asdict
+from os import listdir
+from os.path import join, isfile
 
 from dacite import from_dict
 
@@ -116,3 +118,8 @@ def _deserialize_peers_joining_late(d: dict) -> Optional[NewPeersJoiningLater]:
         stop_joining=d['stop_joining'],
         peers_selector=default_selector
     )
+
+
+def get_file_names(directory: str) -> List[str]:
+    return [join(directory, f) for f in listdir(directory) if
+            isfile(join(directory, f)) and not f.startswith('.') and f.endswith('.json')]

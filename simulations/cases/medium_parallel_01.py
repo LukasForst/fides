@@ -5,7 +5,8 @@ from typing import List, Tuple
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
     WeightedAverageConfidenceTIAggregation
-from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
+from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation, \
+    LocalCompareTIEvaluation
 from fides.utils.logger import Logger, LoggerPrintCallbacks
 from simulations.environment import generate_and_run
 from simulations.generators import generate_peers_distributions, generate_simulations
@@ -18,7 +19,7 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
-    pre_trusted_peers = [0.0, 0.25, 0.5, 0.75]
+    pre_trusted_peers = [0.0, 0.25, 0.5]
 
     # CC,  UP,  CI,  MA
     peers_distribution = generate_peers_distributions()
@@ -34,6 +35,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
         ThresholdTIEvaluation(threshold=0.5),
+        LocalCompareTIEvaluation()
     ]
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
@@ -55,12 +57,14 @@ def log_callback(level: str, msg: str):
 
 
 def execute_configuration(i: Tuple[int, int, SimulationConfiguration]):
+    folder_with_results = 'results'
+
     try:
         LoggerPrintCallbacks[0] = log_callback
         idx, total_simulations, configuration = i
         logger.warn(f'{idx}/{total_simulations} - {round((idx / total_simulations) * 100)}% - executing')
         result = generate_and_run(configuration)
-        store_simulation_result(f'results/{result.simulation_id}.json', result)
+        store_simulation_result(f'{folder_with_results}/{result.simulation_id}.json', result)
         logger.warn(f'{idx}/{sims_number} - {round((idx / total_simulations) * 100)}% - done id {result.simulation_id}')
     except Exception as ex:
         logger.error("error during execution", ex)

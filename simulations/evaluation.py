@@ -1,11 +1,12 @@
 import csv
 import math
 from dataclasses import dataclass
-from typing import Iterable, Optional, Dict
+from typing import Iterable, Optional, Dict, Callable
 
 from fides.utils import bound
 from simulations.environment import SimulationResult
 from simulations.peer import PeerBehavior, behavioral_map
+from simulations.storage import read_simulation
 
 
 @dataclass
@@ -37,6 +38,37 @@ def create_evaluation_matrix(evaluations: Iterable[Optional[SimulationEvaluation
         matrix[ev.environment_group] = labels
 
     # noinspection PyTypeChecker
+    return matrix
+
+
+HardnessEvaluationMatrix = Dict[str, Dict[float, float]]
+
+
+def evaluate_hardness_avg_peers_diff(evaluations: Iterable[Optional[SimulationEvaluation]]) \
+        -> HardnessEvaluationMatrix:
+    return evaluate_hardness(evaluations, lambda ev, current: min(ev.avg_peers_diff, current if current else math.inf))
+
+
+def evaluate_hardness_avg_target_diff(evaluations: Iterable[Optional[SimulationEvaluation]]) \
+        -> HardnessEvaluationMatrix:
+    return evaluate_hardness(evaluations, lambda ev, current: min(ev.avg_target_diff, current if current else math.inf))
+
+
+def evaluate_hardness_evaluation(evaluations: Iterable[Optional[SimulationEvaluation]]) -> HardnessEvaluationMatrix:
+    return evaluate_hardness(evaluations, lambda ev, current: min(ev.evaluation, current if current else math.inf))
+
+
+def evaluate_hardness(evaluations: Iterable[Optional[SimulationEvaluation]],
+                      selector: Callable[[SimulationEvaluation, float], float]) -> HardnessEvaluationMatrix:
+    matrix = dict()
+    for ev in evaluations:
+        if ev is None:
+            continue
+        hardnesses = matrix.get(ev.setup_label, dict())
+        current = hardnesses.get(ev.env_hardness, None)
+        hardnesses[ev.env_hardness] = selector(ev, current)
+        matrix[ev.setup_label] = hardnesses
+
     return matrix
 
 
@@ -95,7 +127,26 @@ def env_hardness(result: SimulationResult) -> float:
     pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
 
     d = environment_mean_trust + local_slips + pretrusted_peers
-    return round(d, 1)
+    return round(d, 4)
+
+
+#
+# def env_hardness(result: SimulationResult) -> float:
+#     environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
+#     local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)
+#     pretrusted_peers = 100 * result.simulation_config.pre_trusted_peers_count
+#
+#     d = environment_mean_trust + local_slips + pretrusted_peers
+#     return round(d, 2)
+
+
+def hardness_for_peer_label(label: PeerBehavior) -> float:
+    return {
+        PeerBehavior.CONFIDENT_CORRECT.name: 100,
+        PeerBehavior.UNCERTAIN_PEER.name: 10,
+        PeerBehavior.CONFIDENT_INCORRECT.name: 5,
+        PeerBehavior.MALICIOUS_PEER.name: 0
+    }[label.name]
 
 
 # noinspection PyTypeChecker
@@ -132,3 +183,13 @@ def matrix_to_csv(file_name: str, matrix: SimulationEvaluationMatrix):
                         best_result.avg_accumulated_trust,
                         best_result.simulation_id])
             writer.writerow(row)
+
+
+def read_and_evaluate(file_name: str) -> Optional[SimulationEvaluation]:
+    evl = None
+    try:
+        sim = read_simulation(file_name)
+        evl = evaluate_simulation(sim)
+    except Exception as ex:
+        print(f'Error during processing {file_name} -> {ex}')
+    return evl
