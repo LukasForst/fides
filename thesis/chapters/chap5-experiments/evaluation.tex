@@ -1,7 +1,7 @@
 \section{Experiments Evaluation}
 \label{sec:experiments-evaluation}
 
-Each experiment is evaluated with a single value $x$.
+An important part of the experiments is how to evaluate which one is better. For this we created an evaluation function $x$.
 The evaluation function (\ref{eq:simulation_evaluation_function}) weights the performance of detecting the correct target score with the detection of peer behaviors.
 \begin{equation}
 \begin{split}
@@ -11,7 +11,7 @@ The evaluation function (\ref{eq:simulation_evaluation_function}) weights the pe
 \end{equation}
 
 In the first part, we measure average target detection, or how close was score produced by the trust model is to the ground truth.
-We use the following notation - $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then the score for the given target computed by Fides at the end of the simulation.
+We use the following notation: $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then the score for the given target computed by Fides at the end of the simulation.
 
 The second half is the evaluation that defines how close was trust model's service trust value for the remote peer to the peer's real behavior in the simulation.
 $P$ is the set of remote peers in the simulation, $st^{k_{max}}_{i, j}$ is the service trust that the local trust model (\textit{i}) had for the remote peer (\textit{j}) at the end of the simulation.
@@ -38,6 +38,6 @@ Unfortunately, it is not possible to run and evaluate all possible scenarios, as
 This leads to the state explosion and therefore we were unable to cover all existing scenarios. 
 However, alongside the Fides implementation, we published the simulation framework as well so anybody can simulate their preferred scenarios.
 
-In the end, we reduced possible values for all parameters to ones, that we consider most important and run 165 890 different combinations of the environment as well as setup parameters.
+In the end, we reduced possible values for all parameters to those that we consider most important and run 165 890 different combinations of the environment as well as setup parameters.
 During the simulations, we generated over 25 GB of raw data.
 In the next chapter (\ref{ch:results}) we describe how we evaluated the experiments and we learned about the trust model behavior in various environments.

@@ -4,7 +4,7 @@ It is important in the simulations to simulate also time. This is because the tr
 
 Time in the simulations is measured in \textit{clicks}. 
 The local instance of Fides performs a single action and receives responses from other peers in the network in exactly \textit{one click}. 
-For example, this is the series of events that happen in a \textit{single click} - Fides asks the network for threat intelligence, receives the responses, aggregates network opinion, and evaluates the interactions with peers.
+For example, this is the series of events that happen in a \textit{single click}. Fides asks the network for threat intelligence, receives the responses, aggregates network opinion, and evaluates the interactions with peers.
 Another series of events happening in a \textit{single click} is the actions of  recommendation protocol: a new peer joins the network, Fides asks for the recommendation for  a new peer, collects responses, computes reputation, and evaluates the received recommendations.
 What is the relation between the real time and \textit{clicks} depends solely on the network layer, mostly on the speed of messages convergence described in-depth in \cite{nl}.
 
