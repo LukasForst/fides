@@ -43,7 +43,10 @@ def plot_hardness_evaluation(
         ax.set_xlabel('Environment Hardness')
         ax.set_ylabel(y_label)
         ax.set_xlim([sorted_keys[-1], sorted_keys[0]])
-        ax.set_ylim([0, global_max])
+        if plot_level_one_line:
+            ax.set_ylim([0, 2])
+        else:
+            ax.set_ylim([0, global_max])
         # this is the case with aggregated trust in network and in that case we need more granularity
         if sorted_keys[-1] < 20:
             ax.set_xticks(np.arange(sorted_keys[0], sorted_keys[-1], 0.5))

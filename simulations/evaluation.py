@@ -59,6 +59,12 @@ def evaluate_hardness_avg_target_diff(evaluations: Iterable[Optional[SimulationE
     return evaluate_hardness(evaluations, lambda ev, current: min(ev.avg_target_diff, current if current else math.inf))
 
 
+def evaluate_hardness_avg_accumulated_trust(evaluations: Iterable[Optional[SimulationEvaluation]]) \
+        -> HardnessEvaluationMatrix:
+    return evaluate_hardness(evaluations,
+                             lambda ev, current: max(ev.avg_accumulated_trust, current if current else -math.inf))
+
+
 def evaluate_hardness_evaluation(evaluations: Iterable[Optional[SimulationEvaluation]]) -> HardnessEvaluationMatrix:
     return evaluate_hardness(evaluations, lambda ev, current: min(ev.evaluation, current if current else math.inf))
 

@@ -7,8 +7,7 @@ from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBa
     LocalCompareTIEvaluation, EvenTIEvaluation
 from fides.utils.logger import Logger
 from simulations.environment import execute_all_parallel_simulation_configurations
-from simulations.evaluation import evaluate_hardness_avg_target_diff, evaluate_hardness_avg_peers_diff, \
-    evaluate_hardness_evaluation, read_and_evaluate_all_files
+from simulations.evaluation import read_and_evaluate_all_files
 from simulations.generators import generate_peers_distributions, generate_simulations
 from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior
@@ -20,7 +19,7 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
-    pre_trusted_peers = [0.0]
+    pre_trusted_peers = [0.25]
 
     # CC,  UP,  CI,  MA
     peers_distribution = generate_peers_distributions()
@@ -43,8 +42,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         AverageConfidenceTIAggregation(),
         WeightedAverageConfidenceTIAggregation(),
     ]
-    initial_reputations = [0.0, 0.5]
-    local_slips_acts_ass = [PeerBehavior.CONFIDENT_CORRECT]
+    initial_reputations = [0.0, 0.5, 0.95]
+    local_slips_acts_ass = [PeerBehavior.UNCERTAIN_PEER]
 
     return generate_simulations(evaluation_strategies, gaining_trust_periods, initial_reputations, local_slips_acts_ass,
                                 malicious_peers_lie_abouts, malicious_targets, peers_count, peers_distribution,
@@ -65,6 +64,8 @@ if __name__ == '__main__':
 
     logger.info('Creating matrices..')
 
+    from simulations.evaluation import evaluate_hardness_avg_target_diff
+
     plot_hardness_evaluation(evaluate_hardness_avg_target_diff(evaluations),
                              title_override='Performance of each interaction evaluation function ' +
                                             'with respect to the Target Detection Performance metric',
@@ -73,18 +74,32 @@ if __name__ == '__main__':
                              scatter_instead_of_plot=True
                              )
 
+    from simulations.evaluation import evaluate_hardness_avg_peers_diff
+
     plot_hardness_evaluation(evaluate_hardness_avg_peers_diff(evaluations),
                              title_override='Performance of each interaction evaluation function ' +
                                             'with respect to the Behavior Detection Performance metric',
                              y_label='Peer\'s Behavior Detection Performance',
-                             scatter_instead_of_plot=True
+                             scatter_instead_of_plot=False
                              )
 
-    plot_hardness_evaluation(evaluate_hardness_evaluation(evaluations),
+    # from simulations.evaluation import evaluate_hardness_evaluation
+    #
+    # plot_hardness_evaluation(evaluate_hardness_evaluation(evaluations),
+    #                          title_override='Performance of each interaction evaluation function ' +
+    #                                         'with respect to the Simulation Evaluation metric',
+    #                          y_label='Simulation Evaluation',
+    #                          scatter_instead_of_plot=True
+    #                          )
+
+    from simulations.evaluation import evaluate_hardness_avg_accumulated_trust
+
+    plot_hardness_evaluation(evaluate_hardness_avg_accumulated_trust(evaluations),
                              title_override='Performance of each interaction evaluation function ' +
-                                            'with respect to the Simulation Evaluation metric',
-                             y_label='Simulation Evaluation',
-                             scatter_instead_of_plot=True
+                                            'with respect to the Average Accumulated Trust metric',
+                             y_label='Peer\'s Average Trust',
+                             scatter_instead_of_plot=False
                              )
+
     # cleanup
     shutil.rmtree(output_folder)
