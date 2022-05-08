@@ -1,4 +1,5 @@
 import csv
+import json
 import math
 import random
 from concurrent.futures import ProcessPoolExecutor
@@ -83,6 +84,21 @@ def evaluate_hardness(evaluations: Iterable[Optional[SimulationEvaluation]],
     return matrix
 
 
+def generate_peer_labels_plot(evaluations: Iterable[Optional[SimulationEvaluation]]) -> HardnessEvaluationMatrix:
+    matrix = dict()
+    for ev in evaluations:
+        if ev is None:
+            continue
+
+        dis = json.loads(ev.environment_group.split('|')[1])
+
+        cc = matrix.get(ev.setup_label, dict())
+        cc[ev.env_hardness] = dis[0] * 100
+        matrix[ev.setup_label] = cc
+
+    return matrix
+
+
 def evaluate_simulation(result: SimulationResult, weight: float = 0.7) -> SimulationEvaluation:
     last_click = max(result.targets_history.keys())
 
@@ -132,16 +148,30 @@ def compute_label(result: SimulationResult) -> str:
     return f'{e}|{a}|{rep}'
 
 
-def env_hardness(result: SimulationResult) -> float:
-    environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
-    local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
-    pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
-
-    d = environment_mean_trust + local_slips + pretrusted_peers
-    return round(d, 5)
-
-
+# # Hardness based on accumulated trust
+# def env_hardness(result: SimulationResult) -> float:
+#     environment_mean_trust = sum(peer_label_to_mean_trust(label) for _, label in result.peers_labels.items())
+#     local_slips = peer_label_to_mean_trust(result.simulation_config.local_slips_acts_as)
+#     pretrusted_peers = 0.95 * result.simulation_config.pre_trusted_peers_count
 #
+#     d = environment_mean_trust + local_slips + pretrusted_peers
+#     return round(d, 5)
+
+# Hardness based on percentage of confident correct peers in the network
+def env_hardness(result: SimulationResult) -> float:
+    all_confident_correct_count = sum(
+        1 for _, label in result.peers_labels.items() if label == PeerBehavior.CONFIDENT_CORRECT
+    )
+    all_uncertain_count = sum(
+        1 for _, label in result.peers_labels.items() if label == PeerBehavior.UNCERTAIN_PEER
+    )
+    all_peers = len(result.peers_labels.items())
+    conf = (all_confident_correct_count / all_peers) * 10
+    unc = all_uncertain_count / all_peers
+    return round(conf + unc, 2)
+
+
+# # Hardness based on discrete values for each behavior
 # def env_hardness(result: SimulationResult) -> float:
 #     environment_mean_trust = sum(hardness_for_peer_label(label) for _, label in result.peers_labels.items())
 #     local_slips = hardness_for_peer_label(result.simulation_config.local_slips_acts_as)

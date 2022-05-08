@@ -1,25 +1,28 @@
-import shutil
 from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
     WeightedAverageConfidenceTIAggregation
-from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation, \
-    LocalCompareTIEvaluation, EvenTIEvaluation
+from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
 from fides.utils.logger import Logger
 from simulations.environment import execute_all_parallel_simulation_configurations
+from simulations.evaluation import evaluate_hardness_avg_accumulated_trust, generate_peer_labels_plot
+from simulations.evaluation import evaluate_hardness_avg_peers_diff
+from simulations.evaluation import evaluate_hardness_avg_target_diff
 from simulations.evaluation import read_and_evaluate_all_files
 from simulations.generators import generate_peers_distributions, generate_simulations
 from simulations.model import SimulationConfiguration
 from simulations.peer import PeerBehavior
 from simulations.utils import ensure_folder_created_and_clean
-from simulations.visualisation import plot_hardness_evaluation
+from simulations.visualisation import plot_hardness_evaluation_all, HardnessPlotParams
 
 logger = Logger(__name__)
+
+PRETRUSTED = 0.15
 
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
-    pre_trusted_peers = [0.25]
+    pre_trusted_peers = [PRETRUSTED]
 
     # CC,  UP,  CI,  MA
     peers_distribution = generate_peers_distributions()
@@ -35,8 +38,8 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
         MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
         ThresholdTIEvaluation(threshold=0.5),
-        LocalCompareTIEvaluation(),
-        EvenTIEvaluation()
+        # LocalCompareTIEvaluation(),
+        # EvenTIEvaluation()
     ]
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
@@ -64,42 +67,32 @@ if __name__ == '__main__':
 
     logger.info('Creating matrices..')
 
-    from simulations.evaluation import evaluate_hardness_avg_target_diff
-
-    plot_hardness_evaluation(evaluate_hardness_avg_target_diff(evaluations),
-                             title_override='Performance of each interaction evaluation function ' +
-                                            'with respect to the Target Detection Performance metric',
-                             plot_level_one_line=True,
-                             y_label='Target Detection Performance',
-                             scatter_instead_of_plot=True
-                             )
-
-    from simulations.evaluation import evaluate_hardness_avg_peers_diff
-
-    plot_hardness_evaluation(evaluate_hardness_avg_peers_diff(evaluations),
-                             title_override='Performance of each interaction evaluation function ' +
-                                            'with respect to the Behavior Detection Performance metric',
-                             y_label='Peer\'s Behavior Detection Performance',
-                             scatter_instead_of_plot=False
-                             )
-
-    # from simulations.evaluation import evaluate_hardness_evaluation
-    #
-    # plot_hardness_evaluation(evaluate_hardness_evaluation(evaluations),
-    #                          title_override='Performance of each interaction evaluation function ' +
-    #                                         'with respect to the Simulation Evaluation metric',
-    #                          y_label='Simulation Evaluation',
-    #                          scatter_instead_of_plot=True
-    #                          )
-
-    from simulations.evaluation import evaluate_hardness_avg_accumulated_trust
-
-    plot_hardness_evaluation(evaluate_hardness_avg_accumulated_trust(evaluations),
-                             title_override='Performance of each interaction evaluation function ' +
-                                            'with respect to the Average Accumulated Trust metric',
-                             y_label='Peer\'s Average Trust',
-                             scatter_instead_of_plot=False
-                             )
-
+    plot_hardness_evaluation_all([
+        HardnessPlotParams(
+            evaluate_hardness_avg_target_diff(evaluations),
+            plot_level_one_line=True,
+            y_label='Target Detection Performance',
+            scatter_instead_of_plot=True
+        ),
+        HardnessPlotParams(
+            evaluate_hardness_avg_peers_diff(evaluations),
+            y_label='Peer\'s Behavior Detection Performance',
+            scatter_instead_of_plot=False,
+            moving_mean_window=2
+        ),
+        HardnessPlotParams(
+            evaluate_hardness_avg_accumulated_trust(evaluations),
+            y_label='Peer\'s Average Trust',
+            scatter_instead_of_plot=False,
+            moving_mean_window=2
+        ),
+        HardnessPlotParams(
+            generate_peer_labels_plot(evaluations),
+            y_label='Percentage of Correct Peers in Network',
+            scatter_instead_of_plot=False
+        )
+    ],
+        title_override=f'Performance of all setups, {round(PRETRUSTED * 100)}% of PRETRUSTED PEERS'
+    )
     # cleanup
-    shutil.rmtree(output_folder)
+    # shutil.rmtree(output_folder)

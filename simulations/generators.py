@@ -58,7 +58,8 @@ def generate_simulations(evaluation_strategies, gaining_trust_periods, initial_r
                                                             simulation_length=simulation_length,
                                                             malicious_peers_lie_since=gaining_trust_period,
                                                             service_history_size=service_history_size,
-                                                            pre_trusted_peers_count=int(peer_count * pre_trusted_peer),
+                                                            pre_trusted_peers_count=round(
+                                                                peer_count * pre_trusted_peer),
                                                             initial_reputation=initial_reputation,
                                                             local_slips_acts_as=local_slips_acts_as,
                                                             evaluation_strategy=evaluation_strategy,
