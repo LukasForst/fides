@@ -3,6 +3,7 @@ from typing import Optional, Dict, List, Any
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import ticker
 
 from simulations.environment import SimulationResult
 from simulations.evaluation import HardnessEvaluationMatrix
@@ -91,6 +92,7 @@ def plot_hardness_evaluation(
         if y_label != 'Percentage of Correct Peers in Network':
             ax.set_title(f'{evaluation} - {y_label}')
         else:
+            ax.yaxis.set_major_formatter(ticker.PercentFormatter())
             ax.set_title(f'{y_label}')
 
         ax.set_xlabel('Environment Hardness')
@@ -109,14 +111,6 @@ def plot_hardness_evaluation(
 
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
-
-        # # add legend if this is not plot of correct peers in network
-        # if y_label != 'Percentage of Correct Peers in Network':
-        #     # sort handles
-        #     handles, labels = ax.get_legend_handles_labels()
-        #     # sort both labels and handles by labels
-        #     labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
-        #     ax.legend(handles, labels)
 
 
 def plot_simulation_result(
