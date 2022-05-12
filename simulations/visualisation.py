@@ -89,11 +89,11 @@ def plot_hardness_evaluation(
             ax.plot(sorted_keys, moving_average(values, window=moving_mean_window),
                     label=f'{aggregation}, {initial_trust}')
 
-        if y_label != 'Percentage of Correct Peers in Network':
-            ax.set_title(f'{evaluation} - {y_label}')
-        else:
+        if 'Correct Peers in Network' in y_label:
             ax.yaxis.set_major_formatter(ticker.PercentFormatter())
             ax.set_title(f'{y_label}')
+        else:
+            ax.set_title(f'{evaluation} - {y_label}')
 
         ax.set_xlabel('Environment Hardness')
         ax.set_ylabel(y_label)
@@ -101,7 +101,8 @@ def plot_hardness_evaluation(
         if plot_level_one_line:
             ax.set_ylim([0, 2])
         else:
-            ax.set_ylim([0, global_max_y])
+            y_lim = 100 if global_max_y > 1 else 1
+            ax.set_ylim([0, y_lim])
         # this is the case with aggregated trust in network and in that case we need more granularity
         # if sorted_keys[-1] < 20:
         #     ax.set_xticks(np.arange(sorted_keys[0], sorted_keys[-1], 0.5))
