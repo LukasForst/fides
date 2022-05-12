@@ -22,39 +22,43 @@ class HardnessPlotParams:
 def plot_hardness_evaluation_all(
         hardness_matrices: Union[HardnessPlotParams, List[HardnessPlotParams]],
         save_output: Optional[str] = None,
-        title_override: Optional[str] = None
+        title: Optional[str] = 'Performance of each interaction evaluation function'
 ):
     hardness_matrices = hardness_matrices if type(hardness_matrices) is list else [hardness_matrices]
+    use_fig_legend = len(hardness_matrices) > 1
     all_used_ti_evaluations = {label.split('|')[0] for label in hardness_matrices[0].matrix.keys()}
     all_used_ti_evaluations = sorted(list(all_used_ti_evaluations))
 
     fig, axs = plt.subplots(len(all_used_ti_evaluations), len(hardness_matrices),
-                            figsize=(7.5 * len(hardness_matrices), round(6.25 * len(all_used_ti_evaluations)))
+                            figsize=(7.5 * len(hardness_matrices), round(6.25 * len(all_used_ti_evaluations))),
+                            squeeze=False
                             )
-    title = title_override if title_override else 'Performance of each interaction evaluation function'
-    fig.suptitle(title, fontsize=22)
+    if title is not None:
+        fig.suptitle(title, fontsize=22)
 
     for idx, hardness_plot in enumerate(hardness_matrices):
         axes = {ti_evaluation: axs[i, idx] for i, ti_evaluation in enumerate(all_used_ti_evaluations)}
         plot_hardness_evaluation(hardness_plot.matrix, axes, hardness_plot.y_label, hardness_plot.plot_level_one_line,
-                                 hardness_plot.moving_mean_window, hardness_plot.scatter_instead_of_plot)
+                                 hardness_plot.moving_mean_window, hardness_plot.scatter_instead_of_plot,
+                                 plot_legend=not use_fig_legend)
 
-    lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
-    handles, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-    final_handles, final_labels = [], []
-    for h, l in zip(handles, labels):
-        if l in final_labels:
-            continue
-        final_handles.append(h)
-        final_labels.append(l)
+    if use_fig_legend:
+        lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
+        handles, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+        final_handles, final_labels = [], []
+        for h, l in zip(handles, labels):
+            if l in final_labels:
+                continue
+            final_handles.append(h)
+            final_labels.append(l)
 
-    final_labels, final_handles = zip(*sorted(zip(final_labels, final_handles), key=lambda t: t[0]))
-    fig.legend(final_handles, final_labels)
+        final_labels, final_handles = zip(*sorted(zip(final_labels, final_handles), key=lambda t: t[0]))
+        fig.legend(final_handles, final_labels)
 
-    plt.subplots_adjust(left=0.08,
-                        right=0.95,
+    plt.subplots_adjust(left=0.1,
+                        right=0.97,
                         top=0.93,
-                        bottom=0.03,
+                        bottom=0.05,
                         wspace=0.3,
                         hspace=0.3)
 
@@ -71,6 +75,7 @@ def plot_hardness_evaluation(
         plot_level_one_line: bool = False,
         moving_mean_window: int = 2,
         scatter_instead_of_plot: bool = False,
+        plot_legend: bool = False
 ):
     global_max_y = max(max(data.values()) for data in matrix.values())
     global_max_x = max(max(data.keys()) for data in matrix.values())
@@ -110,7 +115,11 @@ def plot_hardness_evaluation(
 
         if plot_level_one_line:
             ax.axhline(1.0, color='red', linewidth=1.0)
-
+        if plot_legend:
+            handles, labels = ax.get_legend_handles_labels()
+            # sort both labels and handles by labels
+            labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+            ax.legend(handles, labels)
         ax.xaxis.grid(True)
         ax.yaxis.grid(True)
 

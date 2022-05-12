@@ -3,11 +3,9 @@ from typing import List
 
 from fides.evaluation.ti_aggregation import AverageConfidenceTIAggregation, \
     WeightedAverageConfidenceTIAggregation
-from fides.evaluation.ti_evaluation import MaxConfidenceTIEvaluation, DistanceBasedTIEvaluation, ThresholdTIEvaluation
+from fides.evaluation.ti_evaluation import DistanceBasedTIEvaluation
 from fides.utils.logger import Logger
 from simulations.environment import execute_all_parallel_simulation_configurations
-from simulations.evaluation import evaluate_hardness_avg_accumulated_trust, generate_peer_labels_plot
-from simulations.evaluation import evaluate_hardness_avg_peers_diff
 from simulations.evaluation import evaluate_hardness_avg_target_diff
 from simulations.evaluation import read_and_evaluate_all_files
 from simulations.generators import generate_peers_distributions, generate_simulations
@@ -21,8 +19,7 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
-    # CHANGE ME for test cases in evaluation section
-    pre_trusted_peers = [0.5]
+    pre_trusted_peers = [0.25]
 
     peers_distribution = generate_peers_distributions()
 
@@ -34,9 +31,7 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
     simulation_lengths = [200]
     service_history_sizes = [100]
     evaluation_strategies = [
-        MaxConfidenceTIEvaluation(),
         DistanceBasedTIEvaluation(),
-        ThresholdTIEvaluation(threshold=0.5),
     ]
     ti_aggregation_strategies = [
         AverageConfidenceTIAggregation(),
@@ -67,31 +62,14 @@ if __name__ == '__main__':
     evaluations = read_and_evaluate_all_files(output_folder)
     logger.info('Creating matrices..')
 
-    plot_hardness_evaluation_all([
-        HardnessPlotParams(
-            evaluate_hardness_avg_target_diff(evaluations),
-            plot_level_one_line=True,
-            y_label='Target Detection Performance',
-            scatter_instead_of_plot=True
-        ),
-        HardnessPlotParams(
-            evaluate_hardness_avg_peers_diff(evaluations),
-            y_label='Peer\'s Behavior Detection Performance',
-            scatter_instead_of_plot=False,
-            moving_mean_window=1
-        ),
-        HardnessPlotParams(
-            evaluate_hardness_avg_accumulated_trust(evaluations),
-            y_label='Peer\'s Average Trust',
-            moving_mean_window=1
-        ),
-        HardnessPlotParams(
-            generate_peer_labels_plot(evaluations),
-            y_label='Percentage of Correct Peers in Network',
-        )
-    ],
-        title_override=f'Performance of all setups, {pretrusted_percentage}% of PRE-TRUSTED PEERS',
-        save_output=f'{pretrusted_percentage}_all_metrics.png'
+    plot_hardness_evaluation_all(HardnessPlotParams(
+        evaluate_hardness_avg_target_diff(evaluations),
+        plot_level_one_line=True,
+        y_label='Target Detection Performance',
+        scatter_instead_of_plot=True
+    ),
+        title=None,
+        save_output=f'25_distance_detection_detail.png'
     )
     # cleanup
     shutil.rmtree(output_folder)

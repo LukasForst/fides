@@ -21,8 +21,14 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
+
     # CHANGE ME for test cases in evaluation section
+    # figure 6.2 [0.25]
     pre_trusted_peers = [0.25]
+    # figure 8.2 [0]
+    # pre_trusted_peers = [0]
+    # figure 8.3 [0.5]
+    # pre_trusted_peers = [0.5]
 
     peers_distribution = generate_peers_distributions()
 
@@ -52,12 +58,13 @@ def sample_simulation_definitions() -> List[SimulationConfiguration]:
 
 
 if __name__ == '__main__':
-    output_folder = 'results/temp_test'
+    output_folder = '../results/temp_test'
 
     ensure_folder_created_and_clean(output_folder)
     sims = sample_simulation_definitions()
     pretrusted_distribution = {s.pre_trusted_peers_count / sum(s.peers_distribution.values()) for s in sims}
     assert len(pretrusted_distribution) == 1
+    pretrusted_percentage = round(pretrusted_distribution.pop() * 100)
 
     logger.warn(f"Generated number of simulations: {len(sims)}")
     execute_all_parallel_simulation_configurations(sims, output_folder=output_folder)
@@ -65,8 +72,6 @@ if __name__ == '__main__':
 
     evaluations = read_and_evaluate_all_files(output_folder)
     logger.info('Creating matrices..')
-    pretrusted_distribution = pretrusted_distribution.pop()
-    pretrusted_percentage = round(pretrusted_distribution.pop() * 100)
 
     plot_hardness_evaluation_all([
         HardnessPlotParams(
