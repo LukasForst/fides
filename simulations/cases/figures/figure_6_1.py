@@ -27,4 +27,4 @@ if __name__ == '__main__':
     )
 
     result = generate_and_run(simulation_configuration)
-    plot_simulation_result(result, save_output='example_evaluation.png')
+    plot_simulation_result(result, save_output='figure_6_1.png')
