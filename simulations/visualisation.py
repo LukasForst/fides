@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, List, Any, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,10 +20,11 @@ class HardnessPlotParams:
 
 
 def plot_hardness_evaluation_all(
-        hardness_matrices: List[HardnessPlotParams],
+        hardness_matrices: Union[HardnessPlotParams, List[HardnessPlotParams]],
         save_output: Optional[str] = None,
         title_override: Optional[str] = None
 ):
+    hardness_matrices = hardness_matrices if type(hardness_matrices) is list else [hardness_matrices]
     all_used_ti_evaluations = {label.split('|')[0] for label in hardness_matrices[0].matrix.keys()}
     all_used_ti_evaluations = sorted(list(all_used_ti_evaluations))
 
