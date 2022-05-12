@@ -7,27 +7,41 @@ In other words, Fides provides a view of what the network thinks about some thre
 Fides needs to aggregate elements of threat intelligence from remote peers into a single value that is then presented to Slips.
 
 Fides needs to say that some reports are better than others, based on the service trust the local peer has in the remote peer (previously computed as $st^{k}_{i, j}$).
-Thus Fides need to weigh every report based on this trust and to come up with an aggregated score $S^{k}_{T}$:
+Thus Fides needs to weigh every report based on this trust and come up with an aggregated score $S^{k}_{T}$.
+Apart from the aggregated score, Fides needs to compute the aggregated confidence $C^{k}_{T}$ that expresses how confident $i$ is about the aggregated score $S^{k}_{T}$ that was computed in the previous step.
+
+Once aggregated, the computed score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) are sent to Slips to report data on target $T$.
+Apart from sending to Slips, these same values can be used to evaluate the interaction of the remote peers, depending on the selected interaction evaluation strategy (described in \ref{sec:interaction-evaluation-strategies}).
+
+We designed and implemented two different functions for aggregating threat intelligence and computing $S^{k}_{T}$ alongside with $C^{k}_{T}$.
+Both of them are implemented in Fides under their respective names and which method performs better under what circumstances is a subject to the experiments in the chapter~\ref{ch:experiments}.
+
+\subsection{AverageConfidenceTIAggregation}
+\label{subsec:AverageConfidenceTIAggregation}
+
+In this method, the aggregated score $S^{k}_{T}$ is the sum of $S^{k}_{j, T}$, which is the score sent by each peer $j$ about target $T$ in time window $k$; weighed with the normalized service trust that $i$ computed for peer $j$, denoted $wst^{k}_{i, j}$. The sum is done over the set of remote peers that provided a report to $i$ for $T$ in time window $k$, denoted $R^{k}_{i, T}$. We calculate it in equation~\ref{eq:ti_aggregation_score}.
 
 \begin{equation}
 \begin{split}
     S^{k}_{T} &= \sum_{{j}\in R^{k}_{i, T}} wst^{k}_{i, j} \cdot S^{k}_{j, T}
 \end{split}
+\label{eq:ti_aggregation_score}
 \end{equation}
 
-The aggregated score $S^{k}_{T}$ is the sum of $S^{k}_{j, T}$, which is the score sent by each peer $j$ about target $T$ in time window $k$; weighed with the normalized service trust that $i$ computed for peer $j$, denoted $wst^{k}_{i, j}$. The sum is done over the set of remote peers that provided a report to $i$ for $T$ in time window $k$, denoted $R^{k}_{i, T}$.
-
-The normalized service trust used as weight is computed as:
+\noindent
+The normalized service trust $wst^{k}_{i,j}$ used as weight is computed as:
 
 \begin{equation}
 \begin{split}
     wst^{k}_{i,j} &= \frac{1}{\sum_{{j}\in R^{k}_{i, T}} st^{k}_{i, j}} \cdot st^{k}_{i, j} \\
 \end{split}
+\label{eq:normalized_service_trust_ti_aggregation}
 \end{equation}
 
-Which estimates the percentage that the service trust on $j$ $st^{k}_{i, j}$ has relative to the total sum of service trust received by $i$ for all peers, for this target $T$, on time window $k$.
+\noindent
+Equation~\ref{eq:normalized_service_trust_ti_aggregation} estimates the percentage that the service trust on $j$ $st^{k}_{i, j}$ has relative to the total sum of service trust received by $i$ for all peers, for this target $T$, in time window $k$.
 
-Apart from the aggregated score, Fides needs to compute the aggregated confidence $C^{k}_{T}$ that expresses how confident $i$ is about the aggregated score $S^{k}_{T}$ that was computed in the previous step. The aggregated confidence is:
+We compute the aggregated confidence for this strategy as:
 
 \begin{equation}
 \begin{split}
@@ -35,8 +49,20 @@ Apart from the aggregated score, Fides needs to compute the aggregated confidenc
 \end{split}
 \end{equation}
 
-Which is an average, over all the peers that sent to $i$ a report on $T$ in time window $k$, of the weighted confidence sent by peer $j$ on target $T$ on time window $k$. The weight is done by the service trust that $i$ has on $j$ on time window $k$.
+\noindent
+Which is an average, overall the peers that sent to $i$ a report on $T$ in time window $k$, of the weighted confidence sent by peer $j$ on target $T$ on time window $k$. The weight is done by the service trust that $i$ has on $j$ on time window $k$.
 
-The aggregated score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) are then sent to Slips about the report on target $T$.
 
-Apart from sending to Slips, these same values can be used to evaluate the interaction the the remote peers, depending on the selected interaction evaluation strategy (described in \ref{sec:interaction-evaluation-strategies}).
+\subsection{WeightedAverageConfidenceTIAggregation}
+\label{subsec:WeightedAverageConfidenceTIAggregation}
+
+This strategy uses the very same equation~\ref{eq:ti_aggregation_score} to compute aggregated score $S^{k}_{T}$ as $AverageConfidenceTIAggregation$~\ref{subsec:AverageConfidenceTIAggregation}.
+However, the way how this strategy calculates $C^{k}_{T}$ is different. 
+Instead of using the service trust $st^{k}_{i, j}$ to determine the correct trust in the confidence $C^{k}_{j, T}$ submitted by peer $j$ and then diving it by the number of peers.
+We use the normalized service trust $wst^{k}_{i,j}$ computed in~\ref{eq:normalized_service_trust_ti_aggregation} that already contains the weight of the peers in the final decision.
+
+\begin{equation}
+\begin{split}
+    C^{k}_{T} &= \cdot \sum_{{j}\in R^{k}_{i, T}} wst^{k}_{i,j} \cdot C^{k}_{j, T}
+\end{split}
+\end{equation}
