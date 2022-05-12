@@ -2,12 +2,15 @@
 \label{ch:conclusion}
 In this thesis, we proposed, designed, and implemented a trust model for distributed multi-agent environments of intrusion prevention systems \textbf{Fides}.
 Fides enables threat intelligence sharing in global peer-to-peer networks of Slips agents and allows them to cooperate against malicious actors without compromising the security of the local environment. 
-We analyzed previous work and various trust models in the chapter~\ref{ch:previous-work-background}.
-In the following chapter~\ref{ch:trust-model-design}, we proposed and designed a computational model of Fides.
-In section~\ref{sec:attack-vectors}, we described common attacks on the trust models in general and analyzed possible attack vectors for Fides.
+
+We analyzed previous work, various trust models and described the necessary background in the chapter~\ref{ch:previous-work-background}.
+In the following chapter~\ref{ch:trust-model-design}, we proposed and designed a computational model of Fides and explained what lead to our design choices.
+In the section~\ref{sec:attack-vectors}, we described common attacks on the trust models in general and then carefully analyzed possible attack vectors for Fides.
 The architecture and implementation of the trust model are then described in the chapter~\ref{ch:architecture}.
 We designed extensive test scenarios, created the evaluation framework and executed the experiments in the chapter~\ref{ch:experiments}.
-Experiments and the trust model itself were then evaluated in the chapter~\ref{ch:results}.
+Experiments and the trust model itself were then evaluated in the chapter~\ref{ch:results} where we discovered, that with a particular setup and under a condition that Fides talks to at least 25\% of pre-trusted peers, it is able to eventually identify targets correctly no matter how the rest of the peers behave.
+
+In this chapter, we conclude our findings in the section~\ref{sec:discussion} and then outline future work on Fides in section~\ref{sec:future-work}.
 
 \include{chapters/chap7-conclusion/disucssion}
 

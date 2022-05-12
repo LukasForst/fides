@@ -6,21 +6,12 @@ In other words, what setup should Fides's administrator use in order for Fides t
 
 We discovered that the situation, when the administrator uses a particular setup which then guarantees that the Fides will be able to eventually classify the targets, exists. When the Fides communicates with at least 25\% of pre-trusted peers from its own network ($0.25 \cdot |P|$ are pre-trusted) and uses $DistanceBasedTIEvaluation$~(\ref{subsec:distance-based-eval}) for evaluating the interactions in combination with $AverageConfidenceTIAggregation$~(\ref{subsec:AverageConfidenceTIAggregation}) for aggregating the threat intelligence, it is able to classify the targets correctly no matter what is happening in the network.
 
-\subsection{Correct Target Identification No Matter What}
+\subsection{Correct Target Identification Under Harsh Conditions}
 \label{subsec:correct-target-identification-no-matter-what}
 
 The figure~\ref{fig:performance-all-setups-25-pretrusted} visualizes this situation where there are 25\% of pre-trusted peers in the network and shows how different configurations perform under different network distributions.
 There are three rows and four columns. Each row contains a single interaction evaluation strategy~(\ref{sec:interaction-evaluation-strategies}) and each column is then a single metric that evaluates the behavior of this strategy in the network.
 There are three different metrics that evaluate the performance of the Fides's setup and the last graph then displays how many confident correct~(\ref{subsubsec:confident-correct-peer}) peers there are in the network.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.94\paperwidth, angle=90]{assets/25_all_metrics.png}
-    \caption{Performance of all setups with 25\% pre-trusted peers}
-    \label{fig:performance-all-setups-25-pretrusted}
-\end{figure}
-
-\noindent
 The horizontal axis in each graph measures the environment hardness explained in the section~\ref{subsec:environment-hardness}.
 The vertical axis is then different for each metric.
 
@@ -34,14 +25,21 @@ The most important metric is the target detection performance ~(\ref{subsec:targ
 A single dot in the graph is the value of $tdp$ and in a case when the $tdp \geq 1$, it means that Fides made on the average wrong decision about the targets and classified them with the wrong label.
 In other words, if $tdp \geq 1$, Fides classified benign targets as malicious and the other way around.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.94\paperwidth, angle=90]{assets/25_all_metrics.png}
+    \caption{Performance of all setups with 25\% pre-trusted peers}
+    \label{fig:performance-all-setups-25-pretrusted}
+\end{figure}
+
+In figure~\ref{fig:distance-detection-detail-25} we can clearly see, that there is a situation, even in the hardest environment, where the $DistanceBasedTIEvaluation$ in combination with $AverageConfidenceTIAggregation$ does not have any $tdp$ above the \textit{red line} which means that the $tdp < 1$ and that Fides was always able to identify targets correctly even in the worst possible environment.
+
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.7\textwidth]{assets/25_distance_detection_detail.png}
     \caption{$DistanceBasedTIEvaluation$ with 25\% of pre-trusted peers}
     \label{fig:distance-detection-detail-25}
 \end{figure}
-
-In figure~\ref{fig:distance-detection-detail-25} we can clearly see, that there is a situation, even in the hardest environment, where the $DistanceBasedTIEvaluation$ in combination with $AverageConfidenceTIAggregation$ does not have any $tdp$ above the \textit{red line} which means that the $tdp < 1$ and that Fides was always able to identify targets correctly even in the worst possible environment.
 
 We included the graph of this case similar to the figure~\ref{fig:single-simulation-example} with this particular \textit{"winning"} setup in the most hostile environment to the appendix in figure~\ref{fig:worst-best-scenario}. For the explanation of the graph see section~\ref{sec:general-overview-of-simulation-output}.
 
