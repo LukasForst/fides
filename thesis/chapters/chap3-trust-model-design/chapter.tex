@@ -10,66 +10,42 @@ Fides is a generic and heavily configurable trust model that specializes in shar
 Its design allows it to operate with any kind of data and it is not limited to only threat intelligence. 
 Thanks to its modular architecture, it is able to operate with any kind of data with very few modifications to its implementation
 
-In section \ref{sec:general-overview-of-fides} we describe our choices when designing the trust model and explain how Fides works on a high level.
-In the next section \ref{sec:computational-model} we dive deep into Fides's computational model and explain how it is able to uncover trust relationships in the network.
+In the section~\ref{sec:general-overview-of-fides} we describe our trust model design and explain how Fides works on a high level, what are the inputs and outputs and how does it behave in which situation.
+
+After outlining the general overview, we analyze weaknesses of the trust models in general and how do they apply on Fides.
+First, we start with \textit{cold start problem} in the section~\ref{sec:cold-start-problem} which describe how can peers gain trust when they are new in the network and how does Fides tackle this issue.
+
+In the next section~\ref{sec:attack-vectors} we analyze possible attack vectors on our trust model and then we dig deep into the taxonomy of attacks in the next section~\ref{sec:taxonomy-of-attacks}.
+
+Once all trust model requirements are explained we dive deep into the Fides's computational model in the next section~\ref{sec:computational-model}  and explain how it is able to uncover trust relationships in the network.
 In the following section \ref{sec:interaction-evaluation-strategies}, we explain how is Fides able to evaluate interactions between peers and how that affects trust.
 Because Fides specializes in sharing threat intelligence and integrates with Slips, in the next section \ref{sec:network-intelligence-aggregation} we explain how Fides aggregates the weighted threat intelligence from the network.
 
-After outlining the complete computational model, we analyze Fides's weaknesses and how we mitigate them first in section \ref{sec:cold-start-problem} where we take a look at the cold start problem and describe how can peers gain trust when they are new in the network.
-And in the following section \ref{sec:attack-vectors} we analyze possible attack vectors on our trust model and then we dig deep into the taxonomy of attacks in the next section \ref{sec:taxonomy-of-attacks}.
-
-\section{General Overview of Fides}
-\label{sec:general-overview-of-fides}
-Fides operates in four phases, which are visualized in the figure \ref{fig:trust-model-life-cycle}.
-
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.75\textwidth]{assets/service_trust_diagram.png}
-    \caption{Trust Model Life Cycle}
-    \label{fig:trust-model-life-cycle}
-\end{figure}
-
-In the first phase, local Fides's instance receives threat intelligence data from the remote peers in the network. 
-How Fides receives data from the network is described in the chapter about architecture \ref{ch:architecture}.
-
-In the second phase, Fides aggregates the threat intelligence data utilizing the trust data it has for each remote peer during the aggregation.
-In general, data from high trusted peers have a higher impact on the final aggregated threat intelligence than the data from peers with low trust.
-How does Fides do that is described in the section  \ref{sec:network-intelligence-aggregation}.
-This aggregated threat intelligence is also sent to Slips as an output of the trust model.
-
-The following phase is when Fides evaluates the interactions with each peer.
-Fides computes how much it was satisfied with threat intelligence it received from each remote peer.
-This satisfaction metric has then a direct influence on the trust relationship between the local and remote peers because it is used in the next step to compute trust data. 
-The evaluation process and possible interaction evaluation functions are described in detail in section \ref{sec:interaction-evaluation-strategies}.
-
-In the last step, Fides updates trust data for each peer according to the satisfaction that is computed in step number three.
-Computations that allow Fides to do that are described in section \ref{sec:computational-model}.
-
-\todo[inline]{add that awesome diagram from Sebas}
-
-\vspace{1.5cm}
+\vspace{1cm}
 
 \noindent
-In the following sections, we use the following terminology to talk about the trust model.
+In the upcoming pages, we use the following terminology when we talk about the trust model.
 
 \begin{itemize}
-\item \textbf{Service Trust}: How much does Fides trust a remote peer that it provides the local peer with good service. In other words, to what extent does Fides trust a specific peer that it provides correct and useful threat intelligence.
 
 \item \textbf{Target}: An identification of a resource that Slips has the capability to generate threat intelligence for. It can be for example either an IP address, domain or hashes.
 
-\item \textbf{Remote Peer}. A peer that is on the Internet and is connected to the global Slips P2P2 network.
+\item \textbf{Local Peer}: The unique local instance of Slips that are connected to the global P2P network and runs Fides. In equations, we use $i$ when referring to the local peer.
 
-\item \textbf{Local Peer}: The unique local instance of Slips that are connected to the global P2P network and runs Fides.
+\item \textbf{Remote Peer}. A peer that is on the Internet and is connected to the global Slips P2P2 network. In equations, we use $j$ when referring to the remote peer.
+
+\item \textbf{Service Trust}: How much does Fides trust a remote peer that it provides the local peer with good service. In other words, to what extent does Fides trust a specific peer that it provides correct and useful threat intelligence. We denote it $st$ and talk about it in detail in section~\ref{subsec:service-trust}.
+
 \end{itemize}
 
-\todo[inline]{reorganize sections as discussed in Slack}
+\include{chapters/chap3-trust-model-design/general_overview}
+
+\include{chapters/chap3-trust-model-design/cold_start}
+
+\include{chapters/chap3-trust-model-design/attack_vectors}
 
 \include{chapters/chap3-trust-model-design/computational_model}
 
 \include{chapters/chap3-trust-model-design/interaction_evaluation}
 
 \include{chapters/chap3-trust-model-design/ti_aggregation}
-
-\include{chapters/chap3-trust-model-design/cold_start}
-
-\include{chapters/chap3-trust-model-design/attack_vectors}

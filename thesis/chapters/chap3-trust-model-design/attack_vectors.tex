@@ -28,13 +28,16 @@ We explore this behavior in the experiments in section \ref{sec:environment-simu
 
 \subsection{Influencing Peers Reputation}
 \label{subsec:influencing-peers-reputation}
-When a new peer joins the network, Fides requests recommendations in the cases described in section \ref{subsubsec:requesting-recommendation}.
-It is possible, that one or more of the peers providing the recommendations is malicious and it provides \textit{incorrect} recommendations with a goal either to silence a benign peer or to support another malicious peer.
+When a new peer joins the network, Fides in some cases requests recommendations from other peers in the network.
+We go into detail of this process further in section~\ref{subsubsec:requesting-recommendation}.
+
+Because Fides asks for the recommendation, it is possible, that one or more of the peers providing the recommendations is malicious and it provides \textit{incorrect} recommendations with a goal either to silence a benign peer or to support another malicious peer.
 
 Even though the reputation of a peer can be skewed by the attacker, it is still able to gain \textit{correct} service trust by following the protocol and providing useful data.
-Recall equation \ref{eq:service-trust} for service trust. The more experience a local peer has with a remote peer, the more it ignores the initially received recommendations.
+The service trust equation~\ref{eq:service-trust} suggests, that  the more experience a local peer has with a remote peer, the more it ignores the initially received recommendations.
 This means that the service trust will tend to converge to \textit{correct} values that do not necessarily depend on the initial recommendations and eventually will lose that information completely.
 In other words, if the peer's initial reputation was \textit{incorrect} (from the ground truth point of view), it will only take the peer longer to gain \textit{correct} service trust, but eventually, it will end up with the same value as with the correct reputation value.
+We talk more about the service trust and how does it behave further in the section~\ref{subsec:service-trust}
 
 \section{Taxonomy of Attacks}
 \label{sec:taxonomy-of-attacks}
@@ -45,7 +48,7 @@ They classify the reputation attacks in the following categories.
 \label{subsec:unfair-recommendations}
 This category describes the behavior when a peer provides incorrect data.
 The peer does not need to be necessarily malicious in order to do that, it can also have not enough data to make correct decisions or maybe it is missing some important information.
-In the case of Fides, these types of attacks can be against service trust as well as the reputation system.
+In the case of Fides, these types of attacks also influence service trust as well as the reputation system because the service trust depends on the initial reputation.
 Moreover, the malicious peers can collude together to amplify the effect on the final computations of the trust model.
 
 The intent of the malicious peers, in this case, is to lower someone's service trust/reputation (\textit{badmouthing attack}) or to make somebody's service trust/reputation higher (\textit{unfair praises}).
@@ -71,7 +74,7 @@ In simulations, we have malicious peers that collude (and lie about the same tar
 
 \subsection{Inconsistent Behavior}
 \label{subsec:inconsistent-behavior}
-In the aforementioned section,\ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence the trust model's decisions.
+In the aforementioned section~\ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence the trust model's decisions.
 This leads to malicious peers that will have different behavior when they try to gain the service trust and when they provide misleading data to achieve their goals.
 This behavior is equivalent to the \textit{Traitors} from \cite{KOUTROULI201247}.
 Fides tries to mitigate this problem with some of the interaction evaluation strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as \ref{subsec:distance-based-eval}).
