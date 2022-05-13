@@ -2,7 +2,7 @@
 \label{sec:implementation}
 Because Fides was designed to integrate with Slips, we were constrained by Slips implementation and thus Fides is implemented in Python 3.8.
 
-The code is versioned by git and published on GitHub in repository \href{https://github.com/LukasForst/fides}{github.com/LukasForst/fides}.
+The code is versioned by git and published on GitHub in repository \href{https://github.com/LukasForst/fides}{github.com/LukasForst/fides}~(\cite{fidesGithub}).
 We choose to use Conda \cite{conda} for managing dependencies and Python versions.
 
 \subsection{Configuration}
@@ -12,7 +12,7 @@ Our trust model contains many different configuration options either related to 
 Computational model settings are for example threat intelligence aggregation methods described in the section \ref{sec:network-intelligence-aggregation} or interaction evaluation strategy from the section \ref{sec:interaction-evaluation-strategies}.
 As the trust model needs only a single method, the administrator needs to define which one of these functions should be used.
 
-The configuration itself is in a single YAML \cite{yaml} format in \href{https://github.com/LukasForst/fides/blob/master/fides.conf.yml}{\textit{fides.conf.yml}} file.
+The configuration itself is in a single YAML \cite{yaml} format in \href{https://github.com/LukasForst/fides/blob/master/fides.conf.yml}{\textit{fides.conf.yml}}~(\cite{fidesGithub}) file.
 This file is loaded and validated during the trust model startup and is used to provide all possible configuration options for the trust model.
 
 \subsection{Persistence}
@@ -31,7 +31,7 @@ For example, if the threat intelligence received from the local Slips instance c
 
 Confidentiality level, $0 \leq cl \leq 1$, defines how sensitive or confidential the threat intelligence is where $cl = 0$ means public information that can be shared with anybody and $cl = 1$ secret information that should not be shared at all.
 
-Fides administrator can then in configuration (\ref{subsec:configuration}) specify what service trust $st$ is required for what confidentiality level $cl$.
+Fides administrator can then in configuration ~(\ref{subsec:configuration}) specify what service trust $st$ is required for what confidentiality level $cl$.
 If this configuration is in place, whenever remote peer ($j$) asks for the threat intelligence and local ($i$) Slips has requested threat intelligence, Fides verifies that $st_{i, j} \geq cl$ before providing the intelligence to the remote peer.
 
 This mechanism ensures that Slips does not leak information that is private or somehow more sensitive than the others.
