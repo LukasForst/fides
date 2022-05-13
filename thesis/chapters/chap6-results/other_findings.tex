@@ -1,0 +1,20 @@
+\section{Other Findings}
+\label{sec:other-findings}
+
+Even though with the results from the previous section~\ref{sec:fides-resilience} suggest that combination of $DistanceBasedTIEvaluation$ for evaluating the interactions in combination with $AverageConfidenceTIAggregation$ is the best, it is not always the true.
+
+For example, recall figure~\ref{fig:single-simulation-example} from the section~\ref{sec:general-overview-of-simulation-output}, the presented situation uses $MaxConfidenceTIEvaluation$ and it is able to correctly detect all types of peers as well as correctly determine score for the target.
+However, if we take the same environment and the only difference is using $DistanceBasedTIEvaluation$ for evaluating interactions, we get following graph for the service trust in the figure~\ref{fig:zero-gained-trust}.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/zero_gained_trust.png}
+    \caption{$DistanceBasedTIEvaluation$ in situation from the figure \ref{fig:single-simulation-example}}
+    \label{fig:zero-gained-trust}
+\end{figure}
+
+\noindent
+Graph for confidence as well as target score for the situation from figure~\ref{fig:zero-gained-trust} can be seen in the appendix in the figure~\ref{fig:zero-gained-trust-all}.
+
+The service trust graph in figure~\ref{fig:zero-gained-trust} suggests that Fides didn't gain any trust for any peer in the network.
+This happens because th
