@@ -4,7 +4,7 @@ In this section we describe how does Fides work from the high level perspective.
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=0.75\textwidth]{assets/service_trust_diagram.png}
+    \includegraphics[width=0.8\textwidth]{assets/fides_lifecycle.jpeg}
     \caption{Trust Model Life Cycle}
     \label{fig:trust-model-life-cycle}
 \end{figure}
@@ -26,4 +26,11 @@ The evaluation process and possible interaction evaluation functions are describ
 In the last step, Fides updates trust data for each peer according to the satisfaction that is computed in step number three.
 Computations that allow Fides to do that are described in detail in section \ref{sec:computational-model}.
 
-\todo[inline]{add that awesome diagram from Sebas}
+All operations including the data flow and the communication with other peers and Slips can be found on the diagram~\ref{fig:trust-model-operational-diagram}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/fides_operational_diagram.jpeg}
+    \caption{Operational diagram of Fides}
+    \label{fig:trust-model-operational-diagram}
+\end{figure}
