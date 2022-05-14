@@ -1,3 +1,4 @@
+\newpage
 \section{Fides Resilience}
 \label{sec:fides-resilience}
 
@@ -21,25 +22,25 @@ The first column is a metric measuring target detection performance~(\ref{subsec
 The last, fourth, column then contains a graph that displays what percentage of peers in the simulation were confident correct~(\ref{subsubsec:confident-correct-peer}) with respect to the environment hardness value~(\ref{subsec:environment-hardness}).
 We include it in the graph to allow better visualization of how does the simulation environment looks like with respect to the peer's distribution.
 
-The most important metric is the target detection performance ~(\ref{subsec:target-detection-performance-metric}), which is visualized on the first graph.
-A single dot in the graph is the value of $tdp$ and in a case when the $tdp \geq 1$, it means that Fides made on the average wrong decision about the targets and classified them with the wrong label.
-In other words, if $tdp \geq 1$, Fides classified benign targets as malicious and the other way around.
-
-\begin{figure}
+\begin{figure}[hp!]
     \centering
     \includegraphics[width=0.94\paperwidth, angle=90]{assets/25_all_metrics.png}
     \caption{Performance of all setups with 25\% pre-trusted peers}
     \label{fig:performance-all-setups-25-pretrusted}
 \end{figure}
 
-In figure~\ref{fig:distance-detection-detail-25} we can clearly see, that there is a situation, even in the hardest environment, where the $DistanceBasedTIEvaluation$ in combination with $AverageConfidenceTIAggregation$ does not have any $tdp$ above the \textit{red line} which means that the $tdp < 1$ and that Fides was always able to identify targets correctly even in the worst possible environment.
+The most important metric is the target detection performance ~(\ref{subsec:target-detection-performance-metric}), which is visualized on the first graph.
+A single dot in the graph is the value of $tdp$ and in a case when the $tdp \geq 1$, it means that Fides made on the average wrong decision about the targets and classified them with the wrong label.
+In other words, if $tdp \geq 1$, Fides classified benign targets as malicious and the other way around.
 
-\begin{figure}[!h]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{assets/25_distance_detection_detail.png}
     \caption{$DistanceBasedTIEvaluation$ with 25\% of pre-trusted peers}
     \label{fig:distance-detection-detail-25}
 \end{figure}
+
+In figure~\ref{fig:distance-detection-detail-25} we can clearly see, that there is a situation, even in the hardest environment, where the $DistanceBasedTIEvaluation$ in combination with $AverageConfidenceTIAggregation$ does not have any $tdp$ above the \textit{red line} which means that the $tdp < 1$ and that Fides was always able to identify targets correctly even in the worst possible environment.
 
 We included the graph of this case similar to the figure~\ref{fig:single-simulation-example} with this particular \textit{"winning"} setup in the most hostile environment to the appendix in figure~\ref{fig:worst-best-scenario}. For the explanation of the graph see section~\ref{sec:general-overview-of-simulation-output}.
 

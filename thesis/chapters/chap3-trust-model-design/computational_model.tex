@@ -105,16 +105,23 @@ For example, the weight of interaction when a remote peer shares the threat inte
 
 
 \subsubsection{Fading Effect}
+\label{subsubsec:fading-effect}
 Fading effect $f^{k}_{i,j}$ determines \textit{"how much does algorithm forget"} as the algorithm prefers most recent interactions over past interactions and thus $f^{k}_{i,j}$ reduces the weight of the past interactions. 
 $f^{k}_{i,j}$ is a \textit{non-increasing function} of interaction and time or an index of said interaction in history.
-This depends on the implementation - Fides implements it as a decreasing linear function.
+
+The actual implementation of the fading effect depends on the data the trust model is processing.
+For example, SORT implements it as a decreasing linear function $f^{k}_{i,j} = \frac{k}{sh_{i,j}}, 1 \leq k \leq sh_{i,j}$~\cite{sort}.
+However, in our case and after multiple iterations, we decided to not to forget the interactions that the model remembers and rather have all interactions with the same impact.
+
 \begin{equation}
-    f^{k}_{i,j} = \frac{k}{sh_{i,j}}, 1 \leq k \leq sh_{i,j}
+    f^{k}_{i,j} =1
 \end{equation}
-However, it can be implemented as a function of time as well. In that case, the function does not depend on $k$ (as an index of a time window) but rather on the time, when the interaction happened.
+
+\noindent
+The way how Fides computes $f^{k}_{i,j}$ might be changed in the future and implemented as a function of time, we talk about it more as a part of the future work in the section~\ref{sec:future-work}.
 
 \subsection{Reputation and Recommendations}
-In order to mitigate the cold start problem outlined in the section \ref{sec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
+In order to mitigate the cold start problem outlined in the section~\ref{sec:cold-start-problem} and in cases when there are no or little interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}. 
 $r_{i,j}$ is the second part of the service trust equation \ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
 
 The \textit{reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what remote peers think about another remote peer. However, this value is calculated by the local peer with respect, to how much it trusts each peer, that provided the recommendation.
@@ -138,7 +145,7 @@ Moreover, the administrator can choose if this value is \textit{frozen}, or not.
 \textit{Frozen Service Trust} configuration means, that the peer $j$ has in eyes of $i$ \textit{static service trust} $st_{i, j}$ - it will never change and whatever data peer $j$ sends to $i$ will not influence the $st_{i,j}$.
 On the other hand, when this configuration is not selected, the peer's service trust is going to change during the time when it communicates with the local instance according to the data and interactions it provides.
 
-In a case when the peer is not pre-trusted, Fides evaluates if has \textit{enough} well-trusted peers that can be trusted to provide the correct recommendation. How many is \textit{"enough"} is subject to simulations in chapter \ref{ch:experiments}. This value as well as a number of maximal peers used for recommendation is configurable.
+In a case when the peer is not pre-trusted, Fides evaluates if has \textit{enough} well-trusted peers that can be trusted to provide the correct recommendation. This value as well as a number of maximal peers used for recommendation is configurable.
 In addition, the administrator can enforce that for the recommendation protocol, only the pre-trusted peers or the peers from pre-trusted organizations are used.
 
 \subsubsection{Recommendation Response}
@@ -263,8 +270,12 @@ And for recommendation integrity we compute $rib_{i, z}$ as:
 \noindent
 One more time, the computational model is trying to approximate average behavior in recommendations - $rcb_{i,z}$ - and then the deviation from such behavior - $rib_{i,z}$.
 
-Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsec:interaction-satisfaction}. It is a non-increasing function of a number of recommendations or a time. 
-For the recommendations, Fides implements it exactly the same as for the service interactions, thus $rf^{x}_{i, z} = \frac{x}{rh_{i, z}}, 1 \leq x \leq rh_{i,z}$.
+Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsubsec:fading-effect}. It is a non-increasing function of a number of recommendations or a time. 
+For the recommendations, Fides implements it exactly the same as for the service interactions.
+
+\begin{equation}
+    rf^{x}_{i, z} = 1
+\end{equation}
 
 \subsubsection{Evaluating Received Recommendation}
 As outlined in the section \ref{subsubsec:recommendation-competence-integrity-belief}, in order to evaluate a particular recommendation from remote peer $z$, we have satisfaction, weight, and the fading effect. 

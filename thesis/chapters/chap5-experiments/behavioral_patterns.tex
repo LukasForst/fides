@@ -7,7 +7,7 @@ Most of the behavior depends on the baseline, which is the ground truth for any 
 We note baseline score as $S_{B} \in \{-1, 1\}$, where $S_{B} = -1$, means the target is malicious and $S_{B} = 1$ means the target is benign.
 
 
-\subsubsection{Confident Correct Peer}
+\subsection{Confident Correct Peer}
 \label{subsubsec:confident-correct-peer}
 This behavior corresponds to an honest peer that provides correct data according to the baseline. 
 Meaning, that if the target (domain/IP address that we have threat intelligence for) is benign, the peer with \textit{confident correct} behavior will provide threat intelligence that says that the target is benign. 
@@ -30,7 +30,7 @@ The table \ref{tab:confident-correct} describes the data used for sampling the t
     \label{tab:confident-correct}
 \end{table}
 
-\subsubsection{Uncertain Peer}
+\subsection{Uncertain Peer}
 \label{subsubsec:uncertain-peer}
 This behavior simulates peers that do not have enough information to provide reasonably good data, but they are benign and honest with their behavior.
 The peer can provide essentially any score but with very low confidence in said score.
@@ -47,7 +47,7 @@ The peer can provide essentially any score but with very low confidence in said 
     \label{tab:uncertain-peer}
 \end{table}
 
-\subsubsection{Confident Incorrect}
+\subsection{Confident Incorrect}
 \label{subsubsec:confident-incorrect-peer}
 The peer with this behavior is confident about their data and the threat intelligence, but their threat intelligence is wrong.
 However, this peer is still benign and is making honest mistakes.
@@ -67,7 +67,7 @@ Thus, whenever the peer is asked to provide threat intelligence, it responds wit
 \end{table}
 
 
-\subsubsection{Malicious Peer}
+\subsection{Malicious Peer}
 \label{subsubsec:malicious-peer}
 The malicious peer is going to provide wrong threat intelligence intentionally to achieve their goal of influencing the trust decisions of the local peer. 
 The sampling data are the same as for the \textit{confident incorrect} (\ref{tab:confident-incorrect}) behavior, but the difference is that the malicious peer is providing misleading data intentionally.

@@ -53,19 +53,19 @@
 
 % list of figures
 %  TODO: enable this if necessary
-% \begingroup
-% \let\cleardoublepage\relax
-% \listoffigures
-% \clearpage
-% \endgroup
+\begingroup
+\let\cleardoublepage\relax
+\listoffigures
+\clearpage
+\endgroup
 
 % % list of tables
-% \begingroup
-% \let\clearpage\relax
-% \let\cleardoublepage\relax
-% \listoftables
-% \endgroup
-% \cleardoublepage
+\begingroup
+\let\clearpage\relax
+\let\cleardoublepage\relax
+\listoftables
+\endgroup
+\cleardoublepage
 
  % From now on Arabic page numbering
 \mainmatter
@@ -94,6 +94,8 @@
 \printbibliography[heading=none]
 
 \cleardoublepage
+
+\pagestyle{fancy}
 \input{appendix}
 
 \end{document}
