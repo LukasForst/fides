@@ -1,40 +1,41 @@
 \chapter{Trust Model Design}
 \label{ch:trust-model-design}
-The goal of this thesis is to design and implement a trust model for sharing threat intelligence in global peer-to-peer networks where the peers are instances of intrusion prevention systems.
-In the previous chapter, we outlined what is the threat intelligence, how it is generated, and why are trust relationships important when making decisions based on the said threat intelligence.
-We described what are the trust models in the context of peer-to-peer networks and analyzed the notable ones.
-We discovered the promising trust model SORT~\cite{sort} which we described in section \ref{subsec:sort} and after careful analysis, we decided to use SORT's algorithm as a base for our own trust model design mainly because of its flexibility and modularity.
+This thesis aims to design and implement a trust model for sharing threat intelligence in global peer-to-peer networks where the peers are instances of intrusion prevention systems.
+The previous chapter outlined what threat intelligence is, how it is generated, and why trust relationships are essential when making decisions based on the said threat intelligence.
+We described the trust models in the context of peer-to-peer networks and analyzed the notable ones.
+We discovered the promising trust model SORT~,\cite{sort} which we described in section~\ref{subsec:sort}. After careful analysis, we decided to use SORT's algorithm as a base for our trust model design mainly because of its flexibility and modularity.
 
-In this chapter, we propose a new trust model - \textbf{Fides} - that utilizes modified SORT's computational model with multiple modifications and extensions that allow it to effectively work in highly adversarial global peer-to-peer networks.
-Fides is a generic and heavily configurable trust model that specializes in sharing threat intelligence.
-Its design allows it to operate with any kind of data and it is not limited to only threat intelligence. 
-Thanks to its modular architecture, it is able to operate with any kind of data with very few modifications to its implementation
+In this chapter, we propose a new trust model \textbf{Fides}.
+Fides was named after the ancient goddess of trust and good faith Fides~\cite{enwiki:1086924565}.
+The trust model utilizes modified SORT's computational model with multiple modifications and extensions that allow it to work in highly adversarial global peer-to-peer networks effectively.
+Fides is a generic and heavily configurable trust model specializing in sharing threat intelligence.
+However, thanks to its modular architecture, it can operate with any data, and it is not limited only to threat intelligence.
 
-In the section~\ref{sec:general-overview-of-fides} we describe our trust model design and explain how Fides works on a high level, what are the inputs and outputs and how does it behave in which situation.
+In the section~,\ref{sec:general-overview-of-fides} we describe our trust model design and explain how Fides works on a high level, the inputs and outputs, and how it behaves in which situation.
 
-After outlining the general overview, we analyze weaknesses of the trust models in general and how do they apply on Fides.
-First, we start with \textit{cold start problem} in the section~\ref{sec:cold-start-problem} which describe how can peers gain trust when they are new in the network and how does Fides tackle this issue.
+After outlining the general overview, we analyze the weaknesses of the trust models and how they apply to Fides.
+First, we start with \textit{the cold start problem} in the section~\ref{sec:cold-start-problem}, which describes how peers can gain trust when they are new in the network and how Fides tackles this issue.
 
-In the next section~\ref{sec:attack-vectors} we analyze possible attack vectors on our trust model and then we dig deep into the taxonomy of attacks in the next section~\ref{sec:taxonomy-of-attacks}.
+In the next section~\ref{sec:attack-vectors} we analyze possible attack vectors on our trust model, and then we describe the taxonomy of attacks in the next section~\ref{sec:taxonomy-of-attacks}.
 
-Once all trust model requirements are explained we dive deep into the Fides's computational model in the next section~\ref{sec:computational-model}  and explain how it is able to uncover trust relationships in the network.
-In the following section \ref{sec:interaction-evaluation-strategies}, we explain how is Fides able to evaluate interactions between peers and how that affects trust.
-Because Fides specializes in sharing threat intelligence and integrates with Slips, in the next section \ref{sec:network-intelligence-aggregation} we explain how Fides aggregates the weighted threat intelligence from the network.
+Once all trust model requirements are explained, we dive deep into Fides's computational model in the next section~\ref{sec:computational-model}  and explain how it can uncover trust relationships in the network.
+The following section~\ref{sec:interaction-evaluation-strategies} explains how Fides can evaluate interactions between peers and how that affects trust.
+Because Fides specializes in sharing threat intelligence and integrates with Slips, in the next section~\ref{sec:network-intelligence-aggregation} we explain how Fides aggregates the weighted threat intelligence from the network.
 
 \vspace{1cm}
 
 \noindent
-In the upcoming pages, we use the following terminology when we talk about the trust model.
+In the upcoming pages, we use the following terminology to talk about the trust model.
 
 \begin{itemize}
 
-\item \textbf{Target}: An identification of a resource that Slips has the capability to generate threat intelligence for. It can be for example either an IP address, domain or hashes.
+\item \textbf{Target}: An identification of a resource for which is Slips able to generate threat intelligence. It can be, for example, either an IP address, domain, or hashes.
 
 \item \textbf{Local Peer}: The unique local instance of Slips that are connected to the global P2P network and runs Fides. In equations, we use $i$ when referring to the local peer.
 
-\item \textbf{Remote Peer}. A peer that is on the Internet and is connected to the global Slips P2P2 network. In equations, we use $j$ when referring to the remote peer.
+\item \textbf{Remote Peer}. A peer on the Internet is connected to the global Slips P2P2 network. In equations, we use $j$ when referring to the remote peer.
 
-\item \textbf{Service Trust}: How much does Fides trust a remote peer that it provides the local peer with good service. In other words, to what extent does Fides trust a specific peer that it provides correct and useful threat intelligence. We denote it $st$ and talk about it in detail in section~\ref{subsec:service-trust}.
+\item \textbf{Service Trust}: How much does Fides trust a remote peer that it provides the local peer with good service. In other words, to what extent does Fides trust a specific peer that it provides correct and valuable threat intelligence. We denote it $st$ and discuss it in detail in section~\ref{subsec:service-trust}.
 
 \end{itemize}
 

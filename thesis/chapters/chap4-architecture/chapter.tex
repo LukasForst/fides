@@ -1,9 +1,9 @@
 \chapter{Architecture}
 \label{ch:architecture}
 Slips is modular software. Each module is designed to perform a specific detection in the network traffic.\cite{slips}
-In addition to that, the modules can be also used to directly extend Slips with any additional functionality. 
-Fides was designed for seamless interoperability with Slips and in addition to the generic trust model, we developed the Fides module for Slips.
-In this chapter, we describe the architecture of Fides, and how it interacts with the network as well as with Slips.
+In addition to that, the modules can also be used to extend Slips with any additional functionality directly. 
+Fides was designed for seamless interoperability with Slips, and in addition to the generic trust model, we developed the Fides module for Slips.
+In this chapter, we describe the architecture of Fides and how it interacts with the network and with Slips.
 
 \begin{figure}[ht]
     \centering
@@ -13,11 +13,11 @@ In this chapter, we describe the architecture of Fides, and how it interacts wit
 \end{figure}
 
 From the high-level perspective (see figure~\ref{fig:high-level-architecture}), the trust model communicates with two different entities - Slips and the network layer.
-For both parts, Fides exposes and consumes an API~\cite{api} that is built using the Redis channels.
+Fides exposes and consumes an API~\cite{api} built using the Redis channels for both parts.
 The messages and API calls are consumed using JSON~\cite{json} data format.
 
 Redis is an in-memory data structure store that supports asynchronous channels and a publish-subscribe model \cite{redis}.
-We choose to employ Redis channels, as the medium that allows communication between the network layer and Fides and allows them to use their respective APIs because Slips already uses Redis for its internal communication between modules, it brings no additional overhead to run Fides with its network layer.
+We choose to employ Redis channels as the medium that allows communication between the network layer and Fides and allows them to use their respective APIs because Slips already uses Redis for its internal communication between modules. It brings no additional overhead to run Fides with its network layer.
 
 \include{chapters/chap4-architecture/network}
 

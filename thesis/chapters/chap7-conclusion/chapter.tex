@@ -20,13 +20,13 @@ In the following chapter~\ref{ch:trust-model-design} we propose the trust model 
 The following sections discuss the problems that trust models face in peer-to-peer networks in general~(\ref{sec:cold-start-problem}).
 After that, we analyze common attack vectors on the trust models~(\ref{sec:attack-vectors}) and outline the taxonomy of possible attacks on Fides~(\ref{sec:taxonomy-of-attacks}).
 Once we outline all necessary preconditions, we deep dive into a computational model of Fides~(\ref{sec:computational-model}), including multiple options for evaluating interactions between the peers~(\ref{sec:interaction-evaluation-strategies}).
-Because the trust model operates with the threat intelligence, we then propose multiple ways to aggregate network threat intelligence into a single value consumed by Slips~(\ref{sec:network-intelligence-aggregation}).
+Because the trust model operates with threat intelligence, we propose multiple ways to aggregate network threat intelligence into a single value consumed by Slips~(\ref{sec:network-intelligence-aggregation}).
 
-The architecture and implementation details of the trust model are then described in the chapter~\ref{ch:architecture} where we explain how Fides communicates in the network and how it can verify the data it receives, and how it ensures that no privacy-sensitive data are sent to the network.
+The architecture and implementation details of the trust model are then described in the chapter~,\ref{ch:architecture} where we explain how Fides communicates in the network, how it can verify the data it receives, and how it ensures that no privacy-sensitive data are sent to the network.
 
 In the next chapter~\ref{ch:experiments}, we designed extensive test scenarios~(\ref{sec:environment-simulation}), explained how we evaluate each simulation~(\ref{sec:experiments-evaluation}), and then created and implemented an evaluation framework~(\ref{sec:simulations-execution}) that allowed us to simulate any possible setup in any possible environment.
 
-The results of the experiments and the trust model were then evaluated in the chapter~,\ref{ch:results} where we discovered that with a particular setup and under a condition that Fides talks to at least 25\% of pre-trusted peers, it could eventually identify targets correctly no matter how the rest of the peers behave.
+We then evaluated the results of the experiments and the trust model in the chapter~,\ref{ch:results} where we discovered that with a particular setup and under a condition that Fides talks to at least 25\% of pre-trusted peers, it could eventually identify targets correctly no matter how the rest of the peers behave.
 
 Results have shown that Fides is a viable solution that tackles the problem of trust relationships in sensitive environments for threat intelligence sharing. 
 We proved that Fides performs well and thus can be used to extend the existing implementation of Slips as a new module for sharing threat intelligence in the global peer-to-peer network.

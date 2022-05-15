@@ -1,88 +1,88 @@
 \section{Trust in Peer-to-Peer Networks}
 \label{sec:trust-in-p2p}
 
-There are plenty of existing approaches on how to model trust in peer-to-peer networks as well as many existing trust models.
-Unfortunately, most of them were designed specifically with file-sharing in mind, as that is the most common use case for peer-to-peer networks.
-However, there are multiple trust models that are generic enough, such as SORT described in section \ref{subsec:sort}, or that were designed specifically for sharing threat intelligence, for example, Dovecot described in section \ref{subsec:dovecot}.
+There are many existing approaches to model trust in peer-to-peer networks and many existing trust models.
+Unfortunately, most of them were explicitly designed with file-sharing in mind, as that is the most common use case for peer-to-peer networks.
+However, multiple trust models are generic enough, such as SORT described in section~\ref{subsec:sort}, or designed specifically for sharing threat intelligence, for example, Dovecot described in section~\ref{subsec:dovecot}.
 
 \subsection{Problems of Trust}
 \label{subsec:problems-of-trust}
-In peer-to-peer networks, where there is no central authority that can enforce rules and provide an assessment of whether the peers are honest or not, it can be problematic to find out how much can the peers trust each other.
-Because anybody can freely join and leave, a knowledgeable adversary can misuse the network for their own benefit by providing wrong data to the rest of the peers in the network.
+In peer-to-peer networks, where no central authority can enforce rules and assess whether the peers are honest or not, it can be problematic to find out how much the peers can trust each other.
+Because anybody can freely join and leave, a knowledgeable adversary can misuse the network for their benefit by providing inaccurate data to the rest of the peers in the network.
 For that reason, the peers need to be able to tell how much they can trust each other. 
 
-An algorithm, that models such trust relationships and is able to assign the trust value to each peer is called a \textit{trust model}.
-An analysis of existing trust models was performed by Shree and Basha in~\cite{shree2014exhaustive} and by Pinyol et al~\cite{pinyol2013computational}. 
-We took both analyses into account when researching for existing implementations of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
+An algorithm that models such trust relationships and can assign the trust value to each peer is called a \textit{trust model}~\cite{wang2003trust}.
+An analysis of existing trust models was performed by Shree and Basha in~\cite{shree2014exhaustive} and by Pinyol et al. ~\cite{pinyol2013computational}. 
+We took both analyses into account when researching existing implementations of trust models that might be a good fit for our highly adversarial global peer-to-peer network for sharing threat intelligence.
 
 \subsection{Dovecot}
 \label{subsec:dovecot}
 Dovecot is a trust model developed by Dita Hollmannová in~\cite{dita}.
-This trust model was specifically designed for Slips in order to share threat intelligence in the \textit{local} peer-to-peer networks.
-Dovecot is counting interactions between the peers and the more interaction peers have, they have a higher base for trust.
-This design is based on the Sality botnet \cite{falliere2011sality}, where botnet peers were storing the \textit{goodcount} that counted the number of interactions between each other.
-The idea behind this is simple yet very effective, the more peers talk to each other, the more are they trusted.
+This trust model was designed explicitly for Slips to share threat intelligence in the \textit{local} peer-to-peer networks.
+Dovecot counts interactions between the peers, and the more interaction peers have, they have a higher base for trust.
+This design is based on the Sality botnet~\cite{falliere2011sality}, where botnet peers were storing the \textit{goodcount} that counted the number of interactions between each other.
+The idea behind this is simple yet very effective. The more peers talk to each other, the more they are trusted.
 
-The final peer trust is computed using \textit{goodcount} in combination with Slips's threat intelligence about the peer. 
-This is possible due to the fact that in local networks Slips knows every IP address and can obtain a full overview of the device on the network and its behavior.
+The final peer trust is computed using \textit{goodcount} combined with Slips's threat intelligence about the peer. 
+This is possible since, in local networks, Slips knows every IP address and can obtain a complete overview of the device on the network and its behavior.
 
 Unlike other trust models where new peers start with no trust, Dovecot trusts new peers by default. 
-However, the authors mentioned as future work that this property should be explored more in detail, so this may change in future versions of Dovecot.
+However, the authors mentioned in future work that this property should be explored more in detail, so this may change in future versions of Dovecot.
 
 \subsection{SORT}
 \label{subsec:sort}
 Self-ORganizing Trust model (SORT) aims to decrease malicious activity in a P2P system by establishing trust relations among peers in their proximity \cite{sort}.
 
 In SORT, peers are assumed to be untrustworthy until they prove otherwise by providing \textit{good} service to the local peer. 
-For example, in file-sharing networks, this might be providing access to required files, or as in our case, providing threat intelligence about some target.
+For example, in file-sharing networks, this might be providing access to required files or, as in our case, providing threat intelligence about some target.
 
-Unlike other trust models, for example, Eigentrust \cite{kamvar2003eigentrust}, SORT does not need a priori information about the network nor any pre-trusted peers to be able to operate effectively in the network.
+Unlike other trust models, for example, Eigentrust~\cite{kamvar2003eigentrust}, SORT does not need a priori information about the network or any pre-trusted peers to operate effectively in the network.
 Peers do not try to collect trust information from all peers.
 Each peer develops its own local view of trust about the peers who interacted in the past \cite{sort}.
 
 Even though peers do not collect trust information from other peers, there is a recommendation system in place, where any peer can ask for a recommendation about another peer.
-Because of the nature of the peer-to-peer network, this allows the trust model to gain faster knowledge about new peers, that can join and leave at any time.
+Because of the nature of the peer-to-peer network, this allows the trust model to gain faster knowledge about new peers that can join and leave at any time.
 
 Even though SORT's authors evaluated the algorithm on the file-sharing peer-to-peer networks, the algorithm is generic enough to be reused for different environments.
 It achieves that thanks to its computational model, which is generic and flexible.
 As we mentioned previously, the peers are gaining trust by providing services. 
 When they provide the service to the local peer, the trust model evaluates this interaction using the interaction evaluation function.
-This evaluation is then passed to the computational model which at the end assigns trust value to the peer.
+This evaluation is then passed to the computational model, which assigns trust value to the peer.
 
-Thanks to this design, by re-implementing the interaction evaluation function, we can adapt the trust model for different environments.
-For example, in the file-sharing environment such interaction evaluation function can be based on the speed of the upload/download, so peers will prefer nodes with a faster internet connection.
+Thanks to this design, we can adapt the trust model for different environments by re-implementing the interaction evaluation function.
+For example, in the file-sharing environment, such an interaction evaluation function can be based on the speed of the upload/download so that peers will prefer nodes with a faster internet connection.
 
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
-The field of trust models for peer-to-peer networks is not new and there are many other interesting trust models that attempt to tackle trust relationships between peers.
-In this section, we describe only notable trust models, that are relevant to sharing threat intelligence in the peer-to-peer networks but didn't base our design on them at the end.
+The field of trust models for peer-to-peer networks is not new, and there are many other interesting trust models that attempt to tackle trust relationships between peers.
+In this section, we describe only notable trust models relevant to sharing threat intelligence in the peer-to-peer networks but didn't base our design on them at the end.
 
-Sadan, proposed in \cite{abera2019sadan} is a trust model that uses committees and computational challenges to identify malicious peers in the network.
-Sadan requires hardware chips - Trusted Platform Module (TPM), to verify the running software which allows other peers to verify the trustworthiness of the peer.
+Sadan, proposed in~\cite{abera2019sadan}, is a trust model that uses committees and computational challenges to identify malicious peers in the network.
+Sadan requires hardware chips - Trusted Platform Module (TPM), to verify the running software, which allows other peers to verify the trustworthiness of the peer.
 The requirement of TPM chips means that Sadan can not be used as the base for our trust model, as we do not want to limit our solution to specific hardware.
 
 Xiong and Liu then propose PeerTrust~\cite{xiong2004peertrust}, which uses a transaction-based feedback system to determine the reputation and trust of the peers.
 Even though the model is generic and was designed for peer-to-peer networks, it was optimized for \textit{e-commerce communities} that inherently have completely different behavior than the network for sharing threat intelligence, which needs to protect itself from the malicious peers.
 
-Huynh, Jennings, and Shadbolt proposed FIRE trust and reputation model \cite{huynh2006integrated} which was designed for open multi agent systems.
+Huynh, Jennings, and Shadbolt proposed FIRE trust and reputation model~\cite{huynh2006integrated} which was designed for open multi-agent systems.
 FIRE incorporates multiple different trust metrics that are aggregated and provide a view of the agents' behavior.
 After analyzing the paper, we had concerns about three different trust metrics out of four in our specific settings.
 For that reason, we decided not to use FIRE as the base for our further design.
 
-In~\cite{1562680}, He et al., proposed gathering peers and modeling their trust relationships as \textit{clouds}. They proposed an \textit{extended-cloud-model-based trust model} - ECMBTM.
+In~\cite{1562680}, He et al. proposed gathering peers and modeling their trust relationships as \textit{clouds}. They proposed an \textit{extended-cloud-model-based trust model} - ECMBTM.
 ECMBTM utilizes cooperation history between peers to compute trust clouds. 
 This trust model attempts to mitigate the cold start problem by directly propagating trust to another peer in the network.
 We find the application of this method in our setting problematic because it would be easier for the malicious peers to propagate their false information through the network.
 
 In~\cite{li2014design}, Li et al. employed a machine learning-based trust model for the collaboration of IDS instances.
-Even though this model is closely related to our use case we can not utilize it, because it uses a central certificate authority to issue a registration for the new peers. 
-In our design, we want to have a permission-less peer-to-peer network where each peer is equal and there is no central authority that controls the network and is a single point of failure.
+Even though this model is closely related to our use case, we can not utilize it because it uses a central certificate authority to issue a registration for the new peers. 
+In our design, we want to have a permission-less peer-to-peer network where each peer is equal, and there is no central authority that controls the network and is a single point of failure.
 
 \vspace{1cm}
 
 \noindent
-After careful analysis, we decided to create a new trust model - Fides - that is based on the SORT algorithm with various modifications and fine-tuning.
-We describe how does the Fides work in the following chapter \ref{ch:trust-model-design}.
+After careful analysis, we decided to create a new trust model - \textbf{Fides} - that is based on the SORT algorithm with various modifications and fine-tuning.
+We describe how does the Fides work in the following chapter~\ref{ch:trust-model-design}.
 We choose SORT because it is easily extensible and robust. 
-Moreover, the evaluation provided by the authors in \cite{sort} promised interesting results.
+Moreover, the evaluation provided by the authors in~\cite{sort} promised interesting results.
