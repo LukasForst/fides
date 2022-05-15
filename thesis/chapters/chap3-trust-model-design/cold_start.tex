@@ -23,9 +23,9 @@ Static initial trust is supported by Fides as a form of fallback when no other c
 \subsection{Pre-Trusted Peers}
 \label{subsec:pre-trusted-peers}
 
-This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Martin Repa~\cite{nl} which implements the new idea of pre-trusted peers in organizations for the Slips IDS. Therefore, we worked with the concept of pre-trusted organizations which have pre-trusted peers. In this case, Fides can use this knowledge and assign a higher or lower trust to new peers.
+This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Bc. Martin Řepa~\cite{nl} which implements the new idea of pre-trusted peers in organizations for the Slips IPS. Therefore, we worked with the concept of pre-trusted organizations which have pre-trusted peers. In this case, Fides can use this knowledge and assign a higher or lower trust to new peers.
 
-The global P2P framework implemented by Repa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
+The global P2P framework implemented by Řepa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
 This allows Fides to \textit{pre-trust} specific peers or all the peers from organizations by assigning them an initial value.
 
 Fides can be configured to use pre-trust in two different ways. First, to assign the pre-trusted peers an initial \textit{reputation}. This means that the peer will have an initial reputation, but it will be required to interact with the local peer and it will slowly change that initial reputation according to its interactions with others. All the interactions will be evaluated and Fides will compute a service trust for the peer, as described in Section~\ref{sec:interaction-evaluation-strategies}. 
@@ -51,5 +51,5 @@ Moreover, the local peer should request recommendations only if it has \textit{e
 
 \vspace{7mm}
 
-Fides employs recommendation systems based on SORT \cite{sort} and combines it with the pre-trusted peers (\ref{subsec:pre-trusted-peers}) as well as with the static initial trust (\ref{subsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
-The algorithm used for the recommendation system is explained in detail in section \ref{sec:computational-model}.
+Fides employs recommendation systems based on SORT~\cite{sort} and combines it with the pre-trusted peers~(\ref{subsec:pre-trusted-peers}) as well as with the static initial trust~(\ref{subsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
+The algorithm used for the recommendation system is explained in detail in the section~\ref{sec:computational-model}.
