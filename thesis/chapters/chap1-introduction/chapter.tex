@@ -11,32 +11,34 @@
 % Discussion on results/conclusions
 % Your contributions
 
-\section{Problems we are solving}
-\begin{enumerate}
-\item How do we determine who and how much to trust in the global peer-to-peer network, where peers can join and quickly leave and there is a possibility that all connected peers are adversarial.
-\item Given that peers can join and leave any time, we will have a problem with a cold start. We need to come up with a way how can newcomers safely gain initial trust fast.
-\item The main (but not only) purpose of the project is to be able to share threat intelligence over the network. How do we aggregate said threat intelligence into a single aggregated network opinion?
-\item As a Slips administrator, I want to be able to share data only with (or trust incoming data only from) specific peers or specific organizations.
-\end{enumerate}
+When protecting the local networks, the basic firewalls and advanced Intrusion Prevention Systems (IPS)~\cite{zhang2004intrusion} rely on rules and the threat intelligence~\cite{threatintelligence} that was either generated from the previous attacks locally or received from the remote sources.
+Such sources can be, for example, public blocklists ~\cite{abuseipdb, binarydefense, dataplane} or collaborative databases such as MISP~\cite{wagner2016misp} where the community creates the threat intelligence.
+However, all of these traditional threat intelligence sources are, in the end, controlled by the centralized authority, which has complete control over the resource and can at anytime restrict access to these valuable assets or censor what is published and what is not.
 
-% TODO: motivation - the why, the problem being solved 
+To limit the impact of one organization shutting down the database, we can utilize the peer-to-peer model and remove the central authority and with that a single point of failure.
+In the peer-to-peer networks, each peer has the same privileges, and the data are generated, shared, and consumed by each peer in the network.
+Although this approach solves the problem of a single central authority, it introduces new problems. The crucial question is how much can each peer trust the threat intelligence that it received from other peers? And also, what if two peers provide contradicting information? How can a peer aggregate two opinions into a single decision?
 
-% TODO: what others did before
+In this thesis, we answer those questions and tackle the problem of trust relationships when sharing threat intelligence.
+The algorithms that tackle trust relationships between multiple entities are called \textit{trust models}~\cite{wang2003trust}.
+The research field of trust models is not new, and there are many existing trust models~\cite{kamvar2003eigentrust, xiong2004peertrust, 1562680, huynh2006integrated, sort, pinyol2013computational, christensen2014hybrid,li2014design, abera2019sadan}.
+However, they were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different kinds of data.
+An exemption to them is the Dovecot~\cite{dita}, which was designed to operate with the threat intelligence with a limitation to operate only in the local networks.
 
-% TODO: the gap, what was missing
-In this thesis, we propose a new trust model \textbf{Fides}.
-Fides is a generic trust model fine-tuned for sharing threat intelligence data in highly adversarial global peer-to-peer networks of intrusion prevention agents.
+In this thesis, we go a step further and propose a new trust model \textbf{Fides}.
+Fides is a generic trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
+We build Fides with the lessons learned from other trust models~\cite{sort, dita} and optimize it for the broad spectrum of networks starting with local networks controlled by a single company to the public global peer-to-peer networks where anybody can join and leave at any time.
 
-Fides does not create the peer-to-peer network by itself but instead uses a different system that performs the operations on the network layer.
-Communication between these two systems is done via the standard defined interface.
-An implementation of such a network layer is the \textbf{Iris}. Iris was designed and developed by Bc. Martin Řepa~\cite{nl} facilitates safe and secure communication between the Fides instances in the global peer-to-peer network.
-
-In our implementation, we chose Stratosphere Linux IPS (Slips)~\cite{slips} as the example of the Intrusion Prevention System~\cite{zhang2004intrusion} and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence. Fides in combination with Iris allow Slips to utilize distributed detections of malicious behaviors in the network traffic.
-By utilizing this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence data from other peers on the global internet.
-
-Furthermore, Fides can identify the peers that belong to organizations and allows its administrator to pre-trust specific peers and organizations. The comprehensive configuration options enable administrators to configure data sharing only inside or with particular organizations. This guarantees that no privacy-sensitive data are shared with peers that should not have access to them.
+Furthermore, Fides can identify the peers that belong to organizations and allows its administrator to pre-trust specific peers and organizations. The comprehensive configuration options enable administrators to configure data sharing only inside or with particular organizations. This data filtering guarantees that no privacy-sensitive intelligence is shared with peers that should not have access to it.
 
 Moreover, Fides was designed to be as modular and generic as possible, allowing other utilization of its computational model for different data than the threat intelligence by simply adding new evaluation methods.
+
+Fides does not create the peer-to-peer network by itself but instead uses a different system that performs the operations on the network layer.
+Communication between these two systems is done via the standard defined interface, which allows replacing the network module if needed.
+An implementation of such a network layer is the \textbf{Iris}. Iris was designed and developed simultaneously with this thesis by Bc. Martin Řepa~\cite{nl} and it facilitates safe and secure communication between the Fides instances in the global peer-to-peer network.
+
+In our implementation, we chose Stratosphere Linux IPS (Slips)~\cite{slips} as the example of the intrusion prevention system and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence over the network. 
+By utilizing this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence from other peers on the global internet.
 
 % TODO: discussion on results/conclusions
 % The complex simulations showed, that Fides is able to classify correctly
@@ -54,4 +56,4 @@ The last part of the computational model in the section~\ref{sec:network-intelli
 The chapter~\ref{ch:architecture} then describes the Fides's architecture and how we implemented it as a new Slips module.
 In the following chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside Fides.
 Chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. The last chapter~\ref{ch:conclusion} conclude our results and proposes further areas of improvement for the Fides. 
-We also include an appendix with multiple interesting cases of evaluations discovered in the chatper~\ref{ch:results}.
+We also include an appendix with multiple interesting cases of evaluations discovered in the chapter~\ref{ch:results}.
