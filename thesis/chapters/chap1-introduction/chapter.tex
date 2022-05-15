@@ -13,8 +13,8 @@
 
 \section{Problems we are solving}
 \begin{enumerate}
-\item How do we determine who and how much to trust in global peer-to-peer network, where peers can join and quickly leave and there is a possibility that all connected peers are adversarial.
-\item Given that peers can join and leave any time, we will have problem with cold start. We need to come up with a way how can newcomers safely gain initial trust fast.
+\item How do we determine who and how much to trust in the global peer-to-peer network, where peers can join and quickly leave and there is a possibility that all connected peers are adversarial.
+\item Given that peers can join and leave any time, we will have a problem with a cold start. We need to come up with a way how can newcomers safely gain initial trust fast.
 \item The main (but not only) purpose of the project is to be able to share threat intelligence over the network. How do we aggregate said threat intelligence into a single aggregated network opinion?
 \item As a Slips administrator, I want to be able to share data only with (or trust incoming data only from) specific peers or specific organizations.
 \end{enumerate}
@@ -24,19 +24,19 @@
 % TODO: what others did before
 
 % TODO: the gap, what was missing
-In this thesis, we propose new trust model \textbf{Fides}.
-Fides is generic trust model that was fine-tuned for sharing threat intelligence data in highly adversarial global peer-to-peer networks of intrusion prevention agents.
+In this thesis, we propose a new trust model \textbf{Fides}.
+Fides is a generic trust model fine-tuned for sharing threat intelligence data in highly adversarial global peer-to-peer networks of intrusion prevention agents.
 
-Fides does not create the peer-to-peer network by itself, but rather uses a different system that performs the operations on the network layer.
-Communication between these two systems is done via common defined interface.
-An implementation of such network layer is the \textbf{Iris}. Iris was designed and developed by Bc. Martin Řepa~\cite{nl} and it facilitates safe and secure communication between the Fides instances in the global peer-to-peer network.
+Fides does not create the peer-to-peer network by itself but instead uses a different system that performs the operations on the network layer.
+Communication between these two systems is done via the standard defined interface.
+An implementation of such a network layer is the \textbf{Iris}. Iris was designed and developed by Bc. Martin Řepa~\cite{nl} facilitates safe and secure communication between the Fides instances in the global peer-to-peer network.
 
-In our implementation, we choose Stratosphere Linux IPS (Slips)~\cite{slips} as the example of the Intrusion Prevention System~\cite{zhang2004intrusion} and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence. Fides in combination with Iris allow Slips to utilize distributed detections of malicious behaviors in the network traffic.
-By utilizing this shared global knowledge, Slips is now able to prevent the attacks on the local environment even before they happen by acting upon received threat intelligence data from other peers in the global internet.
+In our implementation, we chose Stratosphere Linux IPS (Slips)~\cite{slips} as the example of the Intrusion Prevention System~\cite{zhang2004intrusion} and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence. Fides in combination with Iris allow Slips to utilize distributed detections of malicious behaviors in the network traffic.
+By utilizing this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence data from other peers on the global internet.
 
-Furthermore, Fides is able to identify the peers that belong to organizations and allows to its administrator to pre-trust specific peers and organizations. Thanks to the wide configuration options, it also allows administrator to configure data sharing only inside or with the specific organizations. This guarantees that no privacy sensitive data are shared to peers that should not have access to them.
+Furthermore, Fides can identify the peers that belong to organizations and allows its administrator to pre-trust specific peers and organizations. The comprehensive configuration options enable administrators to configure data sharing only inside or with particular organizations. This guarantees that no privacy-sensitive data are shared with peers that should not have access to them.
 
-Moreover, Fides was designed to be as modular and as generic as possible which allows other utilization of its computational model for other data than the threat intelligence by simply adding new evaluation methods.
+Moreover, Fides was designed to be as modular and generic as possible, allowing other utilization of its computational model for different data than the threat intelligence by simply adding new evaluation methods.
 
 % TODO: discussion on results/conclusions
 % The complex simulations showed, that Fides is able to classify correctly
@@ -45,12 +45,13 @@ Moreover, Fides was designed to be as modular and as generic as possible which a
 % that in a situation where the Fides talks to 25\% of pre-trusted peers, it is able to eventually determine correct threat intelligence no matter how other peers in the network behave.
 
 % structure of the thesis
-In this thesis we explain the required background and describe the current state of the art in the chapter~\ref{ch:previous-work-background}.
-In the next chapter~\ref{ch:trust-model-design} we propose new trust model Fides and then outline how it works from the high level perspective in the section~\ref{sec:general-overview-of-fides}.
+This thesis explains the required background and describes the current state of the art in the chapter~\ref{ch:previous-work-background}.
+In the next chapter~\ref{ch:trust-model-design} we propose a new trust model Fides and then outline how it works from the high-level perspective in the section~\ref{sec:general-overview-of-fides}.
 After that, we explain problems related to gaining trust in the section~\ref{sec:cold-start-problem}.
-In the following sections~\ref{sec:attack-vectors}~and~\ref{sec:taxonomy-of-attacks} we analyze taxonomy of attacks and the attack vectors specifically related to the trust models and discuss how does Fides defends against them.
-Once we explain our design choices, we describe whole computational model in depth in the section~\ref{sec:computational-model} and illustrate how is Fides able to determine trust relationships in the network by evaluating interactions between peers in the section~\ref{sec:interaction-evaluation-strategies}.
-The last part of the computational model in the section~\ref{sec:network-intelligence-aggregation} explains how can Fides aggregate threat intelligence from the network.
+In the following sections~\ref{sec:attack-vectors}~and~\ref{sec:taxonomy-of-attacks} we analyze the taxonomy of attacks and the attack vectors related explicitly to the trust models and discuss how Fides defends against them.
+Once we explain our design choices, we describe the whole computational model in depth in section~\ref{sec:computational-model} and illustrate how Fides can determine trust relationships in the network by evaluating interactions between peers in the section~\ref{sec:interaction-evaluation-strategies}.
+The last part of the computational model in the section~\ref{sec:network-intelligence-aggregation} explains how Fides can aggregate threat intelligence from the network.
 The chapter~\ref{ch:architecture} then describes the Fides's architecture and how we implemented it as a new Slips module.
-In the following chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside of Fides.
-The chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. The last chapter~\ref{ch:conclusion} conclude our results and proposes further areas of improvements for the Fides.
+In the following chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside Fides.
+Chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. The last chapter~\ref{ch:conclusion} conclude our results and proposes further areas of improvement for the Fides. 
+We also include an appendix with multiple interesting cases of evaluations discovered in the chatper~\ref{ch:results}.
