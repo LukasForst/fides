@@ -12,7 +12,7 @@
 % Your contributions
 
 When protecting the local networks, the basic firewalls and advanced Intrusion Prevention Systems (IPS)~\cite{zhang2004intrusion} rely on rules and the threat intelligence~\cite{threatintelligence} generated from the previous attacks locally or received from the remote sources.
-Such sources can be, for example, public blocklists ~\cite{abuseipdb, binarydefense, dataplane} or collaborative databases such as MISP~\cite{wagner2016misp} where the community creates the threat intelligence.
+Such sources can be, for example, public blocklists ~\cite{abuseipdb, binarydefense, dataplane} or centralized collaborative databases such as MISP~\cite{wagner2016misp} where the community collectively shares the threat intelligence.
 However, all of these traditional threat intelligence sources are, in the end, controlled by the centralized authority, which has complete control over the resource and can at anytime restrict access to these valuable assets or censor what is published and what is not.
 
 To limit the impact of one organization shutting down the database, we can utilize the peer-to-peer model and remove the central authority and a single point of failure.
@@ -25,7 +25,7 @@ The research field of trust models is not new, and there are many existing trust
 However, they were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different kinds of data.
 An exemption to them is the Dovecot~\cite{dita}, which was designed to operate with the threat intelligence with a limitation to operate only in the local networks.
 
-In this thesis, we go a step further and propose a new trust model \textbf{Fides}.
+In this thesis, we go a step further and propose a new trust model \textbf{Fides} named after the ancient goddess of trust and good faith~\cite{enwiki:1086924565}.
 Fides is a generic trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
 We build Fides with the lessons learned from other trust models~\cite{sort, dita} and optimize it for the broad spectrum of networks starting with local networks controlled by a single company to the public global peer-to-peer networks where anybody can join and leave at any time.
 
