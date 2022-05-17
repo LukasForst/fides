@@ -52,6 +52,10 @@ This evaluation is then passed to the computational model, which assigns trust v
 Thanks to this design, we can adapt the trust model for different environments by re-implementing the interaction evaluation function.
 For example, in the file-sharing environment, such an interaction evaluation function can be based on the speed of the upload/download so that peers will prefer nodes with a faster internet connection.
 
+However, we can not use SORT directly, primarily because of the recommendation algorithm, which can, in some cases, request a recommendation even from peers that are not \textit{trusted enough}. We describe this situation more in detail in section~\ref{subsubsec:requesting-recommendation}.
+Another reason was that SORT does not support any pre-trusted peers or organizations, which is something we believe can significantly improve the model performance.
+Moreover, threat intelligence is a specific piece of data where we do not request data only from a single peer but rather from multiple of them, and then we aggregate it.
+Thus, we couldn't use SORT right away but rather extend it and modify it.
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
@@ -67,7 +71,7 @@ Even though the model is generic and was designed for peer-to-peer networks, it 
 
 Huynh, Jennings, and Shadbolt proposed FIRE trust and reputation model~\cite{huynh2006integrated} which was designed for open multi-agent systems.
 FIRE incorporates multiple different trust metrics that are aggregated and provide a view of the agents' behavior.
-After analyzing the paper, we had concerns about three different trust metrics out of four in our specific settings.
+After analyzing the paper, we don't believe that \textit{witness information}~\cite{huynh2006integrated} can be applied in a settings for sharing threat intelligence because it relies on a fact that the peers are honest.
 For that reason, we decided not to use FIRE as the base for our further design.
 
 In~\cite{1562680}, He et al. proposed gathering peers and modeling their trust relationships as \textit{clouds}. They proposed an \textit{extended-cloud-model-based trust model} - ECMBTM.
