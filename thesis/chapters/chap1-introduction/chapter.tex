@@ -25,9 +25,9 @@ The research field of trust models is not new, and there are many existing trust
 However, they were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different kinds of data.
 An exemption to them is the Dovecot~\cite{dita}, which was designed to operate with the threat intelligence with a limitation to operate only in the local networks.
 
-In this thesis, we go a step further and propose a new trust model \textbf{Fides} named after the ancient goddess of trust and good faith~\cite{enwiki:1086924565}.
-Fides is a generic trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
-We build Fides with the lessons learned from other trust models~\cite{sort, dita} and optimize it for the broad spectrum of networks starting with local networks controlled by a single company to the public global peer-to-peer networks where anybody can join and leave at any time.
+In this thesis, we go a step further and propose a new trust model \textbf{Fides}.
+Fides\footnote{Fides was named after the ancient goddess of trust and good faith~\cite{enwiki:1086924565}.} is a generic trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
+We build Fides with the lessons learned from other trust models~\cite{sort, dita} and optimized it for the broad spectrum of networks starting with local networks controlled by a single company to the public global peer-to-peer networks where anybody can join and leave at any time.
 
 Furthermore, Fides can identify the peers that belong to organizations and allows its administrator to pre-trust specific peers and organizations. The comprehensive configuration options enable administrators to configure data sharing only inside or with particular organizations. This data filtering guarantees that no privacy-sensitive intelligence is shared with peers that should not have access to it.
 
@@ -37,14 +37,15 @@ Fides does not create the peer-to-peer network by itself but instead uses a diff
 Communication between these two systems is done via the standard defined interface, which allows replacing the network module if needed.
 An implementation of such a network layer is the \textbf{Iris}. Iris was designed and developed simultaneously by Bc. Martin Řepa~\cite{nl} and it facilitates safe and secure communication between the Fides instances in the global peer-to-peer network.
 
-In our implementation, we chose Stratosphere Linux IPS (Slips)~\cite{slips} as the example of the intrusion prevention system and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence over the network. 
+In our implementation, we chose Slips~\cite{slips} as the example of the intrusion prevention system and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence over the network. 
 By utilizing this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence from other peers in the global network.
 
 While evaluating the trust model, we simulated complex simulations. We proved that Fides could correctly uncover the peers' behavior in the network and make sensible decisions about the threat intelligence. 
 Fides especially excels in the situations when it communicates with peers from trusted organizations.
 Moreover, in a situation where the Fides talks to at least 25\% of pre-trusted peers, it can eventually determine correct threat intelligence no matter how other peers in the network behave and how many of them are adversarial.
 
-% structure of the thesis
+\section{Thesis Structure}
+\label{sec:thesis-structure}
 This thesis explains the required background and describes the current state of the art in the chapter~\ref{ch:previous-work-background}.
 In the next chapter~\ref{ch:trust-model-design} we propose a new trust model Fides and then outline how it works from the high-level perspective in the section~\ref{sec:general-overview-of-fides}.
 After that, we explain problems related to gaining trust in the section~\ref{sec:cold-start-problem}.
@@ -55,3 +56,19 @@ The chapter~\ref{ch:architecture} then describes the Fides's architecture and ho
 In the following chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside Fides.
 Chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. The last chapter~\ref{ch:conclusion} conclude our results and proposes further areas of improvement for the Fides. 
 We also include an appendix with multiple interesting cases of evaluations discovered in the chapter~\ref{ch:results}.
+
+\newpage
+\section{List of Contributions}
+\label{sec:list-of-contributions}
+\noindent
+To summarize the previous chapter, our contributions are following:
+\begin{itemize}
+    \item Analysis of state of the art in modeling trust relationships in peer-to-peer networks.~(\ref{ch:previous-work-background})
+    \item Generic trust model Fides fine-tuned for sharing threat intelligence in global peer-to-peer networks.~(\ref{sec:general-overview-of-fides})
+    \item Multiple methods how to evaluate interactions between peers that are sharing threat intelligence data.~(\ref{sec:interaction-evaluation-strategies})
+    \item A method that enables weighting and aggregation of threat intelligence.~(\ref{sec:network-intelligence-aggregation})
+    \item Reference implementation of Fides in Python.~(\ref{ch:architecture})
+    \item An implementation of a module that allows Slips to use Fides for global threat intelligence sharing.~(\ref{ch:architecture})
+    \item A simulation framework for modeling of any environment for Fides evaluation.~(\ref{ch:experiments})
+    \item Evaluation of Fides in different environments and analysis of its behavior in unfavorable situations.~(\ref{ch:results})
+\end{itemize}
