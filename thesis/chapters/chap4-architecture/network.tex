@@ -3,17 +3,17 @@
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{assets/tl_api_nl.png}
-    \caption{Communication between Fides and Network Layer}
+    \includegraphics[width=1.0\textwidth]{assets/communication_architecture.jpeg}
+    \caption{Communication between Fides, Iris and Slips}
     \label{fig:fides-api-network}
 \end{figure}
 
-Fides itself is a trust model, set of equations, and data storage for interaction history. 
+Fides itself is a trust model, set of equations and a data storage for interaction history. 
 It does not interact with the network directly, but rather it exposes an API that can be used either to receive the information from the network or for sending the requests back to the network.
 Thanks to this design, where all business logic is separated from the network layer, Fides is highly modular and it does not depend on the network layer implementation.
-The network layer then performs all data transfers and facilitates all communications with the remote peers.
+The network layer Iris then performs all data transfers and facilitates all communications with the remote peers.
 It also facilitates finding new peers and ensuring that all requests from Fides are dispatched to the correct recipients.
 In the eyes of Fides, the network layer is a \textit{black box} and it does not need to know, how is the network layer implemented.
-See the figure \ref{fig:fides-api-network} for a high-level overview of the communication.
+See the figure~\ref{fig:fides-api-network} for a high-level overview of the communication.
 
 The network layer, \textbf{Iris}, was developed by Bc. Martin Řepa in~\cite{nl} where Řepa describes how Iris works in detail and what protocols are used to safely deliver necessary information and messages between the instances of Fides.

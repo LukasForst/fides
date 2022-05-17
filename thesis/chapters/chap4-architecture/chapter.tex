@@ -1,23 +1,26 @@
 \chapter{Architecture}
 \label{ch:architecture}
-Slips is modular software. Each module is designed to perform a specific detection in the network traffic.\cite{slips}
+Slips is modular software. Each module is designed to perform a specific detection in the network traffic.~\cite{slips}
 In addition to that, the modules can also be used to extend Slips with any additional functionality directly. 
 Fides was designed for seamless interoperability with Slips, and in addition to the generic trust model, we developed the Fides module for Slips.
 In this chapter, we describe the architecture of Fides and how it interacts with the network and with Slips.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\textwidth]{assets/high_architecture.png}
+    \includegraphics[width=0.4\textwidth]{assets/redis_channels.jpeg}
     \caption{High-Level Architecture}
     \label{fig:high-level-architecture}
 \end{figure}
 
-From the high-level perspective (see figure~\ref{fig:high-level-architecture}), the trust model communicates with two different entities - Slips and the network layer.
-Fides exposes and consumes an API~\cite{api} built using the Redis channels for both parts.
+From the high-level perspective (see figures~\ref{fig:high-level-architecture} and \ref{fig:fides-api-network}), the trust model Fides  communicates with two different systems - Slips~\cite{slips} and the network layer Iris~\cite{nl}.
+Fides performs manages the trust relationships in the network, aggregates threat intelligence data and communicates with Slips. The communication with the remote peers in the network is facilitated by Iris. 
+Slips then produces and consumes the threat intelligence and defends the network against intruders.
+
+Fides exposes and consumes an API~\cite{api} built using the Redis channels for both parts (figure~\ref{fig:high-level-architecture}).
 The messages and API calls are consumed using JSON~\cite{json} data format.
 
-Redis is an in-memory data structure store that supports asynchronous channels and a publish-subscribe model \cite{redis}.
-We choose to employ Redis channels as the medium that allows communication between the network layer and Fides and allows them to use their respective APIs because Slips already uses Redis for its internal communication between modules. It brings no additional overhead to run Fides with its network layer.
+Redis is an in-memory data structure store that supports asynchronous channels and a publish-subscribe model~\cite{redis}. Moreover, it can also persist data on disk if required.
+We choose to employ Redis channels as the medium that allows communication between the Iris and Fides and allows them to use their respective APIs because Slips already uses Redis for its internal communication between modules. It brings no additional overhead to run Fides with its network layer.
 
 \include{chapters/chap4-architecture/network}
 

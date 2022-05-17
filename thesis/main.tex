@@ -12,6 +12,7 @@
 \usepackage{array} % better alignments of tables
 \usepackage{todonotes} % fancy todos
 % \usepackage{emoji}
+\usepackage{pdfpages} % to include pdf
 
 % set paths
 \graphicspath{{assets/}}
@@ -38,7 +39,8 @@
 %% initial pages
 \input{titlepage}
 % Assignment
-\includegraphics[width=0.7\paperwidth]{assets/assignment.pdf}
+\includepdf[pages=-,scale=.8]{assets/assignment.pdf}
+
 \input{declaration}
 \input{acknowledgment}
 \input{abstract}

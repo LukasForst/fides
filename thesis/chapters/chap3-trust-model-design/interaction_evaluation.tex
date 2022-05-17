@@ -4,7 +4,7 @@ In order to determine which remote peers are providing valuable data and which p
 In general, there are two options for how to approach this, (i) by designing an evaluation that is protocol-aware (i.e. it understands the protocol and the data that the two peers shared ); or (ii) by having an evaluation function that does not need to understand the protocol and can be used for any type of data.
 
 We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in the chapter \ref{ch:experiments}. 
-We will use notation from the table (\ref{table:interaction-eval})  when referring to peers and their interactions.
+We will use the notation from the table (\ref{table:interaction-eval})  when referring to peers and their interactions.
 
 \begin{table}[h!]
 \centering
@@ -33,7 +33,7 @@ We will use notation from the table (\ref{table:interaction-eval})  when referri
 
 \subsection{EvenTIEvaluation}
 \label{subsec:same-eval-for-all-interactions}
-This strategy does not need to understand underlying data, its semantics, or its structure.
+This strategy does not need to understand the underlying data, its semantics, or its structure.
 It is a naive approach when the trust model uses the same satisfaction value for all data it received. It does not check, if the data make sense and assigns all peers the same satisfaction value $s^{k}_{i, j}$.
 The value itself is loaded from the configuration provided by the administrator. We denote it as $CSS$. 
 The idea behind this algorithm is that when the peers are interacting for a long time or have more interactions, they're more trustworthy.
@@ -49,7 +49,7 @@ Because of that and in a case when the adversary gains the service trust of the 
 
 \subsection{DistanceBasedTIEvaluation}
 \label{subsec:distance-based-eval}
-Because Fides is designed for the sharing and aggregating threat intelligence and understands the protocol that is being used, we can utilize this and penalize the peers that are providing the local peer with incorrect data.
+Because Fides is designed for sharing and aggregating threat intelligence, and understands the protocol that is being used, we can utilize this and penalize the peers that are providing the local peer with incorrect data.
 The interaction evaluation is performed at the end of the threat intelligence sharing process, at that point, Fides already aggregated data and decided what is the aggregated network score and confidence. 
 Thus, we can utilize aggregated values and use them as a baseline. Then we compare it against each remote peer's threat intelligence we received. This evaluation strategy is implemented in the Fides as a $DistanceBasedTIEvaluation$.
 
