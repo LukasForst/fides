@@ -46,7 +46,15 @@ We included the graph of this case similar to the figure~\ref{fig:single-simulat
 
 Interestingly, in this particular case, the initial reputation does not affect the final outcome of the simulation, but it does affect the progress as when using an initial reputation higher than $0$, the Fides provides wrong scores in a situation when the malicious peers started to lie.
 However, it discovers that the peers are lying, which decreases their service trust and is able to eventually recover the correct labels for the targets.
-We included the graph for this situation in the appendix in figure~\ref{fig:missclassification-recovery}.
+The score value during time for this situation can be seen on the figure~\ref{fig:missclassification-score-only}.
+We included the whole graph in the appendix in figure~\ref{fig:missclassification-recovery}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/misclassification_score.png}
+    \caption{Score in figure~\ref{fig:missclassification-recovery}.}
+    \label{fig:missclassification-score-only}
+\end{figure}
 
 It is clear from the figure~\ref{fig:distance-detection-detail-25}, that when Fides used the threat intelligence aggregation method  $WeightedAverageConfidenceTIAggregation$~(\ref{subsec:WeightedAverageConfidenceTIAggregation}), it miss-classified the targets in one situation.
 Thus, this method does not provide a guarantee that Fides will end up with correct classifications for every target.
