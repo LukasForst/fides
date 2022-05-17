@@ -12,7 +12,7 @@
 % Your contributions
 
 When protecting the local networks, the basic firewalls and advanced Intrusion Prevention Systems (IPS)~\cite{zhang2004intrusion} rely on rules and the threat intelligence~\cite{threatintelligence} generated from the previous attacks locally or received from the remote sources.
-Such sources can be, for example, public blocklists ~\cite{abuseipdb, binarydefense, dataplane} or centralized collaborative databases such as MISP~\cite{wagner2016misp} where the community collectively shares the threat intelligence.
+Such sources can be, for example, public blocklists ~\cite{abuseipdb, dataplane, binarydefense} or centralized collaborative databases such as MISP~\cite{wagner2016misp} where the community collectively shares the threat intelligence.
 However, all of these traditional threat intelligence sources are, in the end, controlled by the centralized authority, which has complete control over the resource and can at anytime restrict access to these valuable assets or censor what is published and what is not.
 
 To limit the impact of one organization shutting down the database, we can utilize the peer-to-peer model and remove the central authority and a single point of failure.
@@ -21,7 +21,7 @@ Although this approach solves the problem of a single central authority, it intr
 
 In this thesis, we answer those questions and tackle the problem of trust relationships when sharing threat intelligence.
 The algorithms that tackle trust relationships between multiple entities are called \textit{trust models}~\cite{wang2003trust}.
-The research field of trust models is not new, and there are many existing trust models~\cite{kamvar2003eigentrust, xiong2004peertrust, 1562680, huynh2006integrated, sort, pinyol2013computational, christensen2014hybrid,li2014design, abera2019sadan}.
+The research field of trust models is not new, and there are many existing trust models~\cite{abera2019sadan, sort, christensen2014hybrid, 1562680, huynh2006integrated, kamvar2003eigentrust, li2014design, pinyol2013computational, xiong2004peertrust}.
 However, they were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different kinds of data.
 An exemption to them is the Dovecot~\cite{dita}, which was designed to operate with the threat intelligence with a limitation to operate only in the local networks.
 

@@ -14,7 +14,7 @@ Once aggregated, the computed score and confidence ($S^{k}_{T}$, $C^{k}_{T}$) ar
 Apart from sending to Slips, these same values can be also used to evaluate the interaction of the remote peers, depending on the selected interaction evaluation strategy. We describe this more in depth in section~\ref{sec:interaction-evaluation-strategies}.
 
 We designed and implemented two different functions for aggregating threat intelligence and computing $S^{k}_{T}$ alongside with $C^{k}_{T}$.
-Both of them are implemented in Fides under their respective names and which method performs better under what circumstances is a subject to the experiments in the chapter~\ref{ch:experiments}.
+Both of them are implemented in Fides under their respective names and which method performs better under what circumstances is a subject of the experiments in chapter~\ref{ch:experiments}.
 
 \subsection{AverageConfidenceTIAggregation}
 \label{subsec:AverageConfidenceTIAggregation}
@@ -56,10 +56,9 @@ Which is an average, overall the peers that sent to $i$ a report on $T$ in time 
 \subsection{WeightedAverageConfidenceTIAggregation}
 \label{subsec:WeightedAverageConfidenceTIAggregation}
 
-This strategy uses the very same equation~\ref{eq:ti_aggregation_score} to compute aggregated score $S^{k}_{T}$ as $AverageConfidenceTIAggregation$~\ref{subsec:AverageConfidenceTIAggregation}.
+This strategy uses equation~\ref{eq:ti_aggregation_score} to compute the aggregated score $S^{k}_{T}$ similarly to the $AverageConfidenceTIAggregation$ in section~\ref{subsec:AverageConfidenceTIAggregation}.
 However, the way how this strategy calculates $C^{k}_{T}$ is different. 
-Instead of using the service trust $st^{k}_{i, j}$ to determine the correct trust in the confidence $C^{k}_{j, T}$ submitted by peer $j$ and then diving it by the number of peers.
-We use the normalized service trust $wst^{k}_{i,j}$ computed in equation~\ref{eq:normalized_service_trust_ti_aggregation} that already contains the weight of the peers in the final decision.
+Instead of using the service trust $st^{k}_{i, j}$ to determine the correct trust in the confidence $C^{k}_{j, T}$ submitted by peer $j$ and then diving it by the number of peers, it uses the normalized service trust $wst^{k}_{i,j}$ computed in equation~\ref{eq:normalized_service_trust_ti_aggregation} that already contains the weight of the peers in the final decision.
 
 \begin{equation}
 \begin{split}

@@ -47,7 +47,7 @@ Note that the table \ref{tab:notation-computational-model} describes the most im
 \label{subsec:service-trust}
 As outlined previously, service trust $st_{i, j}$ is a value that describes how much peer $i$ trusts that remote peer $j$ will provide a \textit{good service}~\cite{sort}.
 We compute the $st_{i, j}$ in the equation~\ref{eq:service-trust} by weighing local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
-The used weight is the size of the service interaction history $sh_{i,j}$ to maximal history size $sh_{max}$.
+The used weight is the size of the service interaction history $sh_{i,j}$ to global maximal history size $sh_{max}$.
 
 \begin{equation}
 \label{eq:service-trust}
@@ -237,7 +237,7 @@ Essentially making it information that came from the \textit{second ring of trus
 \label{subsec:recommendation-trust-metric}
 Recommendation trust - $rt_{i,z}$ - is another metric that a peer calculate and store. It expresses how much does $i$ trust that $z$ provides \textit{good recommendations}.
 Even though one could theoretically use service trust $st_{i, z}$ for this,
-we have another trust metric because there are peers that can provide very good data (service), but they have a very bad taste in other peers or the other way around.
+we have another trust metric because there are peers that can provide very good data (service), but they are surrounded by bad peers or the other way around.
 This also gives us the ability to have specialized nodes in the network, that serves as a peers registry for organizations - a single node that only provides recommendations on peers.
 
 We calculate the recommendation trust in a similar way as the service trust and reputation, but we use recommendation competence belief $rcb_{i, z}$, recommendation integrity belief $rib_{i,z}$ and reputation $r_{i, z}$.
