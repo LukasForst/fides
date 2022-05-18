@@ -1,7 +1,6 @@
 \section{Peer's Behavioral Patterns}
 \label{sec:peers-behavioral-patterns}
-For the sake of the experiments, every peer will follow one of the chosen behaviors.
-We identified multiple different behavioral patterns for the benign as well as for the malicious peers.
+For the sake of experiments, we chose the behavior of each peer in the simulated network. We identified multiple different behavioral patterns for the benign as well as for the malicious peers.
 Every behavior is different and is defined by the $(\mu, \sigma)$ for every data we sample and by the intent the peer has in the network.
 Most of the behavior depends on the baseline, which is the ground truth for any target in the system - if it is benign or malicious.
 We note baseline score as $S_{B} \in \{-1, 1\}$, where $S_{B} = -1$, means the target is malicious and $S_{B} = 1$ means the target is benign.
@@ -33,7 +32,7 @@ The table \ref{tab:confident-correct} describes the data used for sampling the t
 \subsection{Uncertain Peer}
 \label{subsubsec:uncertain-peer}
 This behavior simulates peers that do not have enough information to provide reasonably good data, but they are benign and honest with their behavior.
-The peer can provide essentially any score but with very low confidence in said score.
+The peer can provide essentially any score but with very low confidence in said score. That's why the $\mu^{up}_{s}$ is quite high whereas the mean for this behavior is $0$.
 
 \begin{table}[!ht]
     \centering
@@ -71,8 +70,10 @@ Thus, whenever the peer is asked to provide threat intelligence, it responds wit
 \label{subsubsec:malicious-peer}
 The malicious peer is going to provide wrong threat intelligence intentionally to achieve their goal of influencing the trust decisions of the local peer. 
 The sampling data are the same as for the \textit{confident incorrect} (section~\ref{tab:confident-incorrect}) behavior, but the difference is that the malicious peer is providing misleading data intentionally.
+Moreover, intelligent malicious peer knows, that it their incentive is to gain the service trust at the beginning in order to more impact the decisions of the trust model in the later stages. 
+We simulate this by introducing a grace period when the malicious peer does not lie, but rather behaves like any other normal peer. This period then allows the malicious peers to gain the initial trust. After that period, they start to lie and thanks to the initial trust, they can influence the Fides's decisions with a larger impact.
 
-This behavior simulates knowledgeable adversaries that are able to follow the Fides's protocol and their goal is to influence decisions of the local trust model.
+As stated before, this behavior simulates knowledgeable adversaries that are able to follow the Fides's protocol and their goal is to influence decisions of the local trust model.
 The adversaries can be either trying to \textit{bad-mouth} or provide \textit{unfair praises}.
 In our case, it does not matter why they do that, but rather the fact, that they do that intentionally and that they are providing the opposite of the baseline score with the high confidence.
 

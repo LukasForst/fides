@@ -1,13 +1,13 @@
 \section{Experiments Evaluation}
 \label{sec:experiments-evaluation}
 
-An important part of the experiments is how to evaluate which configuration of parameters is better in which scenario. We will be measuring two performance metrics that are relevant for each situation.
+An important part of the experiments is how to evaluate what Fides setup \textit{(interaction evaluations, threat intelligence aggregation)} is better in which scenario. We will be measuring two performance metrics that are relevant for each situation.
 
 \subsection{Target Detection Performance Metric}
 \label{subsec:target-detection-performance-metric}
 This first metric, $tdp$, measures performance of the target detection.
 We compute $tdp$ in equation~\ref{eq:target_detection_metric} as an average distance between the ground truth for the target and the final detection made by Fides at the end of the simulation.
-We use the following notation: $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then the aggregated score (section~\ref{sec:network-intelligence-aggregation}) for the given target computed by Fides at the end of the simulation.
+We use the following notation: $\tau$ is the set of targets in the simulation, $GS_{T}$ is the ground truth score of the target, $S^{k_{max}}_{T}$ is then the aggregated score (Section~\ref{sec:network-intelligence-aggregation}) for the given target computed by Fides at the end of the simulation.
 
 \begin{equation}
 \begin{split}
@@ -44,7 +44,7 @@ $\bar{b_{j}}$ is then the ground truth behavior of the remote peer and we comput
     \label{eq:ground_truth_peer_behavior}
 \end{equation}
 
-Recall the description of the peers' behaviors from the section \ref{sec:peers-behavioral-patterns}, where each peer's behavior $b$ had $\mu^{b}_{s}$ that was used during threat intelligence sampling.
+Recall the description of the peers' behaviors from the Section~\ref{sec:peers-behavioral-patterns}, where each peer's behavior $b$ had $\mu^{b}_{s}$ that was used during threat intelligence sampling.
 Because the sampled score is $[-1, 1]$ and service trust $[0, 1]$, we can not use the $\mu^{b}_{s}$ directly, but we need to scale it to the correct interval.
 Moreover, as malicious and incorrect peers  do have $\mu^{b}_{s}$ on the opposite scale that the ground truth is, we need to shift it before normalizing it.
 For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ for confident correct, and uncertain behaviors and thus the equation \ref{eq:ground_truth_peer_behavior}.
@@ -63,7 +63,7 @@ On the contrary, the lower the $eh$ is, the harder it is for Fides to operate as
 \end{equation}
 
 \noindent
-Where $P_{CC}$ is a set of peers in simulation that behave like a confident correct (section~\ref{subsubsec:confident-correct-peer}) peer and $P_{UP}$ that behave like an uncertain peer (section~\ref{subsubsec:uncertain-peer}).
+Where $P_{CC}$ is a set of peers in simulation that behave like a confident correct (Section~\ref{subsubsec:confident-correct-peer}) peer and $P_{UP}$ that behave like an uncertain peer (Section~\ref{subsubsec:uncertain-peer}).
 
 \section{Simulation Execution}
 \label{sec:simulations-execution}

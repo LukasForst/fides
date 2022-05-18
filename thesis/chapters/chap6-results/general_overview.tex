@@ -1,6 +1,6 @@
 \section{General Overview of a Single Simulation}
 \label{sec:general-overview-of-simulation-output}
-First, let us describe the outcome of the simulation framework which is visualized in the figure \ref{fig:single-simulation-example}.
+First, let us describe the outcome of the simulation framework which is visualized in the Figure~\ref{fig:single-simulation-example}.
 The simulation framework provides this graph for each possible simulation.
 
 \begin{figure}
@@ -10,7 +10,7 @@ The simulation framework provides this graph for each possible simulation.
     \label{fig:single-simulation-example}
 \end{figure}
 
-The graph's headline explains which setup parameters were used for the trust model. In the case of Figure~\ref{fig:single-simulation-example} Fides used $MaxConfidenceTIEvaluation$ (section~\ref{subsec:MaxConfidenceTIEvaluation}) for evaluating the interactions between the peers.
+The graph's headline explains which setup parameters were used for the trust model. In the case of Figure~\ref{fig:single-simulation-example} Fides used interaction evaluation strategy $MaxConfidenceTIEvaluation$ (section~\ref{subsec:MaxConfidenceTIEvaluation}).
 For aggregating the threat intelligence, Fides used the aggregation described in  section~\ref{sec:network-intelligence-aggregation}.
 The local Slips instance behaved like confident correct peer outlined in  section~\ref{subsubsec:confident-correct-peer}.
 
@@ -18,10 +18,12 @@ The graph on top in Figure~\ref{fig:single-simulation-example} shows the develop
 One can see multiple peers that were involved in the simulation and their respective behavior. All possible behaviors are described in the section~\ref{sec:peers-behavioral-patterns}.
 There were four different peers that were communicating with the local instance of Fides, two of them were \textit{confident correct}, one was an \textit{uncertain peer} and the last one was a \textit{malicious peer}.
 
-The dotted line indicates the time where the malicious peers start lying, and until that moment they are gaining the initial service trust. Before the line, the malicious peers don't lie.
-In the case of figure~\ref{fig:single-simulation-example} this happened at click 25 when the malicious peers started lying.
+The dotted line indicates the time when the malicious peers start lying.
+One can see that during this first period, when the malicious peers were not lying \textit{(before the line)}, they were gaining the service trust.
+In the case of Figure~\ref{fig:single-simulation-example} this happened at click 25 when the malicious peers started lying.
+After that, it is clear that they started to lose the service trust.
 
-The second graph in figure~\ref{fig:single-simulation-example} shows the \textit{target score} during the time (\textit{clicks}).
+The second graph in Figure~\ref{fig:single-simulation-example} shows the \textit{target score} during the time (\textit{clicks}).
 The target score $S^{k}_{T}$ (section~\ref{sec:network-intelligence-aggregation}) is the part of the aggregated network threat intelligence, that was computed from the scores and confidences provided by each peer.
 The score was calculated by Fides at click $k$ for target $T$.
 

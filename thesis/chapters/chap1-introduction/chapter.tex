@@ -43,8 +43,7 @@ Fides does not create or administer the low-level actions of the peer-to-peer ne
 To interact with a real intrusion prevention system, we chose Slips~\cite{slips} and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence over the network. 
 By using this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence from other peers in the global network.
 
-
-x
+While evaluating the trust model performance, we simulate multiple benign and malicious peers. We also consider peers that provide incorrect data since the beginning of the simulation and intelligent malicious actors that try to exploit the trust model by gaining trust at the beginning and then manipulating the trust model to wrong conclusions.
 
 The only way to evaluate our trust model was to simulate myriad complex situations. We proved that Fides could correctly uncover the peers' behavior in the network and make sensible decisions about the threat intelligence. 
 Fides especially excels in the situations where it communicates with peers from trusted organizations.
