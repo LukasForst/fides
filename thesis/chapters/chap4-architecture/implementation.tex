@@ -9,7 +9,7 @@ We choose to use Conda~\cite{conda} for managing the dependencies and Python ver
 \label{subsec:configuration}
 Our trust model contains many different configuration options either related to the computational model itself or to the data persistence or identity of the local peer.
 
-Computational model settings are for example the threat intelligence aggregation methods described in section~\ref{sec:network-intelligence-aggregation} or the interaction evaluation strategy from section~\ref{sec:interaction-evaluation-strategies}.
+Computational model settings are for example the threat intelligence aggregation methods described in Section~\ref{sec:network-intelligence-aggregation} or the interaction evaluation strategy from Section~\ref{sec:interaction-evaluation-strategies}.
 As the trust model needs only a single method, the administrator needs to define which one of these functions should be used.
 
 The configuration itself is in a single YAML~\cite{yaml} file that is in the repository root in \href{https://github.com/LukasForst/fides/blob/master/fides.conf.yml}{\textit{fides.conf.yml}}~\cite{fidesGithub}.
@@ -31,7 +31,7 @@ For example, if the threat intelligence received from the local Slips instance c
 
 The confidentiality level, $cl$, $0 \leq cl \leq 1$, defines how sensitive or confidential the threat intelligence is where $cl = 0$ means public information that can be shared with anybody and $cl = 1$ secret information that should not be shared at all.
 
-The Fides administrator can then specify what service trust $st$ is required for what confidentiality level, $cl$, in the configuration~(section \ref{subsec:configuration}) .
+The Fides administrator can then specify what service trust $st$ is required for what confidentiality level, $cl$, in the configuration~(Section~\ref{subsec:configuration}) .
 If this configuration is in place, whenever a remote peer ($j$) asks for threat intelligence and the local ($i$) Slips has the requested threat intelligence, Fides verifies that $st_{i, j} \geq cl$ before providing the intelligence to the remote peer.
 
 This mechanism ensures that Slips does not leak information that is private or somehow more sensitive than the others.

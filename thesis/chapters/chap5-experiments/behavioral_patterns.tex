@@ -15,7 +15,7 @@ Moreover, the peer will provide the data with high confidence.
 The very same thing applies to the situation when this peer is asked to provide a recommendation for any other peer. 
 The provided recommendation will reflect the real behavior of said peer and it will indicate high confidence in the recommendation.
 This peer has the \textit{ideal} behavior as its data are useful and correct.
-The table \ref{tab:confident-correct} describes the data used for sampling the threat intelligence this peer provides.
+The Table~\ref{tab:confident-correct} describes the data used for sampling the threat intelligence this peer provides.
 
 \begin{table}[!ht]
     \centering
@@ -69,7 +69,7 @@ Thus, whenever the peer is asked to provide threat intelligence, it responds wit
 \subsection{Malicious Peer}
 \label{subsubsec:malicious-peer}
 The malicious peer is going to provide wrong threat intelligence intentionally to achieve their goal of influencing the trust decisions of the local peer. 
-The sampling data are the same as for the \textit{confident incorrect} (section~\ref{tab:confident-incorrect}) behavior, but the difference is that the malicious peer is providing misleading data intentionally.
+The sampling data are the same as for the \textit{confident incorrect} (Section~\ref{tab:confident-incorrect}) behavior, but the difference is that the malicious peer is providing misleading data intentionally.
 Moreover, intelligent malicious peer knows, that it their incentive is to gain the service trust at the beginning in order to more impact the decisions of the trust model in the later stages. 
 We simulate this by introducing a grace period when the malicious peer does not lie, but rather behaves like any other normal peer. This period then allows the malicious peers to gain the initial trust. After that period, they start to lie and thanks to the initial trust, they can influence the Fides's decisions with a larger impact.
 

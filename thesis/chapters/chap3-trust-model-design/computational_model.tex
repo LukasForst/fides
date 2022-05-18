@@ -71,7 +71,7 @@ Both of the values are based solely on the history of the interactions that peer
 \end{split}
 \end{equation}
 
-It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation of the interaction in window $k$, $w^{k}_{i, j}$ is the weight of the interaction (how important it was) and $f^{k}_{i,j}$ is the fading effect of that interaction. We describe $s^{k}_{i,j}$, $w^{k}_{i,j}$ and $f^{k}_{i,j}$ in section~\ref{subsec:interaction-satisfaction}. 
+It holds that $0 \leq cb_{i,j} \leq 1$ and where $s^{k}_{i,j}$ is the evaluation of the interaction in window $k$, $w^{k}_{i, j}$ is the weight of the interaction (how important it was) and $f^{k}_{i,j}$ is the fading effect of that interaction. We describe $s^{k}_{i,j}$, $w^{k}_{i,j}$ and $f^{k}_{i,j}$ in Section~\ref{subsec:interaction-satisfaction}. 
 $\beta_{cb}$ is the normalization coefficient that ensures that $cb_{i, j}$ stays within the interval of $0 \leq cb_{i,j} \leq 1$.
 
 \subsubsection{Integrity Belief}
@@ -94,7 +94,7 @@ The more consistent behavior peer $j$ has, the lower the $ib_{i,j}$ is. Consiste
 $s^{k}_{i, j}$ is $i$'s satisfaction value with interaction with peer $j$ in window $k$~\cite{sort}.
 We outlined before, that each interaction between two peers is evaluated, $s^{k}_{i, j}$ is a result of this evaluation of a single interaction between peers $i$ and $j$.
 Because our trust model is generic, the evaluation function can be implemented differently for different data.
-How did we design it and implemented it for threat intelligence is described in the section~\ref{sec:interaction-evaluation-strategies}.
+How did we design it and implemented it for threat intelligence is described in the Section~\ref{sec:interaction-evaluation-strategies}.
 
 However, even with the computed interaction satisfaction value, not all interactions are the same. 
 Some of the interactions are more important than others. 
@@ -121,10 +121,10 @@ However, in our case and after multiple iterations, we decided to not to forget 
 \end{equation}
 
 \noindent
-The way Fides computes $f^{k}_{i,j}$ might be changed in the future and implemented as a function of time, we discuss this in more detail as a part of the future work in the section~\ref{sec:future-work}.
+The way Fides computes $f^{k}_{i,j}$ might be changed in the future and implemented as a function of time, we discuss this in more detail as a part of the future work in the Section~\ref{sec:future-work}.
 
 \subsection{Reputation and Recommendations}
-In order to mitigate the cold start problem outlined in the section~\ref{sec:cold-start-problem} and in the cases when there are no or few interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}~\cite{sort}.
+In order to mitigate the cold start problem outlined in the Section~\ref{sec:cold-start-problem} and in the cases when there are no or few interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}~\cite{sort}.
 $r_{i,j}$ is the second part of the service trust equation~\ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
 
 The \textit{reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what remote peers think about another remote peer. However, this value is calculated by the local peer with respect, to how much it trusts each peer, that provided the recommendation.
@@ -176,7 +176,7 @@ When the local peer receives all recommendations, it computes the reputation val
 \end{equation}
 
 \noindent
-The weight, used in the equation \ref{eq:reputation-value}, is the average of history sizes in all recommendations to $sh_{max}$, maximal interactions history size. 
+The weight, used in the Equation~\ref{eq:reputation-value}, is the average of history sizes in all recommendations to $sh_{max}$, maximal interactions history size. 
 We calculate $\mu_{sh}$ as follows.
 \begin{equation}
     \mu_{sh} = \frac{1}{|T_{i}|} \sum_{z \in T_{i}} sh_{z, j}
@@ -186,7 +186,7 @@ Again, we are weighing local experience to remote experience. However, in this c
 
 \subsection{Remote Local Experience}
 \label{subsec:remote-local-experience}
-Similarly, when we compute the service trust in \ref{eq:service-trust}, we need to get competence and integrity belief.
+Similarly, when we compute the service trust in Equation~\ref{eq:service-trust}, we need to get competence and integrity belief.
 However, while creating reputation value in \ref{eq:reputation-value} where the values are coming from the remote peers, we are trying to estimate those values received from the network.
 For that reason, we call them \textit{estimated competence belief} - $ecb_{i,j}$ and \textit{estimated integrity belief} - $eib_{i,j}$.
 
@@ -205,7 +205,7 @@ It holds that $0 \leq ecb_{i,j} \leq 1$.
 \end{equation}
 
 \noindent
-Recommendation trust $rt_{i, z}$ is described in detail in section \ref{subsec:recommendation-trust-metric}.
+Recommendation trust $rt_{i, z}$ is described in detail in Section~\ref{subsec:recommendation-trust-metric}.
 
 \subsubsection{Estimated Integrity Belief}
 Following the $ecb_{i,j}$, $eib_{i,j}$ is estimation about the integrity belief made by $i$ about $j$.
@@ -221,7 +221,7 @@ This means that normalization coefficient $\beta_{eib} = \beta_{ecb}$.
 \end{equation}
 
 \subsection{Remote Remote Experience}
-Going back to equation \ref{eq:reputation-value} from section \ref{subsubsec:computing-reputation}, we use \textit{estimated reputation value} - $er_{i,j}$.
+Going back to Equation~\ref{eq:reputation-value} from Section~\ref{subsubsec:computing-reputation}, we use \textit{estimated reputation value} - $er_{i,j}$.
 This value represents information that was created by the peers, that are remote even for remote peer $j$. 
 Essentially making it information that came from the \textit{second ring of trust} - from acquaintances of an acquaintance.
 
@@ -254,7 +254,7 @@ This time, we use the weight $rh_{i,z}$, which is the size of the history of the
 \label{subsubsec:recommendation-competence-integrity-belief}
 Similar for interactions, we use three different parameters for calculating the $rcb_{i, z}$ and $rib_{i,z}$. 
 We use satisfaction $rs^{x}_{i, z}$, weight $rw^{x}_{i, z}$ and the fading effect $rf^{x}_{i, z}$. 
-The parameters have the same background as described in the section \ref{subsec:interaction-satisfaction}, but in this case, they are connected to recommendations instead of service.
+The parameters have the same background as described in the Section~\ref{subsec:interaction-satisfaction}, but in this case, they are connected to recommendations instead of service.
 We calculate $rcb_{i, z}$ as follows:
 
 \begin{equation}
@@ -273,7 +273,7 @@ And for recommendation integrity we compute $rib_{i, z}$ as:
 \noindent
 One more time, the computational model is trying to approximate average behavior in recommendations - $rcb_{i,z}$ - and then the deviation from such behavior - $rib_{i,z}$.
 
-Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in section \ref{subsubsec:fading-effect}. It is a non-increasing function of a number of recommendations or a time. 
+Fading effect $rf^{x}_{i, z}$ has similar properties as the fading effect for service trust described in Section~\ref{subsubsec:fading-effect}. It is a non-increasing function of a number of recommendations or a time. 
 For the recommendations, Fides implements it exactly the same as for the service interactions.
 
 \begin{equation}
@@ -281,7 +281,7 @@ For the recommendations, Fides implements it exactly the same as for the service
 \end{equation}
 
 \subsubsection{Evaluating Received Recommendation}
-As outlined in the section \ref{subsubsec:recommendation-competence-integrity-belief}, in order to evaluate a particular recommendation from remote peer $z$, we have satisfaction, weight, and the fading effect. 
+As outlined in the Section~\ref{subsubsec:recommendation-competence-integrity-belief}, in order to evaluate a particular recommendation from remote peer $z$, we have satisfaction, weight, and the fading effect. 
 We calculate the recommendation satisfaction $rs^{x}_{i,z}$ by comparing values from $z$'s recommendation $r_{z,j}$, $cb_{z,j}$, $ib_{z,j}$, with values that are the results of the the recommendation algorithm.
 In other words, we compare each recommendation, with the aggregated values - $er_{i,j}$, $ecb_{i,j}$ and $eib_{i,j}$. This gives us an estimate of how off was the peer $z$'s recommendation from the final result of the recommendation algorithm.
 

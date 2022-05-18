@@ -52,7 +52,7 @@ This evaluation is then passed to the computational model, which assigns trust v
 Thanks to this design, we can adapt the trust model for different environments by re-implementing the interaction evaluation function.
 For example, in the file-sharing environment, such an interaction evaluation function can be based on the speed of the upload/download so that peers will prefer nodes with a faster internet connection.
 
-However, we can not use SORT directly, primarily because of the recommendation algorithm, which can, in some cases, request a recommendation even from peers that are not \textit{trusted enough}. We describe this situation more in detail in section~\ref{subsubsec:requesting-recommendation}.
+However, we can not use SORT directly, primarily because of the recommendation algorithm, which can, in some cases, request a recommendation even from peers that are not \textit{trusted enough}. We describe this situation more in detail in Section~\ref{subsubsec:requesting-recommendation}.
 Another reason was that SORT does not support any pre-trusted peers or organizations, which is something we believe can significantly improve the model performance.
 Moreover, threat intelligence is a specific piece of data where we do not request data only from a single peer but rather from multiple of them, and then we aggregate it.
 Thus, we couldn't use SORT right away but rather extend it and modify it.
@@ -87,6 +87,6 @@ In our design, we want to have a permission-less peer-to-peer network where each
 
 \noindent
 After careful analysis, we decided to create a new trust model, \textbf{Fides}, that is based on the SORT algorithm with various modifications and fine-tuning.
-We describe how does the Fides work in the following chapter~\ref{ch:trust-model-design}.
+We describe how does the Fides work in the following Chapter~\ref{ch:trust-model-design}.
 We choose SORT because it is easily extensible and robust. 
 Moreover, the evaluation provided by the authors in~\cite{sort} promised interesting results.
