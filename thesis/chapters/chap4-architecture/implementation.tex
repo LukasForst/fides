@@ -1,9 +1,37 @@
 \section{Implementation}
 \label{sec:implementation}
-Because Fides was designed to integrate with Slips, we were constrained by the Slips implementation~\cite{slips} and thus Fides is implemented in Python~\cite{python} in version 3.8.
+Because Fides was designed to integrate with Slips, we were constrained by the Slips implementation~\cite{slips} and for that reason we implemented Fides in Python~\cite{python} in version 3.8.
 
-The code is versioned by Git~\cite{git} and published on GitHub~\cite{github} in the repository \href{https://github.com/stratosphereips/fides}{github.com/stratosphereips/fides}~\cite{fidesGithub}.
-We choose to use Conda~\cite{conda} for managing the dependencies and Python versions.
+The code is versioned by Git~\cite{git} and published on GitHub~\cite{github} in the repository \textit{\href{https://github.com/stratosphereips/fides}{github.com/stratosphereips/fides}}~\cite{fidesGithub}.
+We chose to use Conda~\cite{conda} for managing the dependencies and Python versions.
+Fides package structure is then following:
+
+\vspace{5mm}
+\dirtree{%
+.1 fides.
+.2 evaluation.
+.3 recommendation.
+.3 service.
+.2 messaging.
+.2 model.
+.2 persistence.
+.2 protocols.
+.2 utils.
+}
+\vspace{5mm}
+
+The implementation is split into multiple Python packages. The package $evaluation$ contains all necessary algorithms for any data evaluation - all interaction evaluation strategies (Section~\ref{sec:interaction-evaluation-strategies}) can be found in the file $ti\_evaluation.py$, all methods for aggregating threat intelligence  (Section~\ref{sec:network-intelligence-aggregation}) in the file $ti\_aggregation.py$.
+The $evaluation.recommendation$ package contains all computations that are related to the recommendations and reputation as described in Section~\ref{subsec:recommendation-trust-metric}.
+Similarly, the package $evaluation.service$ stores algorithm for computing the service trust described in Section~~\ref{subsec:service-trust}.
+The package $messaging$ is a connector that allows Fides to send and receive data from the Redis and thus from the Iris.
+There is a $network\_bridge.py$ which allows Fides to send a message to Iris and Slips via message queue and $message\_handler.py$ which on the other hand is designed for receiving, message syntax validation and parsing of messages.
+The package $model$ stores all data classes that represent the data Fides operate with. 
+The next package $persistence$ then contains the implementation of the Fides's persistence layer which we describe more in Section~\ref{subsec:persistence}.
+The next package $protocols$ contains all data processing and Fides's decision process. 
+The last package is $utils$ where we store our implementation of logging.
+
+In the end, we wrote $6058$ lines of code in total where the trust model Fides itself accounts for $2691$ lines. The rest of the implementation is related to the unit tests, integration tests, simulation framework and the simulations.
+We also set up a simple continuous integration pipeline for executing the unit and integration tests in GitHub.
 
 \subsection{Configuration}
 \label{subsec:configuration}

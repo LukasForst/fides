@@ -47,24 +47,24 @@ Even though SORT's authors evaluated the algorithm on the file-sharing peer-to-p
 It achieves this thanks to its computational model, which is generic and flexible.
 As we mentioned previously, the peers are gaining trust by providing services. 
 When they provide the service to the local peer, the trust model evaluates this interaction using the interaction evaluation function.
-This evaluation is then passed to the computational model, which assigns trust value to the peer.
+This evaluation is then passed to the computational model, which assigns the trust value to the peer.
 
 Thanks to this design, we can adapt the trust model for different environments by re-implementing the interaction evaluation function.
 For example, in the file-sharing environment, such an interaction evaluation function can be based on the speed of the upload/download so that peers will prefer nodes with a faster internet connection.
 
-However, we can not use SORT directly, primarily because of the recommendation algorithm, which can, in some cases, request a recommendation even from peers that are not \textit{trusted enough}. We describe this situation more in detail in Section~\ref{subsubsec:requesting-recommendation}.
+However, we cannot use SORT directly, primarily because of the recommendation algorithm, which can, in some cases, request a recommendation even from peers that are not \textit{trusted enough}. We describe this situation more in detail in Section~\ref{subsubsec:requesting-recommendation}.
 Another reason was that SORT does not support any pre-trusted peers or organizations, which is something we believe can significantly improve the model performance.
-Moreover, threat intelligence is a specific piece of data where we do not request data only from a single peer but rather from multiple of them, and then we aggregate it.
-Thus, we couldn't use SORT right away but rather extend it and modify it.
+Moreover, threat intelligence is a specific piece of data where we do not request data only from a single peer but rather from multiple peers and then we aggregate it.
+Thus, we could not use SORT as is, but rather extend it and modify it.
 
 \subsection{Related Trust Models}
 \label{subsec:related-trust-models}
 The field of trust models for peer-to-peer networks is not new, and there are many other interesting trust models that attempt to tackle trust relationships between peers.
-In this section, we describe only notable trust models relevant to sharing threat intelligence in the peer-to-peer networks but didn't base our design on them at the end.
+In this section, we describe only notable trust models relevant to sharing threat intelligence in the peer-to-peer networks but did not base our design on them at the end.
 
 Sadan, proposed in~\cite{abera2019sadan}, is a trust model that uses committees and computational challenges to identify malicious peers in the network.
-Sadan requires hardware chips - Trusted Platform Module (TPM), to verify the running software, which allows other peers to verify the trustworthiness of the peer.
-The requirement of TPM chips means that Sadan can not be used as the base for our trust model, as we do not want to limit our solution to specific hardware.
+Sadan requires hardware chips, Trusted Platform Module (TPM), to verify the running software, which allows other peers to verify the trustworthiness of the peer.
+The requirement of TPM chips means that Sadan cannot be used as the base for our trust model, as we do not want to limit our solution to specific hardware.
 
 Xiong and Liu then propose PeerTrust~\cite{xiong2004peertrust}, which uses a transaction-based feedback system to determine the reputation and trust of the peers.
 Even though the model is generic and was designed for peer-to-peer networks, it was optimized for \textit{e-commerce communities} that inherently have completely different behavior than the network for sharing threat intelligence, which needs to protect itself from the malicious peers.
