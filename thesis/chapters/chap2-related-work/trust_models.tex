@@ -3,7 +3,7 @@
 
 There are many existing approaches to model trust in peer-to-peer networks and many existing trust models.
 Unfortunately, most of them were explicitly designed with file-sharing in mind, as that is the most common use case for peer-to-peer networks.
-However, multiple trust models are generic enough, such as SORT described in section~\ref{subsec:sort}, or designed specifically for sharing threat intelligence, for example, Dovecot described in section~\ref{subsec:dovecot}.
+However, multiple trust models are generic enough, such as SORT described in Section~\ref{subsec:sort}, or designed specifically for sharing threat intelligence, for example, Dovecot described in Section~\ref{subsec:dovecot}.
 
 \subsection{Problems of Trust}
 \label{subsec:problems-of-trust}
@@ -17,8 +17,8 @@ We took both analyses into account when researching existing implementations of 
 
 \subsection{Dovecot}
 \label{subsec:dovecot}
-Dovecot is a trust model developed by Dita Hollmannová in~\cite{dita}.
-This trust model was designed explicitly for Slips to share threat intelligence in the \textit{local} peer-to-peer networks.
+Dovecot is a trust model developed by Dita Hollmannová~\cite{dita}.
+This trust model was designed explicitly for Slips to share threat intelligence in \textit{local} peer-to-peer networks.
 Dovecot counts interactions between the peers, and the more interaction peers have, they have a higher base for trust.
 This design is based on the Sality botnet~\cite{falliere2011sality}, where botnet peers were storing the \textit{goodcount} that counted the number of interactions between each other.
 The idea behind this is simple yet very effective. The more peers talk to each other, the more they are trusted.
@@ -44,7 +44,7 @@ Even though peers do not collect trust information from other peers, there is a 
 Because of the nature of the peer-to-peer network, this allows the trust model to gain faster knowledge about new peers that can join and leave at any time.
 
 Even though SORT's authors evaluated the algorithm on the file-sharing peer-to-peer networks, the algorithm is generic enough to be reused for different environments.
-It achieves that thanks to its computational model, which is generic and flexible.
+It achieves this thanks to its computational model, which is generic and flexible.
 As we mentioned previously, the peers are gaining trust by providing services. 
 When they provide the service to the local peer, the trust model evaluates this interaction using the interaction evaluation function.
 This evaluation is then passed to the computational model, which assigns trust value to the peer.

@@ -11,55 +11,58 @@
 % Discussion on results/conclusions
 % Your contributions
 
-When protecting the local networks, the basic firewalls and advanced Intrusion Prevention Systems (IPS)~\cite{zhang2004intrusion} rely on rules and the threat intelligence~\cite{threatintelligence} generated from the previous attacks locally or received from the remote sources.
+When protecting local networks, the basic firewalls and advanced Intrusion Prevention Systems (IPS)~\cite{zhang2004intrusion} rely on evidence-based knowledge about past cyberattacks, known as threat intelligence~\cite{threatintelligence}. Threat intelligence is primarily generated from the previous attacks locally or received from the remote sources.
 Such sources can be, for example, public blocklists ~\cite{abuseipdb, dataplane, binarydefense} or centralized collaborative databases such as MISP~\cite{wagner2016misp} where the community collectively shares the threat intelligence.
 However, all of these traditional threat intelligence sources are, in the end, controlled by the centralized authority, which has complete control over the resource and can at anytime restrict access to these valuable assets or censor what is published and what is not.
+In addition to that, central authorities allow the publishing of threat intelligence only to \textit{verified} entities and not everyone can contribute. Thus, there are many systems that were left out even though they might have precious knowledge about past attacks.
 
-To limit the impact of one organization shutting down the database, we can use a peer-to-peer (P2P) model and remove the central authority and single point of failure.
-In peer-to-peer networks, each peer has the same privileges, and the data are generated, shared, and consumed by each peer in the network.
-Although P2P models solve the problem of a single central authority, it may introduces new problems. The most important questions to ask are: First, how much can each peer trust the threat intelligence received from other peers, given that their reliability changes? Second, how to deal with peers providing contradicting information when a single aggregated value is needed? Third, how to deal with adversarial peers that lie in many different ways?
+To limit the impact of one organization shutting down the database and many other problems outlined above, we can use a peer-to-peer (P2P) model and remove the central authority and single point of failure.
+In peer-to-peer networks, each peer has the same privileges and can freely share and receive any data without any central authority.
+Although P2P models solve the problem of a single central authority, they may introduce new problems. The most important questions to ask are: first, how much can each peer trust the threat intelligence received from other peers, given that their reliability changes? Second, how to deal with peers providing contradictory information when a single aggregated value is needed? Third, how to deal with adversarial peers that lie in many different ways?
 
 In this thesis, we answer those questions and tackle the problem of trust relationships when sharing security threat intelligence data.
 The algorithms that tackle trust relationships between multiple entities are called \textit{trust models}~\cite{wang2003trust}.
 The research field of trust models is not new, and there are many existing trust models~\cite{abera2019sadan, sort, christensen2014hybrid, 1562680, huynh2006integrated, kamvar2003eigentrust, li2014design, pinyol2013computational, xiong2004peertrust}.
-However, these models were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different kinds of data. Almost no P2P system was designed to fulfill the purposes of the security community.
-An exemption to them is Dovecot~\cite{dita}, a local P2P trust model designed to operate with threat intelligence data but a limitation to operate only in the local networks.
+However, these models were primarily designed to support file sharing in peer-to-peer networks and inherently operate with different types of data. Almost no P2P system was designed to fulfill the purposes of the security community.
+An exemption to them is Dovecot~\cite{dita}, a local P2P trust model designed to operate with threat intelligence data, but with the limitation that operates only in the local networks.
 
 This thesis proposes a new trust model called \textbf{Fides}\footnote{Fides was named after the ancient goddess of trust and good faith~\cite{enwiki:1086924565}.}.
 Fides is a \textit{generic} trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
-Fides was built by solving most of the problems of previous state-of-the-art trust models~\cite{sort, dita} and it is optimized for a broad spectrum of networks; from local networks controlled by a single company, to public global Internet peer-to-peer networks where anybody can join and leave at any time.
+Fides was built by solving most of the problems of previous state-of-the-art trust models~\cite{sort, dita} and its computational model is based on the existing trust model SORT~\cite{sort} which we modified and extended to support threat intelligence sharing.
 
-Fides works with the concept of peers that belong to specific \textit{organizations} and allows administrators to pre-trust specific peers and organizations. This pre-trusting is a novel feature of Fides, representing the common criteria of security practitioners of trusting some groups or companies more then others. The comprehensive configuration options enable administrators to share data only with particular organizations. This data filtering guarantees that no privacy-sensitive intelligence is shared with peers that should not have access to it.
+and is optimized for a broad spectrum of networks; from local networks controlled by a single company, to public global Internet peer-to-peer networks where anybody can join and leave at any time.
 
-Fides considers many security requirements for a global P2P trust model: pre-trusted organisations, trust values depending on the service provided by the peer, asking for reputation to other peers, cold start problem of new peers, aggregation of information received, evaluation of how services were provided, adversarial peers that try to mislead others.
+Fides works with the concept of peers that belong to specific \textit{organizations} and allows administrators to pre-trust specific peers and organizations. This pre-trusting is a novel feature of Fides, representing the common criteria of security practitioners of trusting some groups or companies more than others. The comprehensive configuration options enable administrators to share data only with particular organizations. This data filtering guarantees that no privacy-sensitive intelligence is shared with peers that should not have access to it.
 
-Fides was designed to be as modular and generic as possible, allowing other use of its computational model for different data than the threat intelligence by simply adding new evaluation methods.
+Fides considers many security requirements for a global P2P trust model: pre-trusted organizations, trust values depending on the service provided by the peer, asking for the reputation to other peers, cold start problem of new peers, aggregation of information received, evaluation of how services were provided, adversarial peers that try to mislead others.
 
-Fides does not create or administer the low-level actions of the peer-to-peer network but instead relies on a different system that performs these operations on the network layer. The system is called \textbf{Iris}. Iris was designed and developed simultaneously in his thesis by Bc. Martin Řepa~\cite{nl} and it facilitates safe and secure communications between Fides instances in the global peer-to-peer network. Communication between the two systems is done via a standard defined interface, which allows replacing the network module Iris if needed.
+Fides was designed to be as modular and generic as possible, allowing other uses of its computational model for different data than threat intelligence by simply adding new evaluation methods.
+
+Fides does not create or administer the low-level actions of the peer-to-peer network but instead relies on a different system that performs these operations on the network layer. The system is called \textbf{Iris}. Iris was designed and developed simultaneously in the thesis by Bc. Martin Řepa~\cite{nl} and it facilitates safe and secure communications between Fides instances in the global peer-to-peer network. Communication between the two systems is done via a standard defined interface, which allows replacing the network module Iris if needed.
 
 To interact with a real intrusion prevention system, we chose Slips~\cite{slips} and implemented a module that allows Slips to use Fides for receiving and sharing threat intelligence over the network. 
 By using this shared global knowledge, Slips can prevent attacks on the local environment even before they happen by acting upon received threat intelligence from other peers in the global network.
 
+
 x
 
 The only way to evaluate our trust model was to simulate myriad complex situations. We proved that Fides could correctly uncover the peers' behavior in the network and make sensible decisions about the threat intelligence. 
-Fides especially excels in the situations when it communicates with peers from trusted organizations.
+Fides especially excels in the situations where it communicates with peers from trusted organizations.
 Moreover, in a situation where the Fides talks to at least 25\% of pre-trusted peers, it can eventually determine correct threat intelligence no matter how other peers in the network behave and how many of them are adversarial.
 
 \section{Thesis Structure}
 \label{sec:thesis-structure}
-This thesis explains the required background and describes the current state of the art in the chapter~\ref{ch:previous-work-background}.
-In the next chapter~\ref{ch:trust-model-design} we propose a new trust model Fides and then outline how it works from the high-level perspective in the section~\ref{sec:general-overview-of-fides}.
-After that, we explain problems related to gaining trust in the section~\ref{sec:cold-start-problem}.
-In the following sections~\ref{sec:attack-vectors}~and~\ref{sec:taxonomy-of-attacks} we analyze the taxonomy of attacks and the attack vectors related explicitly to the trust models and discuss how Fides defends against them.
-Once we explain our design choices, we describe the whole computational model in depth in section~\ref{sec:computational-model} and illustrate how Fides can determine trust relationships in the network by evaluating interactions between peers in the section~\ref{sec:interaction-evaluation-strategies}.
-The last part of the computational model in the section~\ref{sec:network-intelligence-aggregation} explains how Fides can aggregate threat intelligence from the network.
-The chapter~\ref{ch:architecture} then describes the Fides's architecture and how we implemented it as a new Slips module.
-In the following chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside Fides.
-Chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. The last chapter~\ref{ch:conclusion} conclude our results and proposes further areas of improvement for the Fides. 
-We also include an appendix with multiple interesting cases of evaluations discovered in the chapter~\ref{ch:results}.
+This thesis explains the required background and describes the current state of the art in Chapter~\ref{ch:previous-work-background}.
+In Chapter~\ref{ch:trust-model-design} we propose a new trust model Fides and outline how it works from the high-level perspective in Section~\ref{sec:general-overview-of-fides}.
+After that, we explain problems related to gaining trust in Section~\ref{sec:cold-start-problem}.
+In the following Sections~\ref{sec:attack-vectors}~and~\ref{sec:taxonomy-of-attacks} we analyze the taxonomy of attacks and the attack vectors related explicitly to the trust models and discuss how Fides defends against them.
+Once we explain our design choices, we describe the entire computational model in depth in Section~\ref{sec:computational-model} and illustrate how Fides can determine trust relationships in the network by evaluating interactions between peers in Section~\ref{sec:interaction-evaluation-strategies}.
+The last part of the computational model in Section~\ref{sec:network-intelligence-aggregation} explains how Fides can aggregate threat intelligence from the network.
+Chapter~\ref{ch:architecture} describes the Fides architecture and how we implemented it as a new Slips module.
+In the following Chapter~\ref{ch:experiments} we propose simulations that evaluate the performance of the trust model and give a brief overview of the simulation framework that we developed alongside Fides.
+Chapter~\ref{ch:results} then describes the results that we discovered in the evaluations. Finally, Chapter~\ref{ch:conclusion} concludes our results and proposes further areas of improvement for Fides. 
+We also include an appendix with multiple interesting cases of evaluations discovered in Chapter~\ref{ch:results}.
 
-\newpage
 \section{List of Contributions}
 \label{sec:list-of-contributions}
 \noindent
@@ -69,8 +72,8 @@ The contributions of this thesis are:
     \item Design of Fides, a generic trust model fine-tuned for sharing security data in global adversarial peer-to-peer networks.~(\ref{sec:general-overview-of-fides})
     \item Design and implementation of multiple methods to evaluate interactions between peers that share threat intelligence data.~(\ref{sec:interaction-evaluation-strategies})
     \item A method that enables weighting and aggregation of threat intelligence from multiple peers.~(\ref{sec:network-intelligence-aggregation})
-    \item A complete and working reference implementation of Fides in Python.~(\ref{ch:architecture})
-    \item An implementation of a Slips module that allows the use Fides for global threat intelligence sharing.~(\ref{ch:architecture})
+    \item A complete working reference implementation of Fides in Python.~(\ref{ch:architecture})
+    \item An implementation of a Slips module that allows the use of Fides for global threat intelligence sharing.~(\ref{ch:architecture})
     \item A simulation framework for modeling any environment for Fides evaluation.~(\ref{ch:experiments})
     \item An simulated evaluation of Fides in different environments and analysis of its behavior in unfavorable situations.~(\ref{ch:results})
 \end{itemize}

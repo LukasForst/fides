@@ -45,7 +45,7 @@ $\bar{b_{j}}$ is then the ground truth behavior of the remote peer and we comput
 \end{equation}
 
 Recall the description of the peers' behaviors from the section \ref{sec:peers-behavioral-patterns}, where each peer's behavior $b$ had $\mu^{b}_{s}$ that was used during threat intelligence sampling.
-Because the sampled score is $<-1; 1>$ and service trust $<0; 1>$, we can not use the $\mu^{b}_{s}$ directly, but we need to scale it to the correct interval.
+Because the sampled score is $[-1, 1]$ and service trust $[0, 1]$, we can not use the $\mu^{b}_{s}$ directly, but we need to scale it to the correct interval.
 Moreover, as malicious and incorrect peers  do have $\mu^{b}_{s}$ on the opposite scale that the ground truth is, we need to shift it before normalizing it.
 For that reason, $shift = -1$ for malicious and incorrect peers and $shift = 1$ for confident correct, and uncertain behaviors and thus the equation \ref{eq:ground_truth_peer_behavior}.
 
