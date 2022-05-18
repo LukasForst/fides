@@ -3,6 +3,8 @@ title: >-
   Fides: A Trust Model for Collaborative Defense in Highly Adversarial Networks
 message: 'If you use this software, please cite it as below.'
 type: software
+date-released: 2022-05-20
+url: "https://github.com/LukasForst/fides"
 authors:
   - given-names: Lukas
     family-names: Forst
