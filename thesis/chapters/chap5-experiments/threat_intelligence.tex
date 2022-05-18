@@ -5,16 +5,16 @@ Each module provides a score on its own and Slips aggregates these evaluations i
 This means, that threat intelligence is computed as a sum of independent random variables and that tends to follow the normal distribution. 
 For that reason, we sample threat intelligence values from the normal distribution.
 
-As peers have different behavior, we will sample threat intelligence provided by them every time when they are asked for it.
-We will characterize the peer's behavior by the threat intelligence it provides, with respect to the baseline, the ground truth of if the target is benign or malicious.
+As peers have different behavior, we will sample the threat intelligence provided by them every time when they are asked for it.
+We will characterize the peer's behavior by the threat intelligence it provides, with respect to the baseline, and the ground truth of the target being benign or malicious.
 
-As described in the previous chapters, threat intelligence consists of a \textit{score} and \textit{confidence} in that score.
+As described in the previous chapters, threat intelligence consists of a \textit{score} and the \textit{confidence} in that score.
 We use the notation $\mu_{s}$ for the mean threat intelligence score and $\sigma_{s}$ for the standard deviation of the score. 
-Same as for score, we use $\mu_{c}$ for mean confidence and $\sigma_{c}$ for the standard deviation of the confidence. 
+Similarly, we use $\mu_{c}$ for mean confidence and $\sigma_{c}$ for the standard deviation of the confidence. 
 
-Fides also in some cases employ recommendation protocol, so in the simulations, the peers might be asked to provide recommendations about other peers.
+Fides also in some cases employs a recommendation protocol, so in the simulations, the peers might be asked to provide recommendations about other peers.
 They will follow their behavioral strategy when providing the data. 
-Recall recommendation description from section \ref{subsec:recommendations}. A single recommendation response contains $cb_{k,j}$, $ib_{k,j}$, $sh_{k,j}$, $r_{k,j}$ and $\eta_{k,j}$. 
+Recall the recommendation description from section \ref{subsec:recommendations}. A single recommendation response contains $cb_{k,j}$, $ib_{k,j}$, $sh_{k,j}$, $r_{k,j}$ and $\eta_{k,j}$. 
 We will be sampling those from the normal distribution as well with the corresponding pairs of $(\mu_{cb}, \sigma_{cb})$, $(\mu_{ib}, \sigma_{ib})$, $(\mu_{sh}, \sigma_{sh})$, $(\mu_{r}, \sigma_{r})$ and $(\mu_{\eta}, \sigma_{\eta})$.
 Every peer will provide recommendations based on his behavioral strategy with respect to the ground truth.
 

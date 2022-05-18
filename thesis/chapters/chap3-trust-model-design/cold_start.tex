@@ -23,7 +23,7 @@ Static initial trust is supported by Fides as a form of fallback when no other c
 \subsection{Pre-Trusted Peers}
 \label{subsec:pre-trusted-peers}
 
-This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Bc. Martin Řepa~\cite{nl} which implements the new idea of pre-trusted peers in organizations for the Slips IPS. Therefore, we worked with the concept of pre-trusted organizations which have pre-trusted peers. In this case, Fides can use this knowledge and assign a higher or lower trust to new peers.
+This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Bc. Martin Řepa~\cite{nl}, called Iris, which implements the new idea of pre-trusted peers in organizations for the Slips IPS. Therefore, Fides works with the concept of pre-trusted organizations which have pre-trusted peers. Iris implements the concept of pre-trusted organisations, and Fides uses this knowledge to assign a higher or lower trust to new peers.
 
 The global P2P framework implemented by Řepa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
 This allows Fides to \textit{pre-trust} specific peers or all the peers from organizations by assigning them an initial value.
@@ -39,9 +39,9 @@ The inspiration for which organization or to which peer to trust provides, for e
 
 \subsection{Recommendations}
 \label{subsec:recommendations}
-As the local peer might have multiple remote peers that it trusts enough, Fides uses these relationships to ask the remote peers about how much they trust a new peer. Fides only asks for recommendations when the local peer finds a new peer.  
+As the local peer might have multiple remote peers that it trusts enough, Fides uses these relationships to ask the remote peers about how much they trust a new peer. Fides only asks for recommendations once: when the local peer finds a new peer for the first time.  
 
-The recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peers that might have some threat intelligence about the malicious actor. 
+Using a recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peers that might have some threat intelligence about the malicious actor. 
 These attacks are called \textit{bad-mouthing} and \textit{unfair praises} and we need to consider them and implement countermeasures.
 
 Because of the possible attacks, the local peer should not solely rely on the network recommendations when computing the final service trust for the fresh peer. In case, when the recommending peers are malicious, it might skew the decisions of the local peer for the time being.

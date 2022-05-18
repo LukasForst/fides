@@ -11,12 +11,10 @@ The trust model utilizes modified SORT's computational model with multiple modif
 Fides is a generic and heavily configurable trust model specializing in sharing threat intelligence.
 However, thanks to its modular architecture, it can operate with any data, and it is not limited only to threat intelligence.
 
-In the section~,\ref{sec:general-overview-of-fides} we describe our trust model design and explain how Fides works on a high level, the inputs and outputs, and how it behaves in which situation.
+In the Section~\ref{sec:general-overview-of-fides} we describe our trust model design and explain how Fides works on a high level, the inputs and outputs, and how it behaves in which situation. After outlining the general overview, we analyze the weaknesses of the trust models and how they apply to Fides.
+First, we start with \textit{the cold start problem} in the Section~\ref{sec:cold-start-problem}, which describes how peers can gain trust when they are new in the network and how Fides tackles this issue.
 
-After outlining the general overview, we analyze the weaknesses of the trust models and how they apply to Fides.
-First, we start with \textit{the cold start problem} in the section~\ref{sec:cold-start-problem}, which describes how peers can gain trust when they are new in the network and how Fides tackles this issue.
-
-In the next section~\ref{sec:attack-vectors} we analyze possible attack vectors on our trust model, and then we describe the taxonomy of attacks in the next section~\ref{sec:taxonomy-of-attacks}.
+In the next Ssection~\ref{sec:attack-vectors} we analyze possible attack vectors on our trust model, and then we describe the taxonomy of attacks in the next Section~\ref{sec:taxonomy-of-attacks}.
 
 Once all trust model requirements are explained, we dive deep into Fides's computational model in the next section~\ref{sec:computational-model}  and explain how it can uncover trust relationships in the network.
 The following section~\ref{sec:interaction-evaluation-strategies} explains how Fides can evaluate interactions between peers and how that affects trust.

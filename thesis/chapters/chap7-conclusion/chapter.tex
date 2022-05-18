@@ -1,20 +1,20 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-Possible disconnection between systems that can generate threat intelligence and systems that can act according to it introduces the significant trust relationships between these two kinds of systems.
+The possible disconnection between systems that can generate threat intelligence and systems that can act according to it introduces the significant trust relationships between these two kinds of systems.
 In this thesis, we proposed, designed, and implemented a trust model for distributed multi-agent environments of intrusion prevention systems \textbf{Fides}.
 Fides enables threat intelligence sharing in global peer-to-peer networks of Slips agents and allows them to cooperate against malicious actors without compromising the security of the local environment. 
 Moreover, even though we fine-tuned the model for threat intelligence sharing, it is generic and can be easily modified for sharing any other IoC data.
 
 Fides can recognize that the peer belongs to different organizations. If the administrator trusts them, Fides can utilize this knowledge to provide better results and be more confident in its decisions.
 Thanks to its granular configuration, Fides allows the administrator to set up intelligence sharing between specific organizations or share specific data only with highly trusted peers.
-This ensures that the Fides shares only data that can be shared and does not leak any sensitive information about the infrastructure it runs in.
+This ensures that Fides shares only data that can be shared and does not leak any sensitive information about the infrastructure it runs in.
 
 The trust model itself is generic and can be integrated into any modular intrusion detection or prevention system. We chose to implement an integration with Slips~\cite{slips}, and as a part of our work, we developed a Slips module that uses Fides for sharing and aggregating threat intelligence.
 The whole trust model and the Slips module are open-source and available as free software~\cite{fidesGithub}.
 
-In this thesis, we explore topics related to intrusion prevention systems~(\ref{sec:intrusion-detection-prevention-system}), threat intelligence~(\ref{sec:threat-intelligence}), and peer-to-peer networks~(\ref{sec:peer-to-peer-networks}) alongside with state of the art in managing trust relationships with trust models~(\ref{sec:trust-in-p2p}) in the chapter~\ref{ch:previous-work-background}.
-We conclude that we need a solution that will be flexible enough to allow us to share sensitive threat intelligence in highly adversarial peer-to-peer networks.
+In this thesis, we explore topics related to intrusion prevention systems (section~\ref{sec:intrusion-detection-prevention-system}), threat intelligence (section~\ref{sec:threat-intelligence}), and peer-to-peer networks (section~\ref{sec:peer-to-peer-networks}) alongside with the state of the art in managing trust relationships with trust models (section~\ref{sec:trust-in-p2p}) in chapter~\ref{ch:previous-work-background}.
+We conclude that we need a solution that is flexible enough to allow us to share sensitive threat intelligence in highly adversarial peer-to-peer networks.
 
 In the following chapter~\ref{ch:trust-model-design} we propose the trust model Fides and provide a high-level overview of its life cycle and the foundation of its calculations~(\ref{sec:general-overview-of-fides}).
 The following sections discuss the problems that trust models face in peer-to-peer networks in general~(\ref{sec:cold-start-problem}).
@@ -22,7 +22,7 @@ After that, we analyze common attack vectors on the trust models~(\ref{sec:attac
 Once we outline all necessary preconditions, we deep dive into a computational model of Fides~(\ref{sec:computational-model}), including multiple options for evaluating interactions between the peers~(\ref{sec:interaction-evaluation-strategies}).
 Because the trust model operates with threat intelligence, we propose multiple ways to aggregate network threat intelligence into a single value consumed by Slips~(\ref{sec:network-intelligence-aggregation}).
 
-The architecture and implementation details of the trust model are then described in the chapter~,\ref{ch:architecture} where we explain how Fides communicates in the network, how it can verify the data it receives, and how it ensures that no privacy-sensitive data are sent to the network.
+The architecture and implementation details of the trust model are then described in chapter~\ref{ch:architecture} where we explain how Fides communicates in the network, how it can verify the data it receives, and how it ensures that no privacy-sensitive data are sent to the network.
 
 In the next chapter~\ref{ch:experiments}, we designed extensive test scenarios~(\ref{sec:environment-simulation}), explained how we evaluate each simulation~(\ref{sec:experiments-evaluation}), and then created and implemented an evaluation framework~(\ref{sec:simulations-execution}) that allowed us to simulate any possible setup in any possible environment.
 
