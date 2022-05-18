@@ -2,7 +2,7 @@ from typing import List
 
 from fides.messaging.network_bridge import NetworkBridge
 from fides.model.peer import PeerInfo
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.trust import TrustDatabase
 from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.recommendation import RecommendationProtocol
 

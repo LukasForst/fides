@@ -9,7 +9,7 @@ from fides.model.aliases import PeerId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
 from fides.model.recommendation import Recommendation
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.trust import TrustDatabase
 from fides.protocols.protocol import Protocol
 from fides.utils.logger import Logger
 

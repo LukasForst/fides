@@ -6,7 +6,7 @@ from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import PeerId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.trust import TrustDatabase
 
 
 class Protocol:

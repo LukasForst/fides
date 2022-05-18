@@ -9,8 +9,8 @@ from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer import PeerInfo
 from fides.model.peer_trust_data import PeerTrustData
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
-from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.threat_intelligence import ThreatIntelligenceDatabase
+from fides.persistence.trust import TrustDatabase
 from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator
 from fides.protocols.protocol import Protocol

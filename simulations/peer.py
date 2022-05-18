@@ -8,7 +8,7 @@ from fides.model.aliases import Target, Score, PeerId
 from fides.model.peer import PeerInfo
 from fides.model.recommendation import Recommendation
 from fides.model.threat_intelligence import ThreatIntelligence, SlipsThreatIntelligence
-from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
+from fides.persistence.threat_intelligence import ThreatIntelligenceDatabase
 from fides.utils import bound
 from simulations.utils import Click
 

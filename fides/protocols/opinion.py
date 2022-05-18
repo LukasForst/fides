@@ -7,7 +7,7 @@ from fides.model.aliases import PeerId, Target
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
+from fides.persistence.threat_intelligence import ThreatIntelligenceDatabase
 
 
 class OpinionAggregator:

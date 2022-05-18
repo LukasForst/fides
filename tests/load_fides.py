@@ -11,8 +11,8 @@ from fides.messaging.network_bridge import NetworkBridge
 from fides.model.aliases import Target
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.persistance.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
-from fides.persistance.trust_in_memory import InMemoryTrustDatabase
+from fides.persistence.threat_intelligence_in_memory import InMemoryThreatIntelligenceDatabase
+from fides.persistence.trust_in_memory import InMemoryTrustDatabase
 from fides.protocols.alert import AlertProtocol
 from fides.protocols.initial_trusl import InitialTrustProtocol
 from fides.protocols.opinion import OpinionAggregator

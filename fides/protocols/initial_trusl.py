@@ -3,7 +3,7 @@ from fides.evaluation.service.process import process_service_interaction
 from fides.model.configuration import TrustModelConfiguration, TrustedEntity
 from fides.model.peer import PeerInfo
 from fides.model.peer_trust_data import PeerTrustData, trust_data_prototype
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.trust import TrustDatabase
 from fides.protocols.recommendation import RecommendationProtocol
 from fides.utils.logger import Logger
 

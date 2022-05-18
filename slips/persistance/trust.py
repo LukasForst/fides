@@ -7,7 +7,7 @@ from fides.model.aliases import PeerId, Target, OrganisationId
 from fides.model.configuration import TrustModelConfiguration
 from fides.model.peer_trust_data import PeerTrustData, TrustMatrix
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.persistance.trust import TrustDatabase
+from fides.persistence.trust import TrustDatabase
 
 
 # because this will be implemented

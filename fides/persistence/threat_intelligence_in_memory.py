@@ -2,7 +2,7 @@ from typing import Optional, Dict
 
 from fides.model.aliases import Target
 from fides.model.threat_intelligence import SlipsThreatIntelligence
-from fides.persistance.threat_intelligence import ThreatIntelligenceDatabase
+from fides.persistence.threat_intelligence import ThreatIntelligenceDatabase
 
 
 class InMemoryThreatIntelligenceDatabase(ThreatIntelligenceDatabase):
