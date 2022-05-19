@@ -2,8 +2,8 @@
 \label{sec:peers-behavioral-patterns}
 For the sake of experiments, we chose the behavior of each peer in the simulated network. We identified multiple different behavioral patterns for the benign as well as for the malicious peers.
 Every behavior is different and is defined by the $(\mu, \sigma)$ for every data we sample and by the intent the peer has in the network.
-Most of the behavior depends on the baseline, which is the ground truth for any target in the system - if it is benign or malicious.
-We note baseline score as $S_{B} \in \{-1, 1\}$, where $S_{B} = -1$, means the target is malicious and $S_{B} = 1$ means the target is benign.
+Most of the behavior depends on the baseline, which is the ground truth for any target in the system, if it is benign or malicious.
+We note the baseline score as $S_{B} \in \{-1, 1\}$, where $S_{B} = -1$ means that the target is malicious and $S_{B} = 1$ means that the target is benign.
 
 
 \subsection{Confident Correct Peer}
@@ -15,7 +15,7 @@ Moreover, the peer will provide the data with high confidence.
 The very same thing applies to the situation when this peer is asked to provide a recommendation for any other peer. 
 The provided recommendation will reflect the real behavior of said peer and it will indicate high confidence in the recommendation.
 This peer has the \textit{ideal} behavior as its data are useful and correct.
-The Table~\ref{tab:confident-correct} describes the data used for sampling the threat intelligence this peer provides.
+Table~\ref{tab:confident-correct} describes the data used for sampling the threat intelligence this peer provides.
 
 \begin{table}[!ht]
     \centering
@@ -32,7 +32,7 @@ The Table~\ref{tab:confident-correct} describes the data used for sampling the t
 \subsection{Uncertain Peer}
 \label{subsubsec:uncertain-peer}
 This behavior simulates peers that do not have enough information to provide reasonably good data, but they are benign and honest with their behavior.
-The peer can provide essentially any score but with very low confidence in said score. That's why the $\mu^{up}_{s}$ is quite high whereas the mean for this behavior is $0$.
+The peer can provide essentially any score but with very low confidence in said score. That is why the $\mu^{up}_{s}$ is quite high whereas the mean for this behavior is $0$.
 
 \begin{table}[!ht]
     \centering

@@ -2,7 +2,7 @@
 \label{sec:sampling-threat-intelligence}
 Threat intelligence, which is being shared on the peer-to-peer network and is aggregated by Fides, is generated inside Slips by various modules.
 Each module provides a score on its own and Slips aggregates these evaluations into a single value. 
-This means, that threat intelligence is computed as a sum of independent random variables and that tends to follow the normal distribution. 
+This means that threat intelligence is computed as a sum of independent random variables and that tends to follow the normal distribution. 
 For that reason, we sample threat intelligence values from the normal distribution.
 
 As peers have different behavior, we will sample the threat intelligence provided by them every time when they are asked for it.

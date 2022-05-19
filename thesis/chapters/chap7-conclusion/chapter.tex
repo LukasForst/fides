@@ -1,16 +1,16 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-In this thesis, we proposed, designed, and implemented a trust model for distributed multi-agent environments of intrusion prevention systems \textbf{Fides}.
+In this thesis, we proposed, designed, and implemented \textbf{Fides}, a trust model for distributed multi-agent environments of intrusion prevention systems.
 Fides enables threat intelligence sharing in global peer-to-peer networks of Slips agents and allows them to cooperate against malicious actors without compromising the security of the local environment. 
-Moreover, even though we fine-tuned the model for threat intelligence sharing, it is generic and can be easily modified for sharing any other IoC data.
+Although Fides is fine-tuned for threat intelligence sharing, it is generic and can be easily modified to share any other IoC data.
 
-Fides can recognize that the peer belongs to different organizations. If the administrator trusts them, Fides can utilize this knowledge to provide better results and be more confident in its decisions.
+Fides can recognize that peers belong to different organizations. If the administrator trusts them, Fides can use this knowledge to provide better results and be more confident in its decisions.
 Thanks to its granular configuration, Fides allows the administrator to set up intelligence sharing between specific organizations or share specific data only with highly trusted peers.
 This ensures that Fides shares only data that can be shared and does not leak any sensitive information about the infrastructure it runs in.
 
-The trust model itself is generic and can be integrated into any modular intrusion detection or prevention system. We chose to implement an integration with Slips~\cite{slips}, and as a part of our work, we developed a Slips module that uses Fides for sharing and aggregating threat intelligence.
-The whole trust model and the Slips module are open-source and available as free software~\cite{fidesGithub}.
+The trust model itself is generic and can be integrated into any modular intrusion detection or prevention system. We chose to implement an integration with Slips~\cite{slips}, and as part of our work, we developed a Slips module that uses Fides for sharing and aggregating threat intelligence.
+The entire trust model and the Slips module are open-source and available as free software~\cite{fidesGithub}.
 
 In this thesis, we explore topics related to intrusion prevention systems~(\ref{sec:intrusion-detection-prevention-system}), threat intelligence~(\ref{sec:threat-intelligence}), and peer-to-peer networks~(\ref{sec:peer-to-peer-networks}) alongside with the state of the art in managing trust relationships with trust models~(\ref{sec:trust-in-p2p}) in Chapter~\ref{ch:previous-work-background}.
 We conclude that we need a solution that is flexible enough to allow us to share sensitive threat intelligence in highly adversarial peer-to-peer networks.

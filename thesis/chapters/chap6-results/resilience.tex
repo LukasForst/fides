@@ -1,4 +1,4 @@
-\section{Fides Resilience}
+\section{Evaluation of Fides Resilience in Different Scenarios}
 \label{sec:fides-resilience}
 
 To evaluate the resilience of Fides in different scenarios, we need to find the optimal configuration for the following parameters in Fides: interaction evaluation strategy (Section~\ref{sec:interaction-evaluation-strategies}), threat intelligence aggregation function (Section~\ref{sec:network-intelligence-aggregation}) and initial reputation (Section~\ref{subsubsec:computing-reputation}). Each combination of parameters is evaluated in its capacity to correctly classify targets in \textit{any} network topology.\footnote{Distribution of correct/uncertain/incorrect/malicious peers in the network.}
@@ -9,14 +9,15 @@ We discovered that actually there \textbf{exists} a particular setup that guaran
 \subsection{Correct Target Identification Under Harsh Conditions}
 \label{subsec:correct-target-identification-no-matter-what}
 
-Figure~\ref{fig:performance-all-setups-25-pretrusted} visualizes this situation where there are 25\% of pre-trusted peers in the network and shows how different configurations perform under different network distributions.
-There are three rows and four columns. Each row contains a single interaction evaluation strategy (Section~\ref{sec:interaction-evaluation-strategies}) and each column is then a single metric that evaluates the behavior of this strategy in the network.
+The first scenario that was evaluated was when the network has 25\% of pre-trusted peers. Several configurations were simulated, which results are shown in Figure~\ref{fig:performance-all-setups-25-pretrusted}. The goal is to find which 
+
+There are three rows and four columns. Each row contains a single interaction evaluation strategy (Section~\ref{sec:interaction-evaluation-strategies}) and each column contains a single metric that evaluates the behavior of that strategy in the network.
 There are three different metrics that evaluate the performance of the Fides's setup and the last graph displays how many confident correct (Section~\ref{subsubsec:confident-correct-peer}) peers there are in the network.
 The horizontal axis in each graph measures the environment hardness explained in Section~\ref{subsec:environment-hardness}.
 The vertical axis is different for each metric.
 
 As mentioned previously, there are three different metrics.
-The first column is a metric measuring target detection performance~(\ref{subsec:target-detection-performance-metric}), the second is the peers' behavior detection metric~(\ref{subsec:peers-behavior-detection-performance-metric}) and the third column then measures the average service trust $st^{kmax}_{i, j}$ for all peers in the simulation.
+The first column is a metric measuring target detection performance~(\ref{subsec:target-detection-performance-metric}), the second column is the peers' behavior detection metric~(\ref{subsec:peers-behavior-detection-performance-metric}), and the third column measures the average service trust $st^{kmax}_{i, j}$ for all peers in the simulation.
 
 The last, fourth, column then contains a graph that displays what percentage of peers in the simulation were confident correct~(\ref{subsubsec:confident-correct-peer}) with respect to the environment hardness value~(\ref{subsec:environment-hardness}).
 We include it in the graph to allow better visualization of how does the simulation environment looks like with respect to the peer's distribution.
@@ -60,11 +61,19 @@ Thus, this method does not provide a guarantee that Fides will end up with corre
 
 The same applies to all other interaction evaluation methods as we can see in the Figure~\ref{fig:performance-all-setups-25-pretrusted} that in the hardest environment, they all classified the targets poorly with all threat intelligence aggregation methods.
 
-\subsection{Resilience Under Different Conditions}
+\subsection{Scenarios of No pre-trusted peers, and 50\% pre-trusted peers}
 \label{subsec:resilience-under-different-conditions}
-
-We include a similar graph to Figure~\ref{fig:performance-all-setups-25-pretrusted} for the situations with no pre-trusted peers in the appendix in the Figure~\ref{fig:performance-all-setups-0-pretrusted} and then situations with 50\% of pre-trusted peers in the Figure~\ref{fig:performance-all-setups-50-pretrusted}.
+Other two important scenarios to consider are the situations where the administrator does not have any pre-trusted peers and when at least 50\% of peers are pre-trusted.
 
 With no pre-trusted peers in the network, the results of each configuration vary and they highly depend on the network topology as well as on the knowledge of the local Slips instance.
+
+These results for the no pre-trusted scenario are shown in Appendix Figure~\ref{fig:performance-all-setups-0-pretrusted}.
+
+
+
+
+
+and then situations with 50\% of pre-trusted peers in the Figure~\ref{fig:performance-all-setups-50-pretrusted}.
+
 
 However, in the case of 50\% pre-trusted peers, one can see that no matter the configuration, Fides was eventually able to determine the correct target classification with a high precision of $tdp \leq 0.7$. Moreover, Fides was able to correctly identify the peer's behavior with the precision of $pbdp \leq 0.2$.
