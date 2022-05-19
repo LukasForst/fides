@@ -1,6 +1,6 @@
-# Fides: A Trust Model for Collaborative Defense in Highly Adversarial Networks
+# Fides
 
-Global Trust Model for P2P Intrusion Prevention System (IDS/IPS). Named
+Fides is a trust model for collaborative defense in highly adversarial networks of Intrusion Prevention System (IDS/IPS) agents. Named
 after [Fides](https://en.wikipedia.org/wiki/Fides_(deity)) - goddess of trust and good faith. The repository is a mono
 repo for my diploma thesis on CTU.
 
