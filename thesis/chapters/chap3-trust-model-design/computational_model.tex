@@ -46,7 +46,7 @@ Table~\ref{tab:notation-computational-model} describes the most important notati
 \subsection{Service Trust}
 \label{subsec:service-trust}
 As outlined previously, service trust $st_{i, j}$ is a value that describes how much peer $i$ trusts that remote peer $j$ will provide a \textit{good service}~\cite{sort}.
-We compute the $st_{i, j}$ in the equation~\ref{eq:service-trust} by weighing local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
+We compute the $st_{i, j}$ in the Equation~\ref{eq:service-trust} by weighing local experience with peer's $j$ service, with the reputation $j$ got from the network when it was first seen by $i$.
 The used weight is the size of the service interaction history $sh_{i,j}$ to global maximal history size $sh_{max}$.
 
 \begin{equation}
@@ -58,7 +58,7 @@ Equation~\ref{eq:service-trust} implies that the more interaction there was betw
 In other words, the more $i$ and $j$ interact the less $i$ relies on the reputation that $i$ computed from the values provided by the network, at the time when $j$ was seen for the first time by the peer $i$.
 
 \subsection{Local Experience for Service Trust}
-The first part of the equation \ref{eq:service-trust} contains \textit{competence belief} - $cb_{i,j}$, and \textit{integrity belief} - $ib_{i,j}$.
+The first part of the Equation~\ref{eq:service-trust} contains \textit{competence belief} - $cb_{i,j}$, and \textit{integrity belief} - $ib_{i,j}$.
 Both values are based solely on the history of the interactions that the peer $i$ experienced with the peer $j$.
 
 \subsubsection{Competence Belief}
@@ -125,7 +125,7 @@ The way Fides computes $f^{k}_{i,j}$ might be changed in the future and implemen
 
 \subsection{Reputation and Recommendations}
 In order to mitigate the cold start problem outlined in Section~\ref{sec:cold-start-problem} and in the cases when there are no or few interactions between $i$ and $j$, the algorithm relies on $r_{i,j}$ - \textit{reputation value}~\cite{sort}.
-$r_{i,j}$ is the second part of the service trust equation~\ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
+$r_{i,j}$ is the second part of the service trust Equation~\ref{eq:service-trust} that introduces \textit{remote experience} to the service trust.
 
 The \textit{reputation} value is computed from the \textit{recommendations} received from the remote peers. This value represents what remote peers think about another remote peer. However, this value is calculated by the local peer with respect, to how much it trusts each peer, that provided the recommendation.
 When the local peer $i$ encounters remote peer $j$ for the first time and it does not have any data about its trustworthiness, $i$ can request recommendations on peer $j$ from $i$'s most trusted peers.
@@ -209,7 +209,7 @@ Recommendation trust $rt_{i, z}$ is described in detail in Section~\ref{subsec:r
 
 \subsubsection{Estimated Integrity Belief}
 Following the $ecb_{i,j}$, $eib_{i,j}$ is estimation about the integrity belief made by $i$ about $j$.
-The equation is almost similar, but we use $ib_{z,j}$ instead of $eb_{z,j}$.
+Equation~\ref{eq:estimated-integrity-belief} is almost similar, but we use $ib_{z,j}$ instead of $eb_{z,j}$.
 This means that normalization coefficient $\beta_{eib} = \beta_{ecb}$.
 
 \begin{equation}
