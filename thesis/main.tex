@@ -36,6 +36,21 @@
 % turn off page numbering for this part
 \pagenumbering{gobble}
 
+% makes sure that the page is on the left
+\makeatletter
+\newcommand*{\cleartoleftpage}{%
+  \clearpage
+    \if@twoside
+    \ifodd\c@page
+      \hbox{}\newpage
+      \if@twocolumn
+        \hbox{}\newpage
+      \fi
+    \fi
+  \fi
+}
+\makeatother
+
 \begin{document}
 %% initial pages
 \input{titlepage}

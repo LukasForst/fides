@@ -13,4 +13,26 @@ The graphs may differ slightly because the threat intelligence and recommendatio
 
 \input{chapters/chap6-results/resilience}
 
-\input{chapters/chap6-results/other_findings}
+\input{chapters/chap6-results/considerations}
+
+
+\section{Discussion}
+We discovered that actually there \textbf{exists} a particular setup that guarantees that Fides is able to eventually classify the targets correctly in a very adversarial situation. When Fides communicates with at least 25\% of pre-trusted peers from pre-trusted organizations ($0.25 \cdot |P|$ are pre-trusted) and uses $DistanceBasedTIEvaluation$ (Section~\ref{subsec:distance-based-eval}) for evaluating the interactions in combination with $AverageConfidenceTIAggregation$ (Section~\ref{subsec:AverageConfidenceTIAggregation}) for aggregating the threat intelligence; then Fides is able to correctly classify the targets no matter how many adversarial peers are in the network (up to filling the remaining 75\%) or how hard they lie.
+
+We included the graph of this case, similar to the Figure~\ref{fig:single-simulation-example}, with this particular \textit{"winning"} setup in the most hostile environment to the appendix in Figure~\ref{fig:worst-best-scenario}. For the explanation of the graph see Section~\ref{sec:general-overview-of-simulation-output}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{assets/misclassification_score.png}
+    \caption{Score in figure~\ref{fig:missclassification-recovery}.}
+    \label{fig:missclassification-score-only}
+\end{figure}
+
+Interestingly, in this particular case, the initial reputation does not affect the final outcome of the simulation, but it does affect the progress as when using an initial reputation higher than $0$, Fides provides wrong scores in the situation when the malicious peers started to lie.
+However, it discovers that the peers are lying, which decreases their service trust and is able to eventually recover the correct labels for the targets.
+The score value over time for this situation can be seen on the Figure~\ref{fig:missclassification-score-only}.
+We included the whole graph in the appendix in Figure~\ref{fig:missclassification-recovery}.
+
+With no pre-trusted peers in the network, the results of each configuration vary and they highly depend on the network topology as well as on the knowledge of the local Slips instance. The results for the no pre-trusted scenario are shown in Appendix Figure~\ref{fig:performance-all-setups-0-pretrusted}.
+
+In the scenario of 50\% pre-trusted peers, no matter the configuration, Fides was eventually able to determine the correct target classification with a high precision of $tdp \leq 0.7$. Moreover, Fides was able to correctly identify the peer's behavior with the precision of $pbdp \leq 0.2$. This is a very favorable situation for the administrator, where you trust the peers so much that it is not possible for the adversarial peers to modify the belief. The results for this scenario are shown in Appendix Figure~\ref{fig:performance-all-setups-50-pretrusted}.

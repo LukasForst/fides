@@ -6,6 +6,7 @@ Even though the results from the previous Section~\ref{sec:fides-resilience} sug
 
 For example, recall Figure~\ref{fig:single-simulation-example} from Section~\ref{sec:general-overview-of-simulation-output}, where the presented situation uses $MaxConfidenceTIEvaluation$ and it is able to correctly detect all types of peers as well as correctly determine the score for the target.
 However, if we take the same environment and the only difference is using $DistanceBasedTIEvaluation$ for evaluating interactions, we get the following graph for the service trust in  Figure~\ref{fig:zero-gained-trust}. The graph for confidence as well as target score for the situation from Figure~\ref{fig:zero-gained-trust} can be seen in the appendix in the Figure~\ref{fig:zero-gained-trust-all}.
+This is also the same behavior that we described when we were describing Figure~\ref{fig:0-peer-trust} in the previous Section~\ref{subsec:scenario-with-0-pretrusted-peers}.
 
 \begin{figure}[ht]
     \centering
@@ -17,3 +18,6 @@ However, if we take the same environment and the only difference is using $Dista
 The service trust graph in Figure~\ref{fig:zero-gained-trust} suggests that Fides didn't gain any trust for any peer in the network.
 This happens because the evaluation strategy didn't have enough information at the beginning to evaluate the received data properly.
 That leads to peers never gaining any trust and thus not producing any valid outputs because, with no trust, the target score and confidence ended up being $0$ as well.
+
+Another thing to consider is that during the simulations from the previous Section~\ref{sec:fides-resilience}, the local Slips did not know anything about the targets. Which means that whenever Fides requested threat intelligence from Fides, it responded as uncertain peer (Section~\ref{subsubsec:uncertain-peer}). This simulates situations that are close to the reality when Slips is asking about the targets it does not know anything about.
+However, it also means that $MaxConfidenceTIEvaluation$ strategy will not live to its full potential as it is also using information from the local Slips. 

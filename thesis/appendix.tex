@@ -3,37 +3,44 @@
 
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\textwidth]{assets/miss_classification_recovery.png}
-    \caption{A scenario described in Section~\ref{subsec:correct-target-identification-no-matter-what} with initial reputation 0.5}
-    \label{fig:missclassification-recovery}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=1.0\textwidth]{assets/best_worst_case}
-    \caption{A scenario described in Section~\ref{subsec:correct-target-identification-no-matter-what} with initial reputation 0}
+    \includegraphics[width=0.95\textwidth]{assets/best_worst_case}
+    \caption{The scenario where there are 75\% of the peers malicious and 25\% are from the pre-trusted organizations. The second graph show that the Fides was able to defend itself an still classify the targets correctly even though the malicious peers lied about the targets.}
     \label{fig:worst-best-scenario}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\paperwidth, angle=90]{assets/0_all_metrics.png}
-    \caption{Evaluation of performance of all trust model setups with no pre-trusted peers}
+    \includegraphics[width=0.95\textwidth]{assets/miss_classification_recovery.png}
+    \caption{The scenario when the malicious peers overcame Fides after they started lying but only for a short period of time. Once Fides realize that the peers are lying, it lowered their service trust and the it was able to recover the score to the correct values.}
+    \label{fig:missclassification-recovery}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.95\textwidth]{assets/zero_gained_trust_all.png}
+    \caption{The scenario when the Fides was unable to gain trust for any of the peers in the network. It is an example of how does the initial reputation matter during the Fides setup.}
+    \label{fig:zero-gained-trust-all}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.94\paperwidth, angle=90]{assets/0_all_metrics.png}
+    \caption{All metrics in a single graph with \textbf{no pre-trusted peers}.}
     \label{fig:performance-all-setups-0-pretrusted}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\paperwidth, angle=90]{assets/50_all_metrics.png}
-    \caption{Evaluation of performance of all trust model setups with 50\% of pre-trusted peers}
-    \label{fig:performance-all-setups-50-pretrusted}
+    \includegraphics[width=0.94\paperwidth, angle=90]{assets/25_all_metrics.png}
+    \caption{All metrics in a single graph with \textbf{25\% pre-trusted peers}.}
+    \label{fig:performance-all-setups-25-pretrusted}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\textwidth]{assets/zero_gained_trust_all.png}
-    \caption{Complete graph with all metrics from \ref{fig:zero-gained-trust}}
-    \label{fig:zero-gained-trust-all}
+    \includegraphics[width=0.94\paperwidth, angle=90]{assets/50_all_metrics.png}
+    \caption{All metrics in a single graph with \textbf{50\% pre-trusted peers}.}
+    \label{fig:performance-all-setups-50-pretrusted}
 \end{figure}
 
 \newpage

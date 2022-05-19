@@ -15,20 +15,23 @@ For aggregating threat intelligence, Fides used the aggregation described in Sec
 The local Slips instance behaved like a confident correct peer outlined in Section~\ref{subsubsec:confident-correct-peer}.
 
 The graph on top in Figure~\ref{fig:single-simulation-example} shows the development of the \textit{service trust} $st_{i, j}$ (Section~\ref{subsec:service-trust}) on the vertical axis over \textit{time} on the horizontal axis. As mentioned in Section~\ref{sec:environment-simulation}, the time is measured in \textit{clicks}.
+The higher the service trust is for a peer, the higher impact it has on the final aggregated threat intelligence.
 One can see multiple peers that were involved in the simulation and their respective behavior. All possible behaviors are described in Section~\ref{sec:peers-behavioral-patterns}.
 There were four different peers that were communicating with the local instance of Fides, two of them were \textit{confident correct}, one was an \textit{uncertain peer} and the last one was a \textit{malicious peer}.
+On the first graph, we can see that all peers were gaining the service trust at the beginning of the simulation and then their trust stabilized during the time. The exception is the malicious peer, its service trust was getting higher at the beginning of the simulation, but then it took a hit and was lowered when the peer started to lie. 
 
 The dotted line indicates the time when the malicious peers start lying.
-One can see that during this first period, when the malicious peers were not lying \textit{(before the line)}, they were gaining the service trust.
+As mentioned, one can see that during this first period, when the malicious peers were not lying \textit{(before the line)}, they were gaining the service trust.
 In the case of Figure~\ref{fig:single-simulation-example} this happened at click 25 when the malicious peers started lying.
 After that, it is clear that they started to lose the service trust.
 
 The second graph in Figure~\ref{fig:single-simulation-example} shows the \textit{target score} during the time (\textit{clicks}).
-The target score $S^{k}_{T}$ (Section~\ref{sec:network-intelligence-aggregation}) is the part of the aggregated network threat intelligence, that was computed from the scores and confidences provided by each peer.
-The score was calculated by Fides at click $k$ for target $T$.
-
-The score graph contains two different targets, one that is according to the ground truth malicious and a second one that was benign.
+The target score $S^{k}_{T}$ (Section~\ref{sec:network-intelligence-aggregation}) is the part of the aggregated network threat intelligence, that was computed from the scores and confidences provided by each peer. The score was calculated by Fides at click $k$ for target $T$.
+The score graph contains two different targets, one that is according to the ground truth malicious and a second one that was benign (imagine \textit{google.com} and \textit{evil.com}) and Fides computes the score for each of them: $1$ means benign, $-1$ means malicious.
 We also included the moving average value (indicated as MM) within the window of 10 clicks to make the graph clear.
+In a perfect scenario, we would see two straight lines where for benign target (\textit{google.com}) would be the line in $S^{k}_{T} = 1$ and for the malicious target (\textit{evil.com}) in $S^{k}_{T} = -1$.
+However, in the imperfect world, we can see that the lines fluctuate according to the score the Fides received from the peers.
+In a case, when the lines cross, and the benign target ends up below the red line ($S^{k}_{T} \leq 0$) or the malicious target above the red line ($S^{k}_{T} \geq 0$) the Fides misclassified the targets and the attackers were successfully able to influence the decision of the trust model.
 
 Finally, the third graph, displays the aggregated confidence $C^{k}_{T}$ (Section~\ref{sec:network-intelligence-aggregation}) over time (\textit{clicks}).
 The graph is similar to the score, we include raw values for each time window and target, as well as the moving average within the window of 10 clicks.

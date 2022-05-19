@@ -36,15 +36,15 @@ The direct contributions of this thesis are the computational model of the trust
 Většina systémů síťové obrany se spoléhá pouze na důkazy o předchozích kybernetických útocích, tzv. threat intelligence neboli informace o hrozbách. Firewally a systémy prevence narušení se spoléhají na sdílené informace o hrozbách vytvořené jinými systémy, aby předešli útokům dříve, než bude pozdě.
 Takové informace o hrozbách jsou obvykle sdíleny prostřednictvím centralizovaných veřejných a soukromých seznamů tzv. blocklistů, kde má jediná centralizovaná autorita úplnou kontrolu nad tím, co je zveřejní. Tyto centralizované systémy mají mnoho problémů: jediný bod selhání jak z technického hlediska, tak i z hlediska důvěryhodnosti, nedostatečná flexibilita v oblasti nových dat a poskytovatelů a také důvěra v poskytovatele těchto dat.
 
-K řešení těchto problémů lze ke sdílení informací o hrozbách využít sítě typu peer-to-peer. Protože jsou však tyto sítě otevřené komukoli, včetně podvodných aktérů, musí být jednotliví peeři schopni určit, komu důvěřovat a která data je lepší skartovat.
+K řešení těchto problémů lze ke sdílení informací o hrozbách využít sítě typu peer-to-peer. Protože jsou však tyto sítě otevřené komukoli, včetně podvodných aktérů, musí být jednotliví agenti schopni určit, komu důvěřovat a která data je lepší skartovat.
 
 Tato práce představuje systém Fides. Fides je obecný model důvěry optimalizovaný pro sdílení informací o bezpečnostních hrozbách ve vysoce nepříznivých globálních peer-to-peer sítích agentů prevence narušení.
 V této práci navrhujeme a implementujeme Fides s ohledem na problémy a omezení předchozích modelů důvěryhodnosti a optimalizujeme jej pro široké spektrum peer-to-peer sítí, kde se členové této sítě mohou kdykoli připojit a odpojit.
 Fides vyhodnocuje chování těchto agentů, včetně jejich členství v důvěryhodných organizacích, a tyto znalosti využívá ke zjistění jak moc jsou agenti důvěryhodní.
 Fides průběžně vyhodnocuje přijatá data od agentů v síti a jejich vážením a porovnáváním mezi sebou i s existujícími znalostmi je schopen určit, který agent poskytuje lepší informace o hrozbách a který agent je spolehlivější. Výsledné informace o hrozbách jsou poté poskytnuty systému prevence narušení.
-Z mnoha výsledků našich experimentů vyplývá, že v \textit{nejhorším možném scénáři}, kdy je 75\% sítě \textit{úplně ovládáno škodlivými aktéry}. Fides je stále schopen poskytovat správné hodnoty údajů o hrozbách za předpokladu, že druhá část sítě, zbývajících 25\%, jsou peeři, kteří jsou součástí důvěryhodných organizací.
+Z mnoha výsledků našich experimentů vyplývá, že v \textit{nejhorším možném scénáři}, kdy je 75\% sítě \textit{úplně ovládáno škodlivými aktéry}. Fides je stále schopen poskytovat správné hodnoty údajů o hrozbách za předpokladu, že druhá část sítě, zbývajících 25\%, jsou agenti, kteří jsou součástí důvěryhodných organizací.
 
-Přímým přínosem této práce je výpočetní model modelu důvěry Fides, referenční implementace modelu v jazyce Python, simulační software pro modelování chování peerů v síti včetně jeho implementace a implementace modulu Fides pro referenční systém prevence narušení.
+Přímým přínosem této práce je výpočetní model modelu důvěry Fides, referenční implementace modelu v jazyce Python, simulační software pro modelování chování agentů v síti včetně jeho implementace a implementace modulu Fides pro referenční systém prevence narušení.
 
 \end{abstract}
 \keywords{Klíčová slova}{model důvěry, sdílení informací o hrozbách, kolaborativní obrana sítě, systém prevence narušení}
