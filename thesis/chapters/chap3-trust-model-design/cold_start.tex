@@ -3,7 +3,7 @@
 A dynamic and global environment such as a global peer-to-peer network is open to anyone since any peer can freely join and leave. Because of that, the local peer will encounter many other peers that were not seen before. Therefore, the trust model does not have any information about their reliability or how much it can trust them. 
 New benign peers need to be \textit{somehow} trusted by the local peer in order to be a useful part of the network. However, the local peer also needs to be able to discover new malicious peers that are trying to gain its trust.
 
-The problem of how to know something about a new entity in order to quickly work better is called the \textit{Cold Start Problem}~\cite{christensen2014hybrid}. For Fides it means how to compute a good initial trust for new unknown peers. 
+The problem of how to know something about a new entity in order to quickly work better is called the \textit{Cold Start Problem}~\cite{christensen2014hybrid}. For Fides, it means how to compute a good initial trust for new unknown peers. 
 
 We selected several solutions to this issue, which are all implemented in Fides. Fides also combines them according to a provided configuration with the aim to achieve the best result for the cold start problem with adversarial peers.
 
@@ -13,17 +13,17 @@ In this approach, whenever the trust model encounters a new peer, it assigns a s
 
 For example, in the \textbf{Dovecot} trust model~\cite{dita}, every peer starts with trust $1$ (highest possible), and various interactions can lower the trust in the peer to $0$. In other words, the trust model considers new peers honest from the beginning, and only during this time their reputation can be lowered when they perform incorrect interactions or are discovered as a malicious peer.
 
-On the other hand, the \textbf{Sality} botnet~\cite{falliere2011sality} uses a value called \textit{goodcount} as a counter of good interactions with any other peer, the larger the \textit{goodcount}, the greater trust the local peer has on the remote peer. The goodcount for each new peer starts with $0$ in Sality. Meaning, that the botnet does not trust fresh peers at all and they can gain trust only by following the Sality protocol.
+On the other hand, the \textbf{Sality} botnet~\cite{falliere2011sality} uses a value called \textit{goodcount} as a counter of good interactions with any other peer, the higher the \textit{goodcount}, the greater trust the local peer has on the remote peer. The goodcount for each new peer starts with $0$ in Sality. Meaning, that the botnet does not trust fresh peers at all and they can gain trust only by following the Sality protocol.
 
-The model of \textit{static initial trust} is easy to implement, but it requires assumptions about the network. If the network is considered \textit{mostly benign}, it might be safe to use an initial trust of $1$, however for highly adversarial networks using an initial trust of $1$ might be dangerous and it is better to use $0$. 
-Using low initial trust and no mechanism how to gain more trust fast means, that the benign peers that joined recently, don't affect the final decisions of the model even though they might have useful information about adversaries.
+The model of \textit{static initial trust} is easy to implement, but it requires assumptions about the network. If the network is considered \textit{mostly benign}, it might be safe to use an initial trust of $1$, however, for highly adversarial networks using an initial trust of $1$ might be dangerous and it is better to use $0$. 
+Using low initial trust and no mechanism to gain more trust fast means that the benign peers that joined recently do not affect the final decisions of the model, even though they might have useful information about adversaries.
 
 Static initial trust is supported by Fides as a form of fallback when no other cold start technique is used. The administrator provides a configuration that contains the initial reputation for each new peer.
 
 \subsection{Pre-Trusted Peers}
 \label{subsec:pre-trusted-peers}
 
-This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Bc. Martin Řepa~\cite{nl}, called Iris, which implements the new idea of pre-trusted peers in organizations for the Slips IPS. Therefore, Fides works with the concept of pre-trusted organizations which have pre-trusted peers. Iris implements the concept of pre-trusted organisations, and Fides uses this knowledge to assign a higher or lower trust to new peers.
+This master thesis was done simultaneously to the master thesis on global P2P security TI sharing by Bc. Martin Řepa~\cite{nl}, called Iris, which implements the new idea of pre-trusted peers in organizations for the Slips IPS. Therefore, Fides works with the concept of pre-trusted organizations which have pre-trusted peers. Iris implements the concept of pre-trusted organizations, and Fides uses this knowledge to assign a higher or lower trust to new peers.
 
 The global P2P framework implemented by Řepa supports these type of peers and provides a cryptographically-secure way how to identify a single peer in the network, and its membership in an organization.
 This allows Fides to \textit{pre-trust} specific peers or all the peers from organizations by assigning them an initial value.
@@ -32,19 +32,18 @@ Fides can be configured to use pre-trust in two different ways. First, to assign
 
 Second, Fides can use the initial pre-trusted value read from the configuration as the final service trust. This effectively means that Fides will not evaluate any data received from the pre-trusted peer and this service trust will be kept forever. 
 
-This configuration for the Fides is called \textit{enforceTrust}, if it is enabled and thus $enforceTrust = False$ is set in the configuration, Fides uses first variant where the trust for the peer will move during the interactions. When administrator uses $enforceTrust = True$, Fides uses second option and fixates the service trust for the peer to a set \textit{pre-trust}.
+This configuration for Fides is called \textit{enforceTrust}. If it is enabled and thus $enforceTrust = False$ is set in the configuration, Fides uses the first variant where the trust for the peer will move during the interactions. If the administrator uses $enforceTrust = True$, Fides uses the second option and fixates the service trust for the peer to a set \textit{pre-trust}.
 
-Both options helps to solve the cold start problem for specific peers and organizations, as they will start with a high reputation or fixed service trust. Which organization or peer to trust is completely left to the administrator of Slips. 
-The inspiration for which organization or to which peer to trust provides, for example, Tor and their directory authorities~\cite{torauth}. However as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
+Both options help solve the cold start problem for specific peers and organizations, as they will start with a high reputation or fixed service trust. Which organization or peer to trust is completely left to the administrator of Slips. However, as the administrator needs to know the identity of the peers or organization, it does not solve the cold start problem globally for all peers.
 
 \subsection{Recommendations}
 \label{subsec:recommendations}
 As the local peer might have multiple remote peers that it trusts enough, Fides uses these relationships to ask the remote peers about how much they trust a new peer. Fides only asks for recommendations once: when the local peer finds a new peer for the first time.  
 
-Using a recommendation system introduces new attack vectors, that can be exploited by adversaries either by getting trust for the malicious peer or by lowering trust in honest peers that might have some threat intelligence about the malicious actor. 
+Using a recommendation system introduces new attack vectors that can be exploited by adversaries, either by getting trust for the malicious peer or by lowering trust in honest peers that might have some threat intelligence about the malicious actor. 
 These attacks are called \textit{bad-mouthing} and \textit{unfair praises} and we need to consider them and implement countermeasures.
 
-Because of the possible attacks, the local peer should not solely rely on the network recommendations when computing the final service trust for the fresh peer. In case, when the recommending peers are malicious, it might skew the decisions of the local peer for the time being.
+Because of the possible attacks, the local peer should not solely rely on the network recommendations when computing the final service trust for the fresh peer. In case when the recommending peers are malicious, it might skew the decisions of the local peer for the time being.
 In order to solve this, when computing the final service trust for the remote peer, the local peer should take into account its own interaction with the peer as well as the received recommendations.
 
 Moreover, the local peer should request recommendations only if it has \textit{enough} trusted remote peers, otherwise, it can expose itself to \textit{bad-mouthing} and \textit{unfair praises} attacks more easily.
@@ -52,4 +51,4 @@ Moreover, the local peer should request recommendations only if it has \textit{e
 \vspace{7mm}
 
 Fides employs recommendation systems based on SORT~\cite{sort} but with more strict rules when it is actually used and combines it with the pre-trusted peers~(\ref{subsec:pre-trusted-peers}) as well as with the static initial trust~(\ref{subsec:static-initial-trust}) as a fallback when no other option is available due to constraints such as having not enough trusted peers.
-The algorithm used for the recommendation system is explained in detail in the Section~\ref{sec:computational-model}.
+The algorithm used for the recommendation system is explained in detail in Section~\ref{sec:computational-model}.

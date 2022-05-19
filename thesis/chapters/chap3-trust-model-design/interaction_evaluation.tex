@@ -3,7 +3,7 @@
 In order to determine which remote peers are providing valuable data and which peers are not, the local peer needs to be able to evaluate each interaction it had with the remote peer.
 In general, there are two options for how to approach this, (i) by designing an evaluation that is protocol-aware (i.e. it understands the protocol and the data that the two peers shared ); or (ii) by having an evaluation function that does not need to understand the protocol and can be used for any type of data.
 
-We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in the Chapter~\ref{ch:experiments}. 
+We choose to implement both approaches and they are described in the following sections. In order to evaluate which strategy is better in what scenarios, we designed and run many simulations - their results are described in Chapter~\ref{ch:experiments}. 
 We will use the notation from the table (\ref{table:interaction-eval})  when referring to peers and their interactions.
 
 \begin{table}[h!]
@@ -34,17 +34,17 @@ We will use the notation from the table (\ref{table:interaction-eval})  when ref
 \subsection{EvenTIEvaluation}
 \label{subsec:same-eval-for-all-interactions}
 This strategy does not need to understand the underlying data, its semantics, or its structure.
-It is a naive approach when the trust model uses the same satisfaction value for all data it received. It does not check, if the data make sense and assigns all peers the same satisfaction value $s^{k}_{i, j}$.
+It is a naive approach when the trust model uses the same satisfaction value for all data it received. It does not check if the data make sense and assigns all peers the same satisfaction value $s^{k}_{i, j}$.
 The value itself is loaded from the configuration provided by the administrator. We denote it as $CSS$. 
-The idea behind this algorithm is that when the peers are interacting for a long time or have more interactions, they're more trustworthy.
+The idea behind this algorithm is that when the peers are interacting for a long time or have more interactions, they are more trustworthy.
 
 \begin{equation}
 s^{k}_{i, j} = CSS
 \end{equation}
 
-This approach is for example used by the botnet \textbf{Sality} or by the \textbf{Dovecot} trust model. Fides implements it as an $EvenTIEvaluation$ strategy with configurable satisfaction value and the administrator can use this strategy if they see it as the most optimal.
+This approach is used, for example, by the botnet \textbf{Sality} or by the \textbf{Dovecot} trust model. Fides implements it as an $EvenTIEvaluation$ strategy with configurable satisfaction value and the administrator can use this strategy if they see it as the most optimal.
 
-The disadvantage of this approach is, that we do not penalize remote peers when they provide wrong data, because the evaluation method does not care nor understand the underlying data.
+The disadvantage of this approach is that we do not penalize remote peers when they provide wrong data, because the evaluation method does not care nor understand the underlying data.
 Because of that and in a case when the adversary gains the service trust of the model by following the protocol for a longer time, it may significantly influence the aggregated score as the adversary has higher trust than other remote peers. If this happens, there is no way to automatically downgrade the adversary's service trust.
 
 \subsection{DistanceBasedTIEvaluation}
@@ -110,7 +110,7 @@ What the correct balance is, is subject to simulations and configuration by the 
 \end{equation}
 
 \noindent
-In Fides implemented as the $WeighedDistanceToLocalTIEvaluation$.
+In Fides this is implemented as the $WeighedDistanceToLocalTIEvaluation$.
 
 \subsection{MaxConfidenceTIEvaluation}
 \label{subsec:MaxConfidenceTIEvaluation}

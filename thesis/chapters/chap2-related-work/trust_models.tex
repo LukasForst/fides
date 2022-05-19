@@ -66,27 +66,27 @@ Sadan, proposed in~\cite{abera2019sadan}, is a trust model that uses committees 
 Sadan requires hardware chips, Trusted Platform Module (TPM), to verify the running software, which allows other peers to verify the trustworthiness of the peer.
 The requirement of TPM chips means that Sadan cannot be used as the base for our trust model, as we do not want to limit our solution to specific hardware.
 
-Xiong and Liu then propose PeerTrust~\cite{xiong2004peertrust}, which uses a transaction-based feedback system to determine the reputation and trust of the peers.
+Xiong and Liu then proposed PeerTrust~\cite{xiong2004peertrust}, which uses a transaction-based feedback system to determine the reputation and trust of the peers.
 Even though the model is generic and was designed for peer-to-peer networks, it was optimized for \textit{e-commerce communities} that inherently have completely different behavior than the network for sharing threat intelligence, which needs to protect itself from the malicious peers.
 
-Huynh, Jennings, and Shadbolt proposed FIRE trust and reputation model~\cite{huynh2006integrated} which was designed for open multi-agent systems.
+Huynh, Jennings, and Shadbolt proposed the FIRE trust and reputation model~\cite{huynh2006integrated} which was designed for open multi-agent systems.
 FIRE incorporates multiple different trust metrics that are aggregated and provide a view of the agents' behavior.
-After analyzing the paper, we don't believe that \textit{witness information}~\cite{huynh2006integrated} can be applied in a settings for sharing threat intelligence because it relies on a fact that the peers are honest.
+After analyzing the paper, we do not believe that \textit{witness information}~\cite{huynh2006integrated} can be applied in settings for sharing threat intelligence because it relies on a fact that the peers are honest.
 For that reason, we decided not to use FIRE as the base for our further design.
 
-In~\cite{1562680}, He et al. proposed gathering peers and modeling their trust relationships as \textit{clouds}. They proposed an \textit{extended-cloud-model-based trust model} - ECMBTM.
+In~\cite{1562680}, He et al. proposed gathering peers and modeling their trust relationships as \textit{clouds}. They proposed an \textit{extended-cloud-model-based trust model} (ECMBTM).
 ECMBTM utilizes cooperation history between peers to compute trust clouds. 
 This trust model attempts to mitigate the cold start problem by directly propagating trust to another peer in the network.
 We find the application of this method in our setting problematic because it would be easier for the malicious peers to propagate their false information through the network.
 
-In~\cite{li2014design}, Li et al. employed a machine learning-based trust model for the collaboration of IDS instances.
-Even though this model is closely related to our use case, we can not utilize it because it uses a central certificate authority to issue a registration for the new peers. 
-In our design, we want to have a permission-less peer-to-peer network where each peer is equal, and there is no central authority that controls the network and is a single point of failure.
+In~\cite{li2014design}, Li et al. proposed a machine learning-based trust model for the collaboration of IDS instances.
+Even though this model is closely related to our use case, we cannot use it because it uses a central certificate authority to issue a registration for the new peers. 
+In our design, we want to have a permission-less peer-to-peer network where each peer is equal, and there is no central authority that controls the network and thus no single point of failure.
 
 \vspace{1cm}
 
 \noindent
 After careful analysis, we decided to create a new trust model, \textbf{Fides}, that is based on the SORT algorithm with various modifications and fine-tuning.
-We describe how does the Fides work in the following Chapter~\ref{ch:trust-model-design}.
-We choose SORT because it is easily extensible and robust. 
+We describe how Fides work in the following Chapter~\ref{ch:trust-model-design}.
+We chose SORT because it is easily extensible and robust. 
 Moreover, the evaluation provided by the authors in~\cite{sort} promised interesting results.
