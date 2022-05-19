@@ -39,14 +39,14 @@ We go into detail of this process further in Section~\ref{subsubsec:requesting-r
 Because Fides asks for the recommendation, it is possible that one or more of the peers providing the recommendations is malicious and it provides \textit{incorrect} recommendations with the goal either to silence a benign peer or to support another malicious peer.
 
 Even though the reputation of a peer can be skewed by the attacker, it is still able to gain \textit{correct} service trust by following the protocol and providing useful data.
-The service trust equation~\ref{eq:service-trust} suggests that the more experience a local peer has with a remote peer, the more it ignores the initially received recommendations.
+The service trust Equation~\ref{eq:service-trust} suggests that the more experience a local peer has with a remote peer, the more it ignores the initially received recommendations.
 This means that the service trust will tend to converge to \textit{correct} values that do not necessarily depend on the initial recommendations and eventually will lose that information completely.
 In other words, if the peer's initial reputation was \textit{incorrect} (from the ground truth point of view), it will only take the peer longer to gain \textit{correct} service trust, but eventually, it will end up with the same value as with the correct reputation value.
 We talk more about the service trust and how does it behave further in Section~\ref{subsec:service-trust}.
 
 \section{Taxonomy of Attacks}
 \label{sec:taxonomy-of-attacks}
-We were inspired by the thorough threat model analysis in Dovecot \cite{dita}  and based our own analysis on the same original paper from Koutrouli and Tsalgatidou \cite{KOUTROULI201247} which describes the taxonomy of different attack methods on reputation systems in peer-to-peer networks.
+We were inspired by the thorough threat model analysis in Dovecot~\cite{dita}  and based our own analysis on the same original paper from Koutrouli and Tsalgatidou~\cite{KOUTROULI201247} which describes the taxonomy of different attack methods on reputation systems in peer-to-peer networks.
 They classify the reputation attacks in the following categories.
 
 \subsection{Unfair Recommendations}
@@ -68,9 +68,9 @@ This can happen, for example, because they were not attacked by the adversary (y
 Another example can be a peer that does not have the latest threat intelligence data from the black lists or other remote resources.
 These peers are included in the experiments as well, we call that \textit{Confident Incorrect} (\ref{subsubsec:confident-incorrect-peer}) behavioral pattern.
 
-Koutrouli and Tsalgatidou \cite{KOUTROULI201247} also mention \textit{Random opinions} where the peer is essentially providing random data.
+Koutrouli and Tsalgatidou~\cite{KOUTROULI201247} also mention \textit{Random opinions} where the peer is essentially providing random data.
 We simulate this in our experiments as well, because there will be peers, in the network, that simply do not have enough information to make a good and confident decision about some target.
-This is the \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral pattern.
+This is the \textit{Uncertain Peer}~(\ref{subsubsec:uncertain-peer}) behavioral pattern.
 
 Because of the nature of Fides, which aggregates all network opinions it receives, the worst-case scenario is the situation where the attackers collude together because it amplifies their effect on the final aggregated score \& confidence.
 However, our trust model uses service trust during computing the final score with confidence so, in order for attackers to influence this decision, their total service trust must be higher than the service trust of the benign peers.
@@ -81,12 +81,12 @@ In simulations, we have malicious peers that collude (and lie about the same tar
 \label{subsec:inconsistent-behavior}
 In the aforementioned Section~\ref{subsec:influencing-aggregated-score-confidence} any malicious peer needs to gain \textit{some} service trust in order to have the ability to meaningfully influence the trust model's decisions.
 This leads to malicious peers that will have different behavior when they try to gain the service trust and when they provide misleading data to achieve their goals.
-This behavior is equivalent to the \textit{Traitors} from \cite{KOUTROULI201247}.
-Fides tries to mitigate this problem with some of the interaction evaluation strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as \ref{subsec:distance-based-eval}).
+This behavior is equivalent to the \textit{Traitors} from~\cite{KOUTROULI201247}.
+Fides tries to mitigate this problem with some of the interaction evaluation strategies that compare individual threat intelligence data from a single peer to aggregated network opinion (such as~\ref{subsec:distance-based-eval}).
 Thanks to these strategies, even peers that gained service trust at the beginning can be eventually identified as malicious and their service trust will be lowered whenever they provide threat intelligence data that are different from the aggregated ones.
 
 However, even the honest peers can have inconsistent behavior, mainly when they do not have enough information about IP/domains.
-In experiments, we simulate this behavior for honest peers with \textit{Uncertain Peer} (\ref{subsubsec:uncertain-peer}) behavioral patterns.
+In experiments, we simulate this behavior for honest peers with \textit{Uncertain Peer}~(\ref{subsubsec:uncertain-peer}) behavioral patterns.
 For malicious peers, we have a period during which they provide correct and consistent data, allowing them to gain the service trust. 
 
 \subsection{Identity Management Related Attacks}
@@ -106,8 +106,8 @@ However, when the attacker gains access and starts submitting incorrect data, Fi
 \subsubsection{Man-in-the-middle attack}
 \textit{Man-in-the-middle attack}s are attacks when a third party is able to either intercept or manipulate the transmitted data.
 From Fides point of view, the data manipulation is not possible, as the data are signed by the sender and the network layer \cite{nl} ensures that the signatures are verified.
-On the other hand, the network layer is designed in a way that peers pass messages to each other through the network \cite{nl}, so any malicious peer can choose not to pass down the message.
-How this affects the propagation of messages is part of the experiments in said paper \cite{nl}.
+On the other hand, the network layer is designed in a way that peers pass messages to each other through the network~\cite{nl}, so any malicious peer can choose not to pass down the message.
+How this affects the propagation of messages is part of the experiments in said paper~\cite{nl}.
 
 \subsection{Whitewashing \& Sybil Attack}
 \label{subsec:whitewashing-and-sybil-attack}
@@ -118,8 +118,8 @@ However, this behavior does not benefit the attacker as much as in Dovecot \cite
 In other words, Fides distrust new peers by default, so whenever a peer drops its identity and creates a new one, it starts with a service trust of $0$.
 
 As it is not expensive to generate a new identity, it is not costly for the attacker to perform a \textit{Sybil attack}.
-Sybil attack refers to a situation where a single malicious peer creates multiple identities and uses them in concert to defeat the system \cite{sybil}.
-In our case, attackers can maliciously flood the network with wrong data thus making some of the interaction evaluation strategies \ref{sec:interaction-evaluation-strategies} perform poorly.
+Sybil attack refers to a situation where a single malicious peer creates multiple identities and uses them in concert to defeat the system~\cite{sybil}.
+In our case, attackers can maliciously flood the network with wrong data thus making some of the interaction evaluation strategies from Section~\ref{sec:interaction-evaluation-strategies} perform poorly.
 Moreover, if the attacker is able to gain \textit{some} service trust for its malicious peers, it can effectively overtake the network and influence most of the decisions that Fides makes.
 The defense against this attack is to make it \textit{computationally hard} to join the peer-to-peer network, for example, by making it hard to compute peer IDs or by letting peers solve some other type of computational puzzle. 
 

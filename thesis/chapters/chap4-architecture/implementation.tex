@@ -1,6 +1,6 @@
 \section{Implementation}
 \label{sec:implementation}
-Because Fides was designed to integrate with Slips, we were constrained by the Slips implementation~\cite{slips} and for that reason we implemented Fides in Python~\cite{python} in version 3.8.
+Because Fides was designed to integrate with Slips, we were constrained by the Slips implementation~\cite{slips} and for that reason we implemented Fides in Python~\cite{python} version 3.8.
 
 The code is versioned by Git~\cite{git} and published on GitHub~\cite{github} in the repository \textit{\href{https://github.com/stratosphereips/fides}{github.com/stratosphereips/fides}}~\cite{fidesGithub}.
 We chose to use Conda~\cite{conda} for managing the dependencies and Python versions.
@@ -20,7 +20,7 @@ Fides package structure is then following:
 }
 \vspace{5mm}
 
-The implementation is split into multiple Python packages. The package $evaluation$ contains all necessary algorithms for any data evaluation - all interaction evaluation strategies (Section~\ref{sec:interaction-evaluation-strategies}) can be found in the file $ti\_evaluation.py$, all methods for aggregating threat intelligence  (Section~\ref{sec:network-intelligence-aggregation}) in the file $ti\_aggregation.py$.
+The implementation is split into multiple Python packages. The package $evaluation$ contains all necessary algorithms for any data evaluation. All interaction evaluation strategies (Section~\ref{sec:interaction-evaluation-strategies}) can be found in the file $ti\_evaluation.py$, all methods for aggregating threat intelligence  (Section~\ref{sec:network-intelligence-aggregation}) in the file $ti\_aggregation.py$.
 The $evaluation.recommendation$ package contains all computations that are related to the recommendations and reputation as described in Section~\ref{subsec:recommendation-trust-metric}.
 Similarly, the package $evaluation.service$ stores algorithm for computing the service trust described in Section~~\ref{subsec:service-trust}.
 The package $messaging$ is a connector that allows Fides to send and receive data from the Redis and thus from the Iris.
