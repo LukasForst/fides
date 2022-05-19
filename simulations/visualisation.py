@@ -25,14 +25,14 @@ def plot_hardness_evaluation_all(
         title: Optional[str] = 'Performance of each interaction evaluation function'
 ):
     hardness_matrices = hardness_matrices if type(hardness_matrices) is list else [hardness_matrices]
-    use_fig_legend = len(hardness_matrices) > 1
     all_used_ti_evaluations = {label.split('|')[0] for label in hardness_matrices[0].matrix.keys()}
     all_used_ti_evaluations = sorted(list(all_used_ti_evaluations))
 
     fig, axs = plt.subplots(len(all_used_ti_evaluations), len(hardness_matrices),
-                            figsize=(7.5 * len(hardness_matrices), round(6.25 * len(all_used_ti_evaluations))),
+                            figsize=(7 * len(hardness_matrices), round(6.25 * len(all_used_ti_evaluations))),
                             squeeze=False
                             )
+    use_fig_legend = len(axs) != 1
     if title is not None:
         fig.suptitle(title, fontsize=22)
 
@@ -53,11 +53,11 @@ def plot_hardness_evaluation_all(
             final_labels.append(l)
 
         final_labels, final_handles = zip(*sorted(zip(final_labels, final_handles), key=lambda t: t[0]))
-        fig.legend(final_handles, final_labels)
+        fig.legend(final_handles, final_labels, loc='upper center', bbox_to_anchor=(0.5, 0.95))
 
     plt.subplots_adjust(left=0.1,
                         right=0.97,
-                        top=0.93,
+                        top=0.85,
                         bottom=0.05,
                         wspace=0.3,
                         hspace=0.3)
@@ -82,7 +82,9 @@ def plot_hardness_evaluation(
     global_min_x = min(min(data.keys()) for data in matrix.values())
     x_offset = (global_max_x - global_min_x) / 20
     x_lim = [global_max_x + x_offset, global_min_x - x_offset]
-    for idx, (label, data) in enumerate(matrix.items()):
+    sorted_labels = sorted(matrix.keys())
+    for idx, label in enumerate(sorted_labels):
+        data = matrix[label]
         evaluation, aggregation, initial_trust = label.split('|')
         ax = axes[evaluation]
 
