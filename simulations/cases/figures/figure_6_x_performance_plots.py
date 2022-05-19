@@ -21,7 +21,7 @@ logger = Logger(__name__)
 
 def sample_simulation_definitions() -> List[SimulationConfiguration]:
     peers_count = [8]
-    pre_trusted_peers = [0.25]
+    pre_trusted_peers = [0]
 
     peers_distribution = generate_peers_distributions()
 
