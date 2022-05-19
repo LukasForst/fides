@@ -2,7 +2,7 @@
 \label{sec:future-work}
 Even though we achieved our goal of designing a resilient trust model for sharing threat intelligence, there are multiple areas where the model can improve either by exploring different approaches or by implementing new additions to the data flow.
 
-Most importantly, it is clear from the evaluation of simulations in the Chapter~\ref{ch:results}, that Fides performs differently with different setups under different conditions.
+Most importantly, it is clear from the evaluation of simulations in Chapter~\ref{ch:results}, that Fides performs differently with different setups under different conditions.
 Even though we are able to manually pick settings that ensure the best performance, this is not a perfect solution for real-world scenarios.
 For that reason, we propose to explore further the following approaches.
 
@@ -15,31 +15,38 @@ In this work, we explored evaluation methods that are using only data from a sin
 However, the local peer might store the complete interaction history with all other peers and whenever it finds out that some peer reported threat intelligence, that proved to be correct after some time, the reporter's service trust should benefit from such discovery.
 Another way might be storing the whole interaction history and using machine learning techniques, to discover irregularities in provided data during all communication windows.
 
-In other words, all interaction evaluation strategies described in the Section~\ref{sec:interaction-evaluation-strategies} do not utilize the knowledge from the past, or the history of the interactions.
+In other words, all interaction evaluation strategies described in Section~\ref{sec:interaction-evaluation-strategies} do not utilize the knowledge from the past, or the history of the interactions.
 We believe that this is an interesting space to explore more as it might lead to better performance of Fides in real-world scenarios.
 
 \subsection{Exploring Threat Intelligence Aggregation Methods}
 \label{subsec:exploring-threat-intelligence-aggregation-methods}
-Similarly, as in the previous Section~\ref{subsec:exploring-interaction-eval-strategies}, threat intelligence aggregation methods explored in this thesis, described in the Section~\ref{sec:threat-intelligence}, do not use any other information than ones provided by the network at a single time window.
+No threat intelligence aggregation methods explored in this thesis, described in the Section~\ref{sec:threat-intelligence}, use any other information than ones provided by the network at a single time window.
 By incorporating information from the recent history, the aggregation might improve the overall detection performed by the trust model.
 
 Moreover, there might be better ways how to aggregate the threat intelligence, or maybe the combination of multiple approaches to one might improve the final confidence in trust model decisions.
-As we saw in the Chapter~\ref{ch:results}, the combination of interaction evaluation and threat intelligence aggregation influences the performance of the trust model to great extent.
+As we saw in Chapter~\ref{ch:results}, the combination of interaction evaluation and threat intelligence aggregation influences the performance of the trust model to great extent.
 
 \subsection{Possible Mitigation of Sybil Attack}
 \label{subsec:possible-mittigation-of-sybil-attack}
-When analyzing the possible attack vectors for Fides, we described the Sybil attack in the Section~\ref{subsec:whitewashing-and-sybil-attack} and we stated that Fides is vulnerable to this type of attack when an attacker floods the network with their own malicious peers.
-The experiments showed that under specific circumstances, where the attacker controls the majority of the network they can manipulate the decisions made by the trust model.
+When analyzing the possible attack vectors for Fides, we described the Sybil attack in Section~\ref{subsec:whitewashing-and-sybil-attack} and we stated that Fides is vulnerable to this type of attack.
+However, results have shown that this is true only in cases when the attacker owns more than 75\% of the network. 
+If the attacker controls 75\% of the network or less, Fides has a way how to defend itself and make the correct decisions about the threat intelligence.
 
-In order to mitigate this type of attack, it would need to be \textit{computationally hard} to join the peer-to-peer network or generate a new peer identity.
+There are essentially two possible ways how to mitigate this type of attack even for cases where the attacker controls more than 75\% of the network.
+
+One option is to introduce restrictions to Fides, where it uses data at most from the 75\% of peers that are not pre-trusted, and the rest, 25\% comes from the pre-trusted peers and organizations. All other data from other peers in the network would not be considered during the threat intelligence aggregation.
+That would ensure that Fides always only considers a limited amount of data so it will not be vulnerable to an attacker who controls more than 75\% of the network.
+
+The second possible solution would be making it \textit{computationally hard} for new peers to join the peer-to-peer network or generate a new peer identity.
 So the attacker would need to spend either time or computational resources when generating new peer identities.
 This directly does not prevent a malicious actor to perform this type of attack, but it makes it significantly harder.
+However, this mitigation would need to be implemented in Iris instead of Fides.
 
 \subsection{Adding Threat Intelligence Challenges}
 \label{subsec:adding-threat-intelligence-challenges}
-Fung et al~\cite{fung2008trust} explores an interesting idea of creating initial trust in remote peers by giving them \textit{computational challenges}.
+Fung et al~\cite{fung2008trust} explore an interesting idea of creating initial trust in remote peers by giving them \textit{computational challenges}.
 In our case, challenges might be asking the remote peer for threat intelligence about the target, that the local Slips know very well and with high confidence.
-When the trust model receives a response it uses the interaction evaluation strategy described in the Section~\ref{subsec:use-local-threat-to-evaluate} to evaluate the received data.
+When the trust model receives a response it uses the interaction evaluation strategy described in Section~\ref{subsec:use-local-threat-to-evaluate} to evaluate the received data.
 The trust model can then ask multiple times to have more interactions and thus effectively \textit{probing} the remote peer and getting an estimate about its future behavior.
 
 By using this approach, one can either replace the recommendation system or greatly improve it in cases when the trust model does not have enough pre-trusted peers.
@@ -53,8 +60,8 @@ The designed peer-to-peer network for threat intelligence sharing unfortunately 
 The peers sharing threat intelligence are not gaining any benefit other than gaining trust in the eyes of other peers.
 As the gained trust brings little to no benefit by itself, there is a lack of incentive for the peers to share their threat intelligence with the network.
 
-However, we can see data \& threat intelligence filtering as one of the ways how to motivate other peers to share their threat intelligence.
-As we described in the Section~\ref{subsec:data-filtering}, the Fides administrator can choose what threat intelligence is shared with which peers by configuring confidentiality levels with required service trust.
+However, we can see data and threat intelligence filtering as one of the ways how to motivate other peers to share their threat intelligence.
+As we described in Section~\ref{subsec:data-filtering}, the Fides administrator can choose what threat intelligence is shared with which peers by configuring confidentiality levels with required service trust.
 Using this approach, the threat intelligence is shared only with high trusted peers.
 That would result in an incentive for the peers to gain the service trust which they do by sharing their own threat intelligence with the network.
 

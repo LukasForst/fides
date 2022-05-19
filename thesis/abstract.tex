@@ -20,22 +20,34 @@ This thesis introduces Fides. Fides is a generic trust model fine-tuned for shar
 We design and build Fides taking into account the problems and limitations of previous state-of-the-art trust models, optimizing it for a broad spectrum of peer-to-peer networks where peers can join and leave at any time.
 Fides evaluates the behavior of peers in the network, including their membership in pre-trusted organizations and uses this knowledge to compute the trust.
 Fides continually assesses received data from the peers, and by weighting and comparing them with each other as well as with the existing knowledge, Fides is able to determine which peer provides better threat intelligence and which peers are more reliable. The received threat intelligence is always aggregated and weighted and then provided to the underlying intrusion prevention system.
-Among many results, our experiments show that if at least 25\% of peers are part of trusted organizations, then 75\% of the network can be \textit{completely controlled by the malicious actors}, and Fides would still be able to provide the correct values of the threat intelligence data to the peers. We conclude that Fides is a suitable solution for modeling trust in global adversarial peer-to-peer networks. 
+Among many results, our experiments show that in \textit{the worst possible scenario}, when 75\% of the network is \textit{completely controlled by malicious actors} Fides is still able to provide the correct values of the threat intelligence data under an assumption that the other part of the network, the remaining 25\%, are peers that are part of trusted organizations.
 
 The direct contributions of this thesis are the computational model of the trust model Fides, the reference implementation of the model in Python, the simulation framework for modeling peers' behavior in the network including the implementation of the framework and the implementation of the Fides module for reference intrusion prevention system.
 
 \end{abstract}
 
-\keywords{Keywords}{trust models, threat intelligence, collaborative network defense, intelligence sharing}
+\keywords{Keywords}{trust model, threat intelligence sharing, collaborative network defense, intrusion prevention system}
 
 \vspace*{\fill}
 
 \newpage
 \begin{abstract}{Abstrakt}
-    TBD 
-    
+
+Většina systémů síťové obrany se spoléhá pouze na důkazy o předchozích kybernetických útocích, tzv. threat intelligence neboli informace o hrozbách. Firewally a systémy prevence narušení se spoléhají na sdílené informace o hrozbách vytvořené jinými systémy, aby předešli útokům dříve, než bude pozdě.
+Takové informace o hrozbách jsou obvykle sdíleny prostřednictvím centralizovaných veřejných a soukromých seznamů tzv. blocklistů, kde má jediná centralizovaná autorita úplnou kontrolu nad tím, co je zveřejní. Tyto centralizované systémy mají mnoho problémů: jediný bod selhání jak z technického hlediska, tak i z hlediska důvěryhodnosti, nedostatečná flexibilita v oblasti nových dat a poskytovatelů a také důvěra v poskytovatele těchto dat.
+
+K řešení těchto problémů lze ke sdílení informací o hrozbách využít sítě typu peer-to-peer. Protože jsou však tyto sítě otevřené komukoli, včetně podvodných aktérů, musí být jednotliví peeři schopni určit, komu důvěřovat a která data je lepší skartovat.
+
+Tato práce představuje systém Fides. Fides je obecný model důvěry optimalizovaný pro sdílení informací o bezpečnostních hrozbách ve vysoce nepříznivých globálních peer-to-peer sítích agentů prevence narušení.
+V této práci navrhujeme a implementujeme Fides s ohledem na problémy a omezení předchozích modelů důvěryhodnosti a optimalizujeme jej pro široké spektrum peer-to-peer sítí, kde se členové této sítě mohou kdykoli připojit a odpojit.
+Fides vyhodnocuje chování těchto agentů, včetně jejich členství v důvěryhodných organizacích, a tyto znalosti využívá k výpočtu jejich důvěryhodnosti.
+Fides průběžně vyhodnocuje přijatá data od agentů v síti a jejich vážením a porovnáváním mezi sebou i s existujícími znalostmi je schopen určit, který agent poskytuje lepší informace o hrozbách a který agent je spolehlivější. Výsledné informace o hrozbách jsou poté poskytnuty systému prevence narušení.
+Z mnoha výsledků našich experimentů vyplývá, že v \textit{nejhorším možném scénáři}, kdy je 75\% sítě \textit{úplně ovládáno škodlivými aktéry}. Fides je stále schopen poskytovat správné hodnoty údajů o hrozbách za předpokladu, že druhá část sítě, zbývajících 25\%, jsou peeři, kteří jsou součástí důvěryhodných organizací.
+
+Přímým přínosem této práce je výpočetní model modelu důvěry Fides, referenční implementace modelu v jazyce Python, simulační software pro modelování chování peerů v síti včetně jeho implementace a implementace modulu Fides pro referenční systém prevence narušení.
+
 \end{abstract}
-\keywords{Klíčová slova}{TBD1, TBD2}
+\keywords{Klíčová slova}{model důvěry, sdílení informací o hrozbách, kolaborativní obrana sítě, systém prevence narušení}
 
 \end{abstractpage}
 \thispagestyle{empty}
