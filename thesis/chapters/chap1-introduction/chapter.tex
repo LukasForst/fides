@@ -18,9 +18,7 @@ An exemption to them is Dovecot~\cite{dita}, a local P2P trust model designed to
 
 This thesis proposes a new trust model called \textbf{Fides}\footnote{Fides was named after the ancient goddess of trust and good faith~\cite{enwiki:1086924565}.}.
 Fides is a \textit{generic} trust model fine-tuned for sharing threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
-Fides was built by solving most of the problems of previous state-of-the-art trust models~\cite{sort, dita} and its computational model is based on the existing trust model SORT~\cite{sort} which we modified and extended to support threat intelligence sharing.
-
-and is optimized for a broad spectrum of networks; from local networks controlled by a single company, to public global Internet peer-to-peer networks where anybody can join and leave at any time.
+Fides was built by solving most of the problems of previous state-of-the-art trust models~\cite{sort, dita} and its computational model is based on the existing trust model SORT~\cite{sort} which we modified and extended to support threat intelligence sharing. Fides was optimized for a broad spectrum of networks; from local networks controlled by a single company, to public global Internet peer-to-peer networks where anybody can join and leave at any time.
 
 Fides works with the concept of peers that belong to specific \textit{organizations} and allows administrators to pre-trust specific peers and organizations. This pre-trusting is a novel feature of Fides, representing the common criteria of security practitioners of trusting some groups or companies more than others. The comprehensive configuration options enable administrators to share data only with particular organizations. This data filtering guarantees that no privacy-sensitive intelligence is shared with peers that should not have access to it.
 
@@ -41,7 +39,7 @@ Moreover, in a situation where the Fides talks to at least 25\% of pre-trusted p
 
 \section{Thesis Structure}
 \label{sec:thesis-structure}
-This thesis explains the required background and describes the current state of the art in Chapter~\ref{ch:previous-work-background}.
+This thesis explains the required background and describes the current state-of-the-art in Chapter~\ref{ch:previous-work-background}.
 In Chapter~\ref{ch:trust-model-design} we propose a new trust model Fides and outline how it works from the high-level perspective in Section~\ref{sec:general-overview-of-fides}.
 After that, we explain problems related to gaining trust in Section~\ref{sec:cold-start-problem}.
 In the following Sections~\ref{sec:attack-vectors}~and~\ref{sec:taxonomy-of-attacks} we analyze the taxonomy of attacks and the attack vectors related explicitly to the trust models and discuss how Fides defends against them.
