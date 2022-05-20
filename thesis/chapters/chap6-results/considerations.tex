@@ -2,7 +2,7 @@
 \section{Considerations when Evaluating Trust Results}
 \label{sec:other-findings}
 
-Even though the results from the previous Section~\ref{sec:fides-resilience} suggest that a combination of $DistanceBasedTIEvaluation$ for evaluating the interactions in combination with $AverageConfidenceTIAggregation$ is the best, this is not always true.
+Even though the results from the previous Section~\ref{sec:fides-resilience} suggest that a combination of $DistanceBasedTIEvaluation$ for evaluating the interactions in combination with $AverageConfidenceTIAggregation$ is the best, there are corner cases where this is not always true.
 
 For example, recall Figure~\ref{fig:single-simulation-example} from Section~\ref{sec:general-overview-of-simulation-output}, where the presented situation uses $MaxConfidenceTIEvaluation$ and it is able to correctly detect all types of peers as well as correctly determine the score for the target.
 However, if we take the same environment and the only difference is using $DistanceBasedTIEvaluation$ for evaluating interactions, we get the following graph for the service trust in  Figure~\ref{fig:zero-gained-trust}. The graph for confidence as well as target score for the situation from Figure~\ref{fig:zero-gained-trust} can be seen in the appendix in the Figure~\ref{fig:zero-gained-trust-all}.

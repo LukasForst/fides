@@ -1,37 +1,38 @@
 \section{Evaluation of Fides Resilience}
 \label{sec:fides-resilience}
 
-To evaluate the resilience of Fides in different scenarios, we need to find the optimal configuration for the following parameters in Fides: interaction evaluation strategy (Section~\ref{sec:interaction-evaluation-strategies}), threat intelligence aggregation function (Section~\ref{sec:network-intelligence-aggregation}) and initial reputation (Section~\ref{subsubsec:computing-reputation}). Each combination of parameters is evaluated in its capacity to correctly classify targets in \textit{any} network topology.\footnote{Distribution of correct/uncertain/incorrect/malicious peers in the network.}
+To evaluate the resilience of Fides in different scenarios, we need to find the optimal configuration for the following parameters in Fides: interaction evaluation strategy (Section~\ref{sec:interaction-evaluation-strategies}), threat intelligence aggregation function (Section~\ref{sec:network-intelligence-aggregation}), and initial reputation (Section~\ref{subsubsec:computing-reputation}). Each combination of parameters is evaluated in its capacity to correctly classify targets in \textit{any} network topology.\footnote{Distribution of correct/uncertain/incorrect/malicious peers in the network.}
 
 In this section, we are focusing on finding the best possible combination of parameters for the worst possible scenario. In other words, we want to identify a setup, where the Fides can guarantee that it is eventually going to provide the correct data and will classify the targets correctly even though the malicious actor controls most of the network.
 
-We shows two specific scenarios - one with no pre-trusted peers and one where there are 25\% of peers part of some pre-trusted organization. Because even the scenario with only 25\% peers shows, that in some case is Fides able to defend itself against the rest of the network, we do not show scenarios with more pre-trusted peers, but we include them in the appendix (Figure~\ref{fig:performance-all-setups-50-pretrusted}).
+We show two specific scenarios - one with no pre-trusted peers and one where there are 25\% of peers part of some pre-trusted organization. Because even the scenario with only 25\% peers shows, that in some cases is Fides able to defend itself against the rest of the network, we do not show scenarios with more pre-trusted peers, but we include them in the appendix (Figure~\ref{fig:performance-all-setups-50-pretrusted}).
 
 \subsection{Scenario With No Pre-Trusted Peers}
 \label{subsec:scenario-with-0-pretrusted-peers}
 
-In this scenario, there are no pre-trusted peers nor organizations and Fides needs to determine trust in each peer by itself.
+In this scenario, there are no pre-trusted peers or organizations and Fides needs to determine trust in each peer by itself.
 We simulated environments starting with the 75\% of confident correct peers~(behavior from Section~\ref{subsubsec:confident-correct-peer}) up to 75\% malicious peers~(behavior from Section~\ref{subsubsec:malicious-peer}) and used all possible setups.
 
 \cleartoleftpage % check if this appears on the left side 
 \subsubsection{Target Detection Performance}
 
-The target detection performance $tdp$ (Section~\ref{subsec:target-detection-performance-metric}) is the most important metric because it evaluates how good is Fides in the target classification - if the Fides is able to correctly come up to a conclusion that \textit{evil.com} is malicious target and \textit{google.com} is the benign.
+The target detection performance $tdp$ (Section~\ref{subsec:target-detection-performance-metric}) is the most important metric because it evaluates how good is Fides in the target classification - if the Fides is able to correctly come up to a conclusion that \textit{evil.com} is the malicious target and \textit{google.com} is benign.
 
 Figure~\ref{fig:25-target-detection} visualizes the target detection performance on three different graphs where each of the graphs is a single interaction evaluation strategy.
-Each graph then displays dots with different colors. Each color a single threat intelligence aggregation method in combination with different initial reputation value.
+Each graph then displays dots with different colors. Each color a single threat intelligence aggregation method in combination with different initial reputation values.
 A single dot in the graph is the value of $tdp$ and in a case when the $tdp \geq 1$, it means that Fides made on average the wrong decision about the targets and classified them with the wrong label.
 In other words, if $tdp \geq 1$, Fides classified benign targets as malicious and the other way around.
-We included the \textit{red line} that shows $tdp = 1$ so if a dot is above the \textit{red line}, the Fides made incorrect target classification.
+We included the \textit{red line} that shows $tdp = 1$ so if a dot is above the \textit{red line}, the Fides made an incorrect target classification.
 For that reason, we optimize the \textit{dots} to be \textit{below} the \textit{red line} (classifications being correct).
 
 The horizontal axis in each graph measures the environment hardness explained in Section~\ref{subsec:environment-hardness}. It is important to note, that hardness essentially expresses how many peers that can provide correct data are in the simulation. For example, if the hardness is $10$, $100\%$ of peers inside the simulation are providing correct data and behave like confident correct peers.
 Thus the higher the value of hardness is, the easier it is for the Fides to do correct classification.
 
-Specifically in Figure~\ref{fig:0-target-detection} we can see that that in the \textit{easy} environment, most of the \textit{dots} are below the red line until the hardness gets close to $3$.
-The metrics perform more or less the same as they are able to stay bellow the red line until $eh = 3$. In that situation, the best performance and thus the lowest $tdp$ has $ThresholdTIEvaluation$ in combination with $WeighedDistanceToLocalTIEvaluation$ and initial reputation of $0.95$.
+Specifically, in Figure~\ref{fig:0-target-detection} we can see that in the \textit{easy} environment, most of the \textit{dots} are below the red line until the hardness gets close to $3$.
+The metrics perform more or less the same as they are able to stay below the red line until $eh = 3$. In that situation, the best performance and thus the lowest $tdp$ has $ThresholdTIEvaluation$ in combination with $WeightedAverageConfidenceTIAggregation$ and initial reputation of $0.95$.
+Because the previous performance of all methods is almost similar, we recommend using this combination up to $eh 3$ to ensure the best performance even in the harder situations.
 
-Interestingly, the $DistanceBasedTIEvaluation$ in combination with $0$ initial reputation and $AverageConfidenceTIAggregation$ for threat intelligence aggregation, shows the same target classification performance in each environment - $tdp = 0$. This suggests that the method was unable to determine any trust for any of the peers. This is then later confirmed by the Figure~\ref{fig:0-peer-trust}.
+Interestingly, the $DistanceBasedTIEvaluation$ in combination with $0$ initial reputation and $AverageConfidenceTIAggregation$ for threat intelligence aggregation, shows the same target classification performance in each environment - $tdp = 0$. This suggests that the method was unable to determine any trust for any of the peers. This is then later confirmed by Figure~\ref{fig:0-peer-trust}.
 
 % TODO: move the legend to the left
 \begin{figure}[hp]
@@ -42,15 +43,15 @@ Interestingly, the $DistanceBasedTIEvaluation$ in combination with $0$ initial r
 \end{figure}
 
 \cleartoleftpage
-\subsubsection{Peers Behavior Detection Performance}
+\subsubsection{Peer's Behavior Detection Performance}
 \begin{figure}[hp]
     \centering
     \includegraphics[width=1.0\textwidth]{assets/0_peer_trust.png}
-    \caption{Behavior of peer's trust metrics in the different environments for different Fides's setups with \textbf{no pre-trusted peers}. On the left side peer's behavior detection performance, on the right side peer's average trust.}
+    \caption{The behavior of peer's trust metrics in the different environments for different Fides's setups with \textbf{no pre-trusted peers}. On the left side peer's behavior detection performance, and on the right side peer's average trust.}
     \label{fig:0-peer-trust}
 \end{figure}
 
-Figure~\ref{fig:0-peer-trust} displays two important metrics which are related to how much does Fides trust the peers in the network. First is peer's behavior detection performance metric $pbdp$ (Section~\ref{subsec:peers-behavior-detection-performance-metric}) and the second is the peer's average trust.
+Figure~\ref{fig:0-peer-trust} displays two important metrics which are related to how much Fides trusts the peers in the network. The first is the peer's behavior detection performance metric $pbdp$ (Section~\ref{subsec:peers-behavior-detection-performance-metric}) and the second is the peer's average trust.
 
 On the left side, one can see the peer's behavior detection performance metric that measures how good was Fides in estimating the peer's behavior. The lower value of $pbdp$ the better because the Fides's service trust for the peer was closer to the real value used in the simulation.
 
@@ -63,7 +64,7 @@ As suggested in the previous section while measuring target detection performanc
 \subsection{Scenario With 25\% of Pre-Trusted Peers}
 \label{subsec:scenario-with-25-pretrusted-peers}
 
-In this scenario, Fides talks to 25\% of pre-trusted peers with. We simulated environments starting with the 75\% of confident correct peers~(behavior from Section~\ref{subsubsec:confident-correct-peer}) up to 75\% malicious peers~(behavior from Section~\ref{subsubsec:malicious-peer}) and used all possible setups.
+In this scenario, Fides assumes that there are 25\% of pre-trusted peers. We simulated environments starting with the 75\% of confident correct peers~(behavior from Section~\ref{subsubsec:confident-correct-peer}) up to 75\% malicious peers~(behavior from Section~\ref{subsubsec:malicious-peer}) and used all possible setups.
 
 \subsubsection{Target Detection Performance}
 \label{subsubsec:target-detection-performance}
@@ -75,25 +76,30 @@ In this scenario, Fides talks to 25\% of pre-trusted peers with. We simulated en
     \label{fig:25-target-detection}
 \end{figure}
 
-Specifically in Figure~\ref{fig:25-target-detection} one can see that until the environment hardness $eh \geq 3$, all strategies help Fides to classify targets correctly.
-That changes after the environment hardness $eh \leq 2.5$ when the $ThresholdTIEvaluation$ as well as $MaxConfidenceTIEvaluation$ misclassify the targets and the $tdp \geq 1$. In that case, all threat intelligence aggregation methods are the same and all of them misclassify the targets no matter what initial reputation is used.
-However, the $DistanceBasedTIEvaluation$ strategy in combination with $AverageConfidenceTIAggregation$ method is able to still classify the targets correctly and maintain the $tdp \leq 1$ even under toughest conditions where there are 75\% of adversarial peers in the simulation.
+Specifically in Figure~\ref{fig:25-target-detection} one can see that until the environment hardness $eh \geq 3$, all strategies help Fides to classify the targets correctly.
+In general, the $DistanceBasedTIEvaluation$ performs the best in almost all situations except the easiest one, where the $MaxConfidenceTIEvaluation$ has slightly better results.
 
-When Fides used in the similar situation the threat intelligence aggregation method $WeightedAverageConfidenceTIAggregation$, it misclassified the targets in one simulation in when the hardest environment.
+The situation changes after the environment hardness goes over $2.5$ ($eh \leq 2.5$) when the $ThresholdTIEvaluation$ and $MaxConfidenceTIEvaluation$ misclassify the targets. In that case, all threat intelligence aggregation methods are the same and all of them misclassify the targets no matter what initial reputation is used.
+However, the $DistanceBasedTIEvaluation$ strategy in combination with $AverageConfidenceTIAggregation$ method is able to still classify the targets correctly and maintain the $tdp \leq 1$ even under the toughest conditions where there are 75\% of adversarial peers in the simulation. 
+We include a more detailed visualization of this case in the appendix in Figure~\ref{fig:worst-best-scenario}.
+
+When Fides is used in a similar situation with the threat intelligence aggregation method $WeightedAverageConfidenceTIAggregation$, it misclassified the targets in one simulation when working in the hardest environment.
 Thus, this method does not provide a guarantee that Fides will end up with correct classifications for every target.
 
+To summarize, the results have shown that with 25\% of pre-trusted peers is Fides able to classify all the targets properly all the time if the interaction evaluation strategy $DistanceBasedTIEvaluation$ is used in combination with the $AverageConfidenceTIAggregation$. In such case, Fides provides a guarantee that no matter what the adversaries do, it calculates the correct threat intelligence.
+
 \cleartoleftpage
-\subsubsection{Peers Behavior Detection Performance}
+\subsubsection{Peer's Behavior Detection Performance}
 
 \begin{figure}[hp]
     \centering
     \includegraphics[width=1.0\textwidth]{assets/25_peer_trust.png}
-    \caption{Behavior of peer's trust metrics in the different environments for different Fides's setups with \textbf{25\% pre-trusted peers}. On the left side peer's behavior detection performance, on the right side peer's average trust.}
+    \caption{The behavior of peer's trust metrics in the different environments for different Fides's setups with \textbf{25\% pre-trusted peers}. On the left side peer's behavior detection performance, and on the right side peer's average trust.}
     \label{fig:25-peer-trust}
 \end{figure}
 
-Figure~\ref{fig:25-peer-trust}, similarly to Figure~\ref{fig:0-peer-trust} shows the peer's behavior detection performance $pbdp$ on the left side and peer's average trust on the right side.
-When we compare Figure~\ref{fig:0-peer-trust} (no pre-trusted peers) with this Figure~\ref{fig:25-peer-trust} (25\% pre-trusted peers), we can clearly see that especially the $pbdp$ metric improved and in all environment it holds that $pbdp \leq 0.4$. 
+Figure~\ref{fig:25-peer-trust} shows the peer's behavior detection performance $pbdp$ on the left side and the peer's average trust on the right side.
+When we compare Figure~\ref{fig:0-peer-trust} (no pre-trusted peers) with this Figure~\ref{fig:25-peer-trust} (25\% pre-trusted peers), we can clearly see that, especially the $pbdp$ metric improved and in all environments it holds that $pbdp \leq 0.4$. 
 This means that Fides's ability to identify the true behavior of the peers greatly improved for all interaction evaluation strategies.
 
 The biggest improvement was in strategy $DistanceBasedTIEvaluation$ which had poor performance with no pre-trusted peers in Figure~\ref{fig:0-peer-trust}. However, in the situation with 25\% pre-trusted peers it is now able to detect the true behavior of the peers with the similar precision as the other strategies.

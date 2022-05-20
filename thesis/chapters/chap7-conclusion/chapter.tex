@@ -1,13 +1,16 @@
 \chapter{Conclusion}
 \label{ch:conclusion}
 
-In this thesis, we proposed, designed, and implemented \textbf{Fides}. Fides is a generic trust model fine-tuned for sharing security threat intelligence in highly adversarial global peer-to-peer networks of intrusion prevention agents.
-Fides enables threat intelligence sharing in global peer-to-peer networks of Intrusion Prevention Agents agents and allows them to cooperate against malicious actors without compromising the security of the local environment. 
-Although Fides is fine-tuned for threat intelligence sharing, it is generic and can be easily modified to share any other IoC data.
+In this thesis, we proposed, designed, and implemented \textbf{Fides}, a generic trust model for highly adversarial global peer-to-peer (P2P) networks of intrusion prevention system (IPS) agents, fine-tuned for sharing security threat intelligence. Fides implementation allows IPS agents to cooperate against malicious actors, also taking care of the security and privacy of the local environment. 
+Although Fides was designed for threat intelligence sharing, it is generic and can be easily modified to share any other type of data. 
 
-We conclude that Fides is a viable solution for managing trust relationships in the peer-to-peer networks and it is robust enough to work under highly-adversarial situations. Even in these situations, it can correctly identify the truth of the shared threat intelligence data, and also identify the truth about how much to trust the peers.
+Fides is the first trust model that is implemented and ready to use, designed for global P2P networks of defenders that consider memberships of peers in organizations, evaluation of how much to trust peers based on interactions, aggregation of contradictory information of threat intelligence and adversarial peers trying to manipulate the system.
 
-Thanks to all the configurations and optimizations that Fides brings for usage inside the organizations, we believe that Fides enables the Slips Intrusion Prevention System adoption across a broader spectrum of organizations.
+Fides was implemented and evaluated by simulating thousands of scenarios to find the best trust model parameters for each of them. We found that Fides helps obtain the truth about the shared data, in the presence of adversarial peers lying about the data, in most scenarios and conditions. This is possible due to the correct combination of trust methodologies and the new concept of pre-trusted organizations in Fides. Pre-trusted organizations follow the very human tendency of having people that we know and trust more than others. Even though Fides can work without pre-trusted organizations, having them greatly improves its resilience.
+
+We conclude that Fides is a viable solution for managing trust relationships in peer-to-peer networks and it is robust enough to work under highly-adversarial situations. Even in these situations, with 75\% of the peers malicious, it can correctly identify the truth of the shared threat intelligence data, and also identify the truth about how much to trust other peers.
+
+Thanks to all the configurations and optimizations that Fides has for different organizations, we believe that Fides enables the Slips Intrusion Prevention System adoption across a broader spectrum of organizations.
 We believe that Slips, combined with Fides, will enable more possibilities for sharing threat intelligence over the internet and improve the overall security of the networks that use Slips for the defense against intruders.
 
 
